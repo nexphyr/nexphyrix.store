@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Shield } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -70,7 +69,7 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center text-primary">
-          <Shield className="w-12 h-12" />
+          <img src="./logo.png" alt="Logo" className="w-16 h-16 object-contain drop-shadow-md" />
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Admin Login
