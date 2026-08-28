@@ -86,7 +86,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
       title,
       description,
       price,
-      category_id: Number(categoryId),
+      category_id: categoryId,
       ...(isGta ? { status } : { urls })
     };
 
