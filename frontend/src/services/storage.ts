@@ -98,7 +98,7 @@ export const storage = {
       
     if (linkError || !insertedLink) {
       console.error('Error adding link:', linkError);
-      return;
+      throw new Error(linkError?.message || 'Gagal menyimpan link. Pastikan Anda memiliki akses Admin.');
     }
 
     // Insert secrets
@@ -106,7 +106,10 @@ export const storage = {
     if (urlsToInsert.length > 0) {
       const secretData = urlsToInsert.map(u => ({ link_id: insertedLink.id, url: u }));
       const { error: secretError } = await supabase.from('link_secrets').insert(secretData);
-      if (secretError) console.error('Error adding secrets:', secretError);
+      if (secretError) {
+        console.error('Error adding secrets:', secretError);
+        throw new Error(secretError.message || 'Gagal menyimpan URL rahasia.');
+      }
     }
   },
   updateLink: async (id: number, data: Omit<Link, 'id' | 'created_at'>): Promise<void> => {
@@ -116,7 +119,7 @@ export const storage = {
     const { error: linkError } = await supabase.from('links').update(linkData).eq('id', id);
     if (linkError) {
       console.error('Error updating link:', linkError);
-      return;
+      throw new Error(linkError.message || 'Gagal mengubah link.');
     }
 
     // Update secrets: Since multiple URLs are supported, simplest way is delete old and insert new.
@@ -126,14 +129,21 @@ export const storage = {
     const urlsToInsert = urls && urls.length > 0 ? urls : (url ? [url] : []);
     if (urlsToInsert.length > 0) {
       const secretData = urlsToInsert.map(u => ({ link_id: id, url: u }));
-      await supabase.from('link_secrets').insert(secretData);
+      const { error: secretError } = await supabase.from('link_secrets').insert(secretData);
+      if (secretError) {
+        console.error('Error updating secrets:', secretError);
+        throw new Error(secretError.message || 'Gagal memperbarui URL rahasia.');
+      }
     }
   },
   deleteLink: async (id: number): Promise<void> => {
     // RLS or cascade should handle link_secrets. We try deleting secrets first just in case there's no cascade.
     await supabase.from('link_secrets').delete().eq('link_id', id);
     const { error } = await supabase.from('links').delete().eq('id', id);
-    if (error) console.error('Error deleting link:', error);
+    if (error) {
+      console.error('Error deleting link:', error);
+      throw new Error(error.message || 'Gagal menghapus link.');
+    }
   },
 };
 

@@ -32,7 +32,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
   const [status, setStatus] = useState(link?.status || '');
   const [description, setDescription] = useState(link?.description || '');
   const [price, setPrice] = useState(link?.price || '');
-  const [categoryId, setCategoryId] = useState<number>(link?.category_id || 0);
+  const [categoryId, setCategoryId] = useState<number | ''>(link?.category_id || '');
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -76,6 +76,12 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
     setError('');
     setLoading(true);
 
+    if (!categoryId) {
+      setError('Silakan pilih kategori terlebih dahulu. Jika kosong, tambahkan kategori di menu Kategori.');
+      setLoading(false);
+      return;
+    }
+
     const payload = {
       title,
       description,
@@ -93,7 +99,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
       onSaved();
       onClose();
     } catch (err: any) {
-      setError('Gagal menyimpan data.');
+      setError(err.message || 'Gagal menyimpan data.');
     } finally {
       setLoading(false);
     }
@@ -136,7 +142,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
               value={categoryId} 
               onChange={e => setCategoryId(Number(e.target.value))}
             >
-              <option value="0" disabled>Pilih Kategori</option>
+              <option value="" disabled>Pilih Kategori</option>
               {categories.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
