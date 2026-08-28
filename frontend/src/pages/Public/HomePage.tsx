@@ -68,7 +68,7 @@ const HomePage = () => {
 
     // Map category name onto links for the public view (and omit URL explicitly here even though we fetch it)
     const formattedLinks = filtered.map(link => {
-      const cat = allCats.find(c => c.id === link.category_id);
+      const cat = allCats.find(c => Number(c.id) === Number(link.category_id));
       return {
         id: link.id,
         title: link.title,

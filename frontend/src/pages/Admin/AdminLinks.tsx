@@ -25,24 +25,29 @@ const AdminLinks = () => {
 
   const fetchLinks = async () => {
     setLoading(true);
-    const allLinks = await storage.getLinks(true); // admin gets secrets
-    const allCats = await storage.getCategories();
-    
-    let filtered = allLinks;
-    if (search) {
-      filtered = filtered.filter(l => l.title.toLowerCase().includes(search.toLowerCase()));
+    try {
+      const allLinks = await storage.getLinks(true); // admin gets secrets
+      const allCats = await storage.getCategories();
+      
+      let filtered = allLinks;
+      if (search) {
+        filtered = filtered.filter(l => l.title.toLowerCase().includes(search.toLowerCase()));
+      }
+      
+      const formatted = filtered.map(link => {
+        const cat = allCats.find(c => Number(c.id) === Number(link.category_id));
+        return {
+          ...link,
+          category: { id: cat?.id || 0, name: cat?.name || 'Unknown', slug: cat?.slug || '' }
+        };
+      });
+      
+      setLinks(formatted);
+    } catch (err) {
+      console.error('Error fetching admin links:', err);
+    } finally {
+      setLoading(false);
     }
-    
-    const formatted = filtered.map(link => {
-      const cat = allCats.find(c => c.id === link.category_id);
-      return {
-        ...link,
-        category: { id: cat?.id || 0, name: cat?.name || 'Unknown', slug: cat?.slug || '' }
-      };
-    });
-    
-    setLinks(formatted);
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -118,7 +123,7 @@ const AdminLinks = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {loading ? (
-                <tr><td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">Loading...</td></tr>
+                <tr><td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">Loading...</td></tr>
               ) : links.map((link) => (
                 <tr key={link.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{link.title}</td>
@@ -158,7 +163,7 @@ const AdminLinks = () => {
                 </tr>
               ))}
               {!loading && links.length === 0 && (
-                <tr><td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">Data tidak ditemukan.</td></tr>
+                <tr><td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">Data tidak ditemukan.</td></tr>
               )}
             </tbody>
           </table>
