@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-bold rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300;
+  }
+  .btn-primary {
+    @apply text-white bg-primary hover:bg-accent hover:shadow-lg hover:shadow-accent/40 focus:ring-primary;
+  }
+  .btn-secondary {
+    @apply text-gray-700 bg-white hover:bg-gray-50 border-gray-300 focus:ring-primary shadow-sm hover:shadow;
+  }
+  .input {
+    @apply appearance-none block w-full px-4 py-3 border border-gray-200 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary transition-all sm:text-sm bg-gray-50 hover:bg-white;
+  }
+  .label {
+    @apply block text-sm font-semibold text-gray-700 mb-1;
+  }
+  
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-xl;
+  }
+}
+
+/* Custom background patterns for hero */
+.bg-hero-pattern {
+  background: linear-gradient(135deg, #00439C 0%, #0070D1 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-hero-pattern::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 50%);
+  animation: float 20s infinite linear;
+}
