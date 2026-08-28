@@ -91,7 +91,7 @@ const HomePage = () => {
         {/* Full Edge-to-Edge Background Image */}
         <div
           className="absolute inset-0 w-full h-full bg-no-repeat bg-cover bg-center"
-          style={{ backgroundImage: "url('/banner.png')" }}
+          style={{ backgroundImage: "url('./banner.png')" }}
         ></div>
 
         {/* Semi-transparent overlay to ensure text is readable if the banner is bright */}
@@ -137,7 +137,7 @@ const HomePage = () => {
           <div className="flex-1 hidden md:flex justify-center relative">
             <div className="absolute w-64 h-64 bg-accent/40 rounded-full blur-3xl animate-pulse-glow z-0"></div>
             <img
-              src="/astrobot.png"
+              src="./astrobot.png"
               alt="Astrobot"
               className="w-full max-w-md object-contain animate-float drop-shadow-2xl relative z-10"
               style={{ filter: 'drop-shadow(0px 20px 30px rgba(0, 0, 0, 0.4))' }}
