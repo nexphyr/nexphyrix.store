@@ -37,7 +37,7 @@ const AdminLinks = () => {
       }
       
       const formatted = filtered.map(link => {
-        const cat = allCats.find(c => Number(c.id) === Number(link.category_id));
+        const cat = allCats.find(c => String(c.id) === String(link.category_id));
         return {
           ...link,
           category: { id: cat?.id || 0, name: cat?.name || 'Unknown', slug: cat?.slug || '' }
