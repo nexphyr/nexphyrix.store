@@ -22,9 +22,11 @@ const AdminLinks = () => {
   const [toast, setToast] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<Link | undefined>(undefined);
+  const [fetchError, setFetchError] = useState<string>('');
 
   const fetchLinks = async () => {
     setLoading(true);
+    setFetchError('');
     try {
       const allLinks = await storage.getLinks(true); // admin gets secrets
       const allCats = await storage.getCategories();
@@ -43,8 +45,9 @@ const AdminLinks = () => {
       });
       
       setLinks(formatted);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching admin links:', err);
+      setFetchError(err.message || String(err));
     } finally {
       setLoading(false);
     }
@@ -162,8 +165,11 @@ const AdminLinks = () => {
                   </td>
                 </tr>
               ))}
-              {!loading && links.length === 0 && (
+              {!loading && !fetchError && links.length === 0 && (
                 <tr><td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">Data tidak ditemukan.</td></tr>
+              )}
+              {!loading && fetchError && (
+                <tr><td colSpan={5} className="px-6 py-4 text-center text-sm text-red-500 font-bold">Error: {fetchError}</td></tr>
               )}
             </tbody>
           </table>

@@ -63,15 +63,19 @@ export const storage = {
         
       if (error) {
         console.error('Error fetching admin links:', error);
-        return [];
+        throw new Error(error.message || 'Gagal memuat data dari Supabase.');
       }
 
       // Map link_secrets back to url/urls
-      return (data || []).map(link => ({
-        ...link,
-        url: link.link_secrets?.[0]?.url || '',
-        urls: link.link_secrets?.map((s: any) => s.url) || []
-      }));
+      return (data || []).map(link => {
+        // Handle case where link_secrets is somehow an object instead of array
+        const secrets = Array.isArray(link.link_secrets) ? link.link_secrets : (link.link_secrets ? [link.link_secrets] : []);
+        return {
+          ...link,
+          url: secrets[0]?.url || '',
+          urls: secrets.map((s: any) => s.url)
+        };
+      });
     } else {
       // Public gets only links (no secrets)
       const { data, error } = await supabase
