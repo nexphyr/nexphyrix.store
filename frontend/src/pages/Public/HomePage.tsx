@@ -103,21 +103,21 @@ const HomePage = () => {
         {/* Semi-transparent overlay to ensure text is readable if the banner is bright */}
         <div className="absolute inset-0 bg-black/20"></div>
 
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12 relative z-10 py-16 px-4 md:py-24">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-[clamp(1.5rem,4vw,3rem)] relative z-10 py-[clamp(2rem,6vw,6rem)] px-4 md:py-24">
 
           {/* Left Column: Text & Search */}
           <div className="flex-1 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 rounded-full mb-6 backdrop-blur-sm shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 rounded-full mb-4 md:mb-6 backdrop-blur-sm shadow-sm">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
               <span className="text-sm font-semibold tracking-wide text-white">NEXPHYRIX STORE</span>
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight drop-shadow-xl text-white">
+            <h1 className="text-[clamp(2.4rem,7vw,4rem)] leading-[1.1] md:text-6xl md:leading-tight font-extrabold mb-4 md:mb-6 drop-shadow-xl text-white">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-100">Selamat Datang di</span> <br />
               Nexphyrix Store
             </h1>
 
-            <p className="text-xl md:text-2xl text-blue-50 mb-10 max-w-xl mx-auto md:mx-0 drop-shadow-lg font-medium">
+            <p className="text-[clamp(1rem,3vw,1.5rem)] md:text-2xl text-blue-50 mb-6 md:mb-10 max-w-xl mx-auto md:mx-0 drop-shadow-lg font-medium">
               Temukan koleksi Sub Indo PS4.
             </p>
 
@@ -131,7 +131,7 @@ const HomePage = () => {
               </div>
               <input
                 type="text"
-                className="block w-full pl-14 pr-6 py-5 rounded-full text-lg text-gray-900 border-2 border-transparent shadow-[0_0_20px_rgba(255,255,255,0.2)] focus:border-white focus:ring-4 focus:ring-white/30 transition-all outline-none bg-white/95 backdrop-blur-md hover:bg-white"
+                className="block w-full pl-12 md:pl-14 pr-6 py-3 md:py-5 rounded-full text-base md:text-lg text-gray-900 border-2 border-transparent shadow-[0_0_20px_rgba(255,255,255,0.2)] focus:border-white focus:ring-4 focus:ring-white/30 transition-all outline-none bg-white/95 backdrop-blur-md hover:bg-white"
                 placeholder="Ketik judul game atau mod..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -145,7 +145,7 @@ const HomePage = () => {
             <img
               src="./astrobot.png"
               alt="Astrobot"
-              className="w-full max-w-md object-contain animate-float drop-shadow-2xl relative z-10"
+              className="w-full max-w-[200px] md:max-w-md object-contain animate-float drop-shadow-2xl relative z-10 opacity-90 md:opacity-100"
               style={{ filter: 'drop-shadow(0px 20px 30px rgba(0, 0, 0, 0.4))' }}
             />
           </div>
@@ -160,7 +160,7 @@ const HomePage = () => {
         <div className="flex flex-wrap gap-3 mb-12 justify-center">
           <button
             onClick={() => setActiveCategory('')}
-            className={`px-6 py-3 rounded-full font-bold transition-all shadow-md transform hover:-translate-y-1 ${activeCategory === ''
+            className={`px-4 py-2 md:px-6 md:py-3 text-sm md:text-base rounded-full font-bold transition-all shadow-md transform hover:-translate-y-1 ${activeCategory === ''
               ? 'bg-primary text-white scale-105 shadow-primary/40'
               : 'bg-white text-gray-600 hover:text-primary hover:shadow-lg border border-gray-100'
               }`}
@@ -171,7 +171,7 @@ const HomePage = () => {
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.slug)}
-              className={`px-6 py-3 rounded-full font-bold transition-all shadow-md transform hover:-translate-y-1 ${activeCategory === cat.slug
+              className={`px-4 py-2 md:px-6 md:py-3 text-sm md:text-base rounded-full font-bold transition-all shadow-md transform hover:-translate-y-1 ${activeCategory === cat.slug
                 ? 'bg-primary text-white scale-105 shadow-primary/40'
                 : 'bg-white text-gray-600 hover:text-primary hover:shadow-lg border border-gray-100'
                 }`}
@@ -182,51 +182,51 @@ const HomePage = () => {
         </div>
 
         {/* Results */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {loading ? (
             <div className="col-span-full p-12 text-center text-primary font-bold animate-pulse">Mencari Data...</div>
           ) : links.length > 0 ? (
             links.map((link) => (
-              <div key={link.id} className="glass-card rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-white relative overflow-hidden flex flex-col">
+              <div key={link.id} className="glass-card rounded-2xl p-4 md:p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-white relative overflow-hidden flex flex-col">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-secondary to-transparent rounded-bl-full opacity-50 transition-opacity group-hover:opacity-100"></div>
 
                 <div className="relative z-10 flex flex-col flex-grow">
-                  <div className="flex justify-between items-start mb-4">
-                    <span className={`inline-block px-3 py-1 text-xs font-black tracking-wider uppercase rounded-full shadow-sm ${link.category.slug === 'gta-v-mod-nusantara' ? 'bg-amber-100 text-amber-800' : 'bg-primary/10 text-primary'
+                  <div className="flex justify-between items-start mb-3 md:mb-4 gap-2">
+                    <span className={`inline-block px-2 py-1 md:px-3 md:py-1 text-[10px] md:text-xs font-black tracking-wider uppercase rounded-full shadow-sm ${link.category.slug === 'gta-v-mod-nusantara' ? 'bg-amber-100 text-amber-800' : 'bg-primary/10 text-primary'
                       }`}>
                       {link.category.name}
                     </span>
 
                     {link.price && (
-                      <span className="inline-block px-3 py-1 text-xs font-extrabold tracking-wide rounded-full shadow-sm bg-green-100 text-green-700">
+                      <span className="inline-block px-2 py-1 md:px-3 md:py-1 text-[10px] md:text-xs font-extrabold tracking-wide rounded-full shadow-sm bg-green-100 text-green-700 whitespace-nowrap">
                         {link.price}
                       </span>
                     )}
                   </div>
 
-                  <h3 className="text-xl font-extrabold text-gray-900 mb-2 leading-tight group-hover:text-primary transition-colors">{link.title}</h3>
+                  <h3 className="text-lg md:text-xl font-extrabold text-gray-900 mb-1 md:mb-2 leading-tight group-hover:text-primary transition-colors line-clamp-2">{link.title}</h3>
 
                   {link.description && (
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{link.description}</p>
+                    <p className="text-gray-600 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2">{link.description}</p>
                   )}
 
                   {link.category.slug === 'gta-v-mod-nusantara' && link.status && (
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                      <span className="flex items-center gap-2 text-sm font-bold">
-                        <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                    <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-100">
+                      <span className="flex items-center gap-2 text-[10px] md:text-sm font-bold">
+                        <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-green-500"></span>
                         <span className="text-green-700 uppercase tracking-wide">{link.status}</span>
                       </span>
                     </div>
                   )}
 
-                  <div className="mt-auto pt-6">
+                  <div className="mt-auto pt-4 md:pt-6">
                     <button 
                       onClick={() => addToCart({ 
                         id: link.id, 
                         title: link.title, 
                         price: link.price || 'Rp 0' 
                       })}
-                      className="w-full btn btn-primary flex items-center justify-center gap-2"
+                      className="w-full btn btn-primary flex items-center justify-center gap-2 py-2.5 md:py-3 text-sm md:text-base"
                     >
                       <ShoppingCart className="w-4 h-4" />
                       Tambah ke Keranjang

@@ -4,7 +4,7 @@ import { useCart } from '../../contexts/CartContext';
 import { generateOrderId, generateCheckoutMessage, copyToClipboardFallback } from '../../lib/checkout';
 
 const MessengerIcon = () => (
-  <svg viewBox="0 0 36 36" fill="url(#messenger-grad)" className="w-12 h-12">
+  <svg viewBox="0 0 36 36" fill="url(#messenger-grad)" className="w-8 h-8 md:w-12 md:h-12">
     <defs>
       <linearGradient id="messenger-grad" x1="0%" y1="100%" x2="100%" y2="0%">
         <stop offset="0%" stopColor="#00B2FF" />
@@ -16,7 +16,7 @@ const MessengerIcon = () => (
 );
 
 const TelegramIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-12 h-12">
+  <svg viewBox="0 0 24 24" className="w-8 h-8 md:w-12 md:h-12">
     <circle cx="12" cy="12" r="12" fill="#2AABEE" />
     <path fill="#FFF" d="M5.435 11.63l12.44-4.795c.575-.22 1.07.135.88.945l-2.115 9.95c-.15.695-.565.865-1.145.54l-3.165-2.33-1.525 1.47c-.17.17-.31.31-.635.31l.225-3.235 5.89-5.32c.255-.23-.055-.355-.4-.125L7.6 13.62l-3.13-.98c-.68-.21-.695-.68.14-1.01z" />
   </svg>
@@ -88,30 +88,30 @@ const CheckoutModal = () => {
               </button>
             </div>
             
-            <div className="p-6">
-              <p className="text-center text-gray-500 text-sm mb-6">
+            <div className="p-4 md:p-6">
+              <p className="text-center text-gray-500 text-xs md:text-sm mb-4 md:mb-6">
                 Detail pesanan akan otomatis disalin ke clipboard Anda.
               </p>
               
-              <div className="flex justify-center gap-6">
+              <div className="flex justify-center gap-4 md:gap-6">
                 <button 
                   onClick={() => handleCheckout('messenger')}
-                  className="flex flex-col items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 group"
+                  className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 group"
                 >
-                  <div className="w-20 h-20 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] group-hover:shadow-[0_8px_30px_rgba(0,106,255,0.3)] flex items-center justify-center transition-shadow">
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] group-hover:shadow-[0_8px_30px_rgba(0,106,255,0.3)] flex items-center justify-center transition-shadow">
                     <MessengerIcon />
                   </div>
-                  <span className="font-bold text-gray-700 group-hover:text-[#006AFF]">Messenger</span>
+                  <span className="font-bold text-sm md:text-base text-gray-700 group-hover:text-[#006AFF]">Messenger</span>
                 </button>
 
                 <button 
                   onClick={() => handleCheckout('telegram')}
-                  className="flex flex-col items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 group"
+                  className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 group"
                 >
-                  <div className="w-20 h-20 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] group-hover:shadow-[0_8px_30px_rgba(42,171,238,0.3)] flex items-center justify-center transition-shadow">
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] group-hover:shadow-[0_8px_30px_rgba(42,171,238,0.3)] flex items-center justify-center transition-shadow">
                     <TelegramIcon />
                   </div>
-                  <span className="font-bold text-gray-700 group-hover:text-[#2AABEE]">Telegram</span>
+                  <span className="font-bold text-sm md:text-base text-gray-700 group-hover:text-[#2AABEE]">Telegram</span>
                 </button>
               </div>
             </div>
