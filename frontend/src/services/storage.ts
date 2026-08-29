@@ -209,6 +209,18 @@ export const storage = {
 
     return data || [];
   },
+
+  // Profiles
+  updateProfile: async (id: string, updates: any): Promise<{ error: any }> => {
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
+    return { error };
+  }
 };
 
 export const sanitizeForSQLi = (input: string): string => {

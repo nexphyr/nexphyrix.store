@@ -36,6 +36,13 @@ interface Profile {
   email: string;
   role: string;
   full_name: string;
+  phone_number?: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+  gender?: string;
+  birth_date?: string;
+  bio?: string;
   created_at: string;
 }
 
@@ -43,7 +50,23 @@ const ProfilePage = () => {
   const { user, loading: authLoading, onlineUsers } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
+  const [userProfile, setUserProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Edit Profile Modal State
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [editProfileForm, setEditProfileForm] = useState({
+    full_name: '',
+    phone_number: '',
+    address: '',
+    latitude: 0,
+    longitude: 0,
+    gender: '',
+    birth_date: '',
+    bio: ''
+  });
 
   // Tab state for Admin
   const [activeTab, setActiveTab] = useState<'pesanan' | 'member'>('pesanan');
@@ -58,20 +81,28 @@ const ProfilePage = () => {
       if (user.role === 'admin') {
         fetchAllAdminData();
       } else {
-        fetchUserOrders();
+        fetchUserData();
       }
     }
   }, [user]);
 
-  const fetchUserOrders = async () => {
+  const fetchUserData = async () => {
     try {
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*, order_items(*)')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
+      const [ordersRes, profileRes] = await Promise.all([
+        supabase
+          .from('orders')
+          .select('*, order_items(*)')
+          .eq('user_id', user?.id)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user?.id)
+          .single()
+      ]);
 
-      if (!error && data) setOrders(data);
+      if (!ordersRes.error && ordersRes.data) setOrders(ordersRes.data);
+      if (!profileRes.error && profileRes.data) setUserProfile(profileRes.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -130,6 +161,70 @@ const ProfilePage = () => {
       setIsLinksModalOpen(false);
     } finally {
       setLoadingLinks(false);
+    }
+  };
+
+  const handleOpenEditProfile = () => {
+    if (userProfile) {
+      setEditProfileForm({
+        full_name: userProfile.full_name || '',
+        phone_number: userProfile.phone_number || '',
+        address: userProfile.address || '',
+        latitude: userProfile.latitude || 0,
+        longitude: userProfile.longitude || 0,
+        gender: userProfile.gender || '',
+        birth_date: userProfile.birth_date || '',
+        bio: userProfile.bio || ''
+      });
+    }
+    setIsEditProfileModalOpen(true);
+  };
+
+  const getLocation = () => {
+    setIsLocating(true);
+    if (!navigator.geolocation) {
+      alert("Geolocation tidak didukung di browser ini.");
+      setIsLocating(false);
+      return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      setEditProfileForm(prev => ({ ...prev, latitude: lat, longitude: lon }));
+      
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+        const data = await res.json();
+        if (data && data.display_name) {
+          setEditProfileForm(prev => ({ ...prev, address: data.display_name }));
+        }
+      } catch (error) {
+        console.error("Gagal reverse geocode:", error);
+      } finally {
+        setIsLocating(false);
+      }
+    }, () => {
+      alert("Gagal mendapatkan lokasi. Pastikan izin lokasi diaktifkan.");
+      setIsLocating(false);
+    });
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    setIsSavingProfile(true);
+    try {
+      const res = await storage.updateProfile(user.id, editProfileForm);
+      if (res.error) throw res.error;
+      
+      // Update local state
+      setUserProfile(prev => prev ? { ...prev, ...editProfileForm } : null);
+      setIsEditProfileModalOpen(false);
+    } catch (err: any) {
+      alert("Gagal menyimpan profil: " + err.message);
+    } finally {
+      setIsSavingProfile(false);
     }
   };
 
@@ -332,6 +427,7 @@ const ProfilePage = () => {
                     <tr>
                       <th className="px-6 py-4">Email Member</th>
                       <th className="px-6 py-4">Nama Lengkap</th>
+                      <th className="px-6 py-4">Info Tambahan</th>
                       <th className="px-6 py-4">Tipe Akun</th>
                       <th className="px-6 py-4">Bergabung Pada</th>
                     </tr>
@@ -345,15 +441,28 @@ const ProfilePage = () => {
                       allProfiles.map(profile => (
                         <tr key={profile.id} className="hover:bg-gray-50/50 transition-colors">
                           <td className="px-6 py-4 font-bold text-gray-900">{profile.email}</td>
-                          <td className="px-6 py-4 text-gray-700">{profile.full_name || '-'}</td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-gray-700 whitespace-nowrap">
+                            <p className="font-bold">{profile.full_name || '-'}</p>
+                            {profile.gender && <p className="text-xs text-gray-500">Gender: {profile.gender}</p>}
+                            {profile.birth_date && <p className="text-xs text-gray-500">TTL: {new Date(profile.birth_date).toLocaleDateString('id-ID')}</p>}
+                          </td>
+                          <td className="px-6 py-4 text-gray-700 min-w-[250px] max-w-[350px] whitespace-normal">
+                            {profile.phone_number && <p className="text-xs mb-1"><span className="font-bold text-gray-900">HP:</span> {profile.phone_number}</p>}
+                            {profile.address && <p className="text-xs mb-1 text-gray-600 line-clamp-2" title={profile.address}><span className="font-bold text-gray-900">Alamat:</span> {profile.address}</p>}
+                            {profile.latitude !== undefined && profile.latitude !== 0 && (
+                              <p className="text-[10px] text-gray-400 mb-1">Maps: {profile.latitude}, {profile.longitude}</p>
+                            )}
+                            {profile.bio && <p className="text-xs italic text-gray-500 mt-1 line-clamp-2" title={profile.bio}>"{profile.bio}"</p>}
+                            {!profile.phone_number && !profile.address && !profile.bio && <span className="text-gray-400 text-xs italic">Belum melengkapi profil</span>}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
                             {profile.role === 'admin' ? (
                               <span className="bg-red-100 text-red-700 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Admin</span>
                             ) : (
                               <span className="bg-yellow-100 text-yellow-800 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Member</span>
                             )}
                           </td>
-                          <td className="px-6 py-4 text-gray-500">
+                          <td className="px-6 py-4 text-gray-500 whitespace-nowrap">
                             {new Date(profile.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
                           </td>
                         </tr>
@@ -401,13 +510,36 @@ const ProfilePage = () => {
               </div>
             )}
             <div className="text-center md:text-left flex-1">
-              <h1 className="text-3xl font-extrabold mb-1">{user.full_name || 'Member'}</h1>
+              <h1 className="text-3xl font-extrabold mb-1">{userProfile?.full_name || user.full_name || 'Member'}</h1>
               <p className="text-blue-200">{user.email}</p>
               
-              <div className="mt-3 flex flex-wrap gap-2 justify-center md:justify-start">
+              <div className="mt-3 flex flex-wrap gap-2 justify-center md:justify-start items-center">
                 <span className="bg-yellow-400 text-yellow-900 text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider shadow-sm">
                   MEMBER
                 </span>
+                <button 
+                  onClick={handleOpenEditProfile}
+                  className="px-3 py-1 bg-white/20 hover:bg-white/30 text-white text-xs font-bold rounded-lg transition-colors border border-white/30"
+                >
+                  Edit Profil
+                </button>
+              </div>
+              
+              {userProfile?.bio && (
+                <p className="mt-4 text-sm text-blue-100 max-w-lg italic">"{userProfile.bio}"</p>
+              )}
+              
+              <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-blue-100">
+                {userProfile?.phone_number && (
+                  <div className="flex items-center gap-2">
+                    <span className="opacity-70">📱</span> {userProfile.phone_number}
+                  </div>
+                )}
+                {userProfile?.address && (
+                  <div className="flex items-center gap-2">
+                    <span className="opacity-70">📍</span> {userProfile.address}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -593,6 +725,119 @@ const ProfilePage = () => {
                 Tutup
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Edit Profile Modal */}
+      {isEditProfileModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden my-8 transform transition-all">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
+              <h2 className="text-lg font-extrabold text-gray-900 flex items-center gap-2">
+                Edit Profil
+              </h2>
+              <button onClick={() => setIsEditProfileModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSaveProfile} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">Nama Lengkap</label>
+                <input 
+                  type="text" 
+                  value={editProfileForm.full_name} 
+                  onChange={e => setEditProfileForm({...editProfileForm, full_name: e.target.value})}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                  placeholder="Nama Lengkap"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">Nomor HP</label>
+                <input 
+                  type="text" 
+                  value={editProfileForm.phone_number} 
+                  onChange={e => setEditProfileForm({...editProfileForm, phone_number: e.target.value})}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                  placeholder="08123456789"
+                />
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-1">Jenis Kelamin</label>
+                  <select 
+                    value={editProfileForm.gender} 
+                    onChange={e => setEditProfileForm({...editProfileForm, gender: e.target.value})}
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                  >
+                    <option value="">Pilih</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-1">Tanggal Lahir</label>
+                  <input 
+                    type="date" 
+                    value={editProfileForm.birth_date} 
+                    onChange={e => setEditProfileForm({...editProfileForm, birth_date: e.target.value})}
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">Alamat (Otomatis)</label>
+                <div className="flex gap-2">
+                  <textarea 
+                    value={editProfileForm.address} 
+                    onChange={e => setEditProfileForm({...editProfileForm, address: e.target.value})}
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm h-20"
+                    placeholder="Alamat lengkap"
+                  />
+                  <button 
+                    type="button" 
+                    onClick={getLocation} 
+                    disabled={isLocating}
+                    className="px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200 rounded-lg text-xs font-bold transition-colors whitespace-nowrap self-start"
+                  >
+                    {isLocating ? 'Mencari...' : '📍 Deteksi Lokasi'}
+                  </button>
+                </div>
+                {editProfileForm.latitude !== 0 && (
+                  <p className="text-xs text-gray-400 mt-1">Koordinat: {editProfileForm.latitude}, {editProfileForm.longitude}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">Bio</label>
+                <textarea 
+                  value={editProfileForm.bio} 
+                  onChange={e => setEditProfileForm({...editProfileForm, bio: e.target.value})}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm h-16"
+                  placeholder="Tulis sedikit tentang diri Anda..."
+                />
+              </div>
+
+              <div className="pt-4 flex justify-end gap-2 border-t border-gray-100">
+                <button 
+                  type="button"
+                  onClick={() => setIsEditProfileModalOpen(false)} 
+                  className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-lg transition-colors text-sm"
+                >
+                  Batal
+                </button>
+                <button 
+                  type="submit"
+                  disabled={isSavingProfile}
+                  className="px-6 py-2 bg-primary hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition-all text-sm disabled:opacity-50"
+                >
+                  {isSavingProfile ? 'Menyimpan...' : 'Simpan Profil'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
