@@ -7,7 +7,7 @@ export interface Category {
 }
 
 export interface Link {
-  id: number;
+  id: string | number;
   title: string;
   url?: string;
   urls?: string[];
@@ -133,7 +133,7 @@ export const storage = {
       }
     }
   },
-  updateLink: async (id: number, data: Omit<Link, 'id' | 'created_at'>): Promise<void> => {
+  updateLink: async (id: string | number, data: Omit<Link, 'id' | 'created_at'>): Promise<void> => {
     const { url, urls, ...linkData } = data;
     
     // Update link
@@ -160,7 +160,7 @@ export const storage = {
       await supabase.from('link_secrets').upsert(secretData, { onConflict: 'link_id' });
     }
   },
-  deleteLink: async (id: number): Promise<void> => {
+  deleteLink: async (id: string | number): Promise<void> => {
     // RLS or cascade should handle link_secrets. We try deleting secrets first just in case there's no cascade.
     await supabase.from('link_secrets').delete().eq('link_id', id);
     const { error } = await supabase.from('links').delete().eq('id', id);
