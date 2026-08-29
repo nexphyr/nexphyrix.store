@@ -70,10 +70,26 @@ export const storage = {
       return (data || []).map(link => {
         // Handle case where link_secrets is somehow an object instead of array
         const secrets = Array.isArray(link.link_secrets) ? link.link_secrets : (link.link_secrets ? [link.link_secrets] : []);
+        
+        let parsedUrls: string[] = [];
+        secrets.forEach((s: any) => {
+          if (!s.url) return;
+          try {
+            const parsed = JSON.parse(s.url);
+            if (Array.isArray(parsed)) {
+              parsedUrls.push(...parsed);
+            } else {
+              parsedUrls.push(s.url);
+            }
+          } catch {
+            parsedUrls.push(s.url);
+          }
+        });
+
         return {
           ...link,
-          url: secrets[0]?.url || '',
-          urls: secrets.map((s: any) => s.url)
+          url: parsedUrls[0] || '',
+          urls: parsedUrls
         };
       });
     } else {
@@ -108,7 +124,8 @@ export const storage = {
     // Insert secrets
     const urlsToInsert = urls && urls.length > 0 ? urls : (url ? [url] : []);
     if (urlsToInsert.length > 0) {
-      const secretData = urlsToInsert.map(u => ({ link_id: insertedLink.id, url: u }));
+      // Store all URLs as a JSON string in a single secret record to avoid unique constraint violations
+      const secretData = [{ link_id: insertedLink.id, url: JSON.stringify(urlsToInsert) }];
       const { error: secretError } = await supabase.from('link_secrets').insert(secretData);
       if (secretError) {
         console.error('Error adding secrets:', secretError);
@@ -132,7 +149,8 @@ export const storage = {
     
     const urlsToInsert = urls && urls.length > 0 ? urls : (url ? [url] : []);
     if (urlsToInsert.length > 0) {
-      const secretData = urlsToInsert.map(u => ({ link_id: id, url: u }));
+      // Store all URLs as a JSON string in a single secret record to avoid unique constraint violations
+      const secretData = [{ link_id: id, url: JSON.stringify(urlsToInsert) }];
       const { error: secretError } = await supabase.from('link_secrets').insert(secretData);
       if (secretError) {
         console.error('Error updating secrets:', secretError);
