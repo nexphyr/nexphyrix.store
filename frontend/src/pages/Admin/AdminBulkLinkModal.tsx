@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import { storage } from '../../services/storage';
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
   slug: string;
 }
@@ -18,7 +18,7 @@ const AdminBulkLinkModal = ({ isOpen, onClose, onSaved }: Props) => {
   const [titlesText, setTitlesText] = useState('');
   const [description, setDescription] = useState('SUB INDO PS4');
   const [price, setPrice] = useState('Rp 10.000');
-  const [categoryId, setCategoryId] = useState<number | ''>('');
+  const [categoryId, setCategoryId] = useState<string>('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -93,7 +93,7 @@ const AdminBulkLinkModal = ({ isOpen, onClose, onSaved }: Props) => {
           title,
           description,
           price,
-          category_id: Number(categoryId),
+          category_id: categoryId,
           urls: []
         };
         
@@ -154,7 +154,7 @@ const AdminBulkLinkModal = ({ isOpen, onClose, onSaved }: Props) => {
                   required 
                   className="input" 
                   value={categoryId} 
-                  onChange={e => setCategoryId(Number(e.target.value))}
+                  onChange={e => setCategoryId(e.target.value)}
                   disabled={loading}
                 >
                   <option value="" disabled>Pilih Kategori</option>

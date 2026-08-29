@@ -10,7 +10,7 @@ import AuthMenu from '../../components/AuthMenu';
 import { useCart } from '../../contexts/CartContext';
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
   slug: string;
 }

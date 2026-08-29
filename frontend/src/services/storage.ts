@@ -1,7 +1,7 @@
 import { supabase } from '../lib/supabase';
 
 export interface Category {
-  id: number;
+  id: string;
   name: string;
   slug: string;
 }
@@ -14,7 +14,7 @@ export interface Link {
   status?: string;
   description: string;
   price?: string;
-  category_id: number;
+  category_id: string;
   created_at: string;
 }
 
@@ -33,12 +33,12 @@ export const storage = {
     const { error } = await supabase.from('categories').insert([{ name, slug }]);
     if (error) console.error('Error adding category:', error);
   },
-  updateCategory: async (id: number, name: string): Promise<void> => {
+  updateCategory: async (id: string, name: string): Promise<void> => {
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const { error } = await supabase.from('categories').update({ name, slug }).eq('id', id);
     if (error) console.error('Error updating category:', error);
   },
-  deleteCategory: async (id: number): Promise<boolean> => {
+  deleteCategory: async (id: string): Promise<boolean> => {
     const { error } = await supabase.from('categories').delete().eq('id', id);
     if (error) {
       console.error('Error deleting category:', error);

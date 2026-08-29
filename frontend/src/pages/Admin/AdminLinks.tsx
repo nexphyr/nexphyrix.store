@@ -12,8 +12,8 @@ interface Link {
   status?: string;
   description: string;
   price?: string;
-  category: { id: number; name: string; slug: string };
-  category_id: number;
+  category: { id: string; name: string; slug: string };
+  category_id: string;
 }
 
 const AdminLinks = () => {
@@ -42,7 +42,7 @@ const AdminLinks = () => {
         const cat = allCats.find(c => String(c.id) === String(link.category_id));
         return {
           ...link,
-          category: { id: cat?.id || 0, name: cat?.name || 'Unknown', slug: cat?.slug || '' }
+          category: { id: cat?.id || '', name: cat?.name || 'Unknown', slug: cat?.slug || '' }
         };
       });
       

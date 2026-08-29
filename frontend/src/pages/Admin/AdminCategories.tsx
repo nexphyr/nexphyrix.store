@@ -3,7 +3,7 @@ import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { storage } from '../../services/storage';
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
   slug: string;
 }
@@ -14,7 +14,7 @@ const AdminCategories = () => {
   const [toast, setToast] = useState('');
   
   // Quick inline add/edit state for simplicity
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   
   const [isAdding, setIsAdding] = useState(false);
@@ -45,7 +45,7 @@ const AdminCategories = () => {
     fetchCategories();
   };
 
-  const handleUpdate = async (id: number) => {
+  const handleUpdate = async (id: string) => {
     if (!editName.trim()) return;
     await storage.updateCategory(id, editName);
     setEditingId(null);
@@ -53,10 +53,10 @@ const AdminCategories = () => {
     fetchCategories();
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('Apakah Anda yakin ingin menghapus kategori ini? (Pastikan tidak ada link di dalamnya)')) {
       const links = await storage.getLinks(true);
-      if (links.some(l => l.category_id === id)) {
+      if (links.some(l => String(l.category_id) === String(id))) {
         showToast('Gagal menghapus kategori: Masih ada link di dalamnya.');
         return;
       }
