@@ -19,6 +19,14 @@ interface Order {
   checkout_method: string;
   is_member_order: boolean;
   created_at: string;
+  order_items?: OrderItem[];
+}
+
+interface OrderItem {
+  id: string;
+  product_title: string;
+  unit_price: number;
+  quantity: number;
 }
 
 interface Profile {
@@ -52,7 +60,7 @@ const ProfilePage = () => {
     try {
       const { data, error } = await supabase
         .from('orders')
-        .select('*')
+        .select('*, order_items(*)')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
@@ -69,7 +77,7 @@ const ProfilePage = () => {
       // Fetch all orders
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
-        .select('*')
+        .select('*, order_items(*)')
         .order('created_at', { ascending: false });
       if (!ordersError && ordersData) setOrders(ordersData);
 
@@ -261,7 +269,13 @@ const ProfilePage = () => {
                           </td>
                           <td className="px-6 py-4">
                             <p className="font-black text-gray-900">{formatRupiah(order.total_amount)}</p>
-                            <p className="text-xs text-gray-500">{order.total_items} item</p>
+                            <div className="text-xs text-gray-500 mt-1 max-w-[200px]">
+                              {order.order_items?.map((item, idx) => (
+                                <div key={idx} className="truncate" title={item.product_title}>
+                                  {item.quantity}x {item.product_title}
+                                </div>
+                              ))}
+                            </div>
                           </td>
                           <td className="px-6 py-4">
                             <span className="capitalize text-gray-700 font-medium px-2 py-1 bg-gray-100 rounded border border-gray-200 text-xs">{order.checkout_method}</span>
@@ -441,14 +455,30 @@ const ProfilePage = () => {
                     </div>
                     
                     <div className="bg-gray-50 rounded-xl p-4 text-sm flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center border border-gray-100">
-                      <div>
-                        <p className="text-gray-500 mb-1">Subtotal: <span className="text-gray-900 font-medium">{formatRupiah(order.subtotal_amount)}</span></p>
-                        {order.discount_amount > 0 && (
-                          <p className="text-green-600 font-medium">Diskon Member: -{formatRupiah(order.discount_amount)}</p>
-                        )}
+                      <div className="w-full sm:w-auto flex-1">
+                        <div className="mb-3 space-y-1">
+                          {order.order_items?.map((item) => (
+                            <div key={item.id} className="flex justify-between items-center text-gray-700 text-xs sm:text-sm">
+                              <span className="truncate pr-4 flex-1">{item.quantity}x {item.product_title}</span>
+                              <span className="font-medium whitespace-nowrap">{formatRupiah(item.unit_price * item.quantity)}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="pt-2 border-t border-gray-200">
+                          <p className="text-gray-500 mb-1 flex justify-between">
+                            <span>Subtotal:</span>
+                            <span className="text-gray-900 font-medium">{formatRupiah(order.subtotal_amount)}</span>
+                          </p>
+                          {order.discount_amount > 0 && (
+                            <p className="text-green-600 font-medium flex justify-between">
+                              <span>Diskon Member:</span>
+                              <span>-{formatRupiah(order.discount_amount)}</span>
+                            </p>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-400">Checkout via</span>
+                      <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start pt-3 sm:pt-0 border-t sm:border-0 border-gray-200 sm:border-l sm:pl-4">
+                        <span className="text-gray-400 whitespace-nowrap">Checkout via</span>
                         <span className="font-bold text-gray-700 capitalize px-3 py-1 bg-white rounded-md shadow-sm border border-gray-200">
                           {order.checkout_method}
                         </span>
