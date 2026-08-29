@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { storage } from '../../services/storage';
 
@@ -23,6 +23,12 @@ const AdminBulkLinkModal = ({ isOpen, onClose, onSaved }: Props) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
+  const isCancelled = useRef(false);
+
+  const handleCancel = () => {
+    isCancelled.current = true;
+    onClose();
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -61,6 +67,8 @@ const AdminBulkLinkModal = ({ isOpen, onClose, onSaved }: Props) => {
       return;
     }
 
+    isCancelled.current = false;
+
     const lines = titlesText.split('\n');
     const parsedTitles = lines
       .map(line => line.trim().replace(/^\d+[\.\)]\s*/, '')) // Remove leading "1. " or "1) "
@@ -77,6 +85,10 @@ const AdminBulkLinkModal = ({ isOpen, onClose, onSaved }: Props) => {
     try {
       let successCount = 0;
       for (const title of parsedTitles) {
+        if (isCancelled.current) {
+          break;
+        }
+        
         const payload = {
           title,
           description,
@@ -89,8 +101,11 @@ const AdminBulkLinkModal = ({ isOpen, onClose, onSaved }: Props) => {
         successCount++;
         setProgress({ current: successCount, total: parsedTitles.length });
       }
-      onSaved();
-      onClose();
+      
+      if (!isCancelled.current) {
+        onSaved();
+        onClose();
+      }
     } catch (err: any) {
       setError(err.message || 'Gagal menyimpan data. Proses terhenti.');
     } finally {
@@ -104,7 +119,7 @@ const AdminBulkLinkModal = ({ isOpen, onClose, onSaved }: Props) => {
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-lg font-bold">Tambah Judul Massal (Bulk Add)</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600" disabled={loading}>
+          <button type="button" onClick={handleCancel} className="text-gray-400 hover:text-gray-600">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -180,7 +195,7 @@ const AdminBulkLinkModal = ({ isOpen, onClose, onSaved }: Props) => {
               {progress ? `Memproses: ${progress.current} / ${progress.total}` : ''}
             </div>
             <div className="flex gap-2">
-              <button type="button" onClick={onClose} className="btn btn-secondary" disabled={loading}>Batal</button>
+              <button type="button" onClick={handleCancel} className="btn btn-secondary">Batal</button>
               <button type="submit" disabled={loading || !titlesText.trim()} className="btn btn-primary">
                 {loading ? 'Menyimpan...' : 'SIMPAN SEMUA'}
               </button>
