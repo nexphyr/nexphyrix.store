@@ -69,7 +69,7 @@ const PromoCarousel = () => {
     );
   }
 
-  // Banner 2: Request Game
+  // Banner 2: Akses Instan
   banners.push(
     <div className="w-full h-full relative overflow-hidden bg-gradient-to-r from-teal-900 to-emerald-950 group">
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-500 opacity-20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700"></div>
@@ -77,22 +77,22 @@ const PromoCarousel = () => {
         <div className="flex-1 text-center md:text-left text-white flex flex-col justify-center h-full">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-emerald-100 text-xs font-black uppercase tracking-wider rounded-full mb-3 md:mb-5 backdrop-blur-sm border border-emerald-400/30 w-fit mx-auto md:mx-0">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Layanan Khusus
+            Akses Instan 24/7
           </div>
           <h2 className="text-2xl md:text-4xl font-black mb-2 md:mb-3 leading-tight">
-            Game Favoritmu <br className="hidden md:block" /> Belum Ada?
+            Checkout Cepat, <br className="hidden md:block" /> Mainkan Langsung!
           </h2>
           <p className="text-emerald-50 text-xs md:text-base font-medium max-w-xl leading-relaxed hidden sm:block">
-            Tenang, Anda bisa request game Sub Indo impian Anda. Hubungi tim kami via Telegram sekarang juga.
+            Semua link download otomatis tersedia sesaat setelah pesanan Anda selesai. Tanpa perlu menunggu balasan admin, kapan pun Anda mau main.
           </p>
         </div>
         <div className="flex-shrink-0 w-full md:w-auto flex flex-col items-center">
-          <a 
-            href="https://t.me/agrivaabel" target="_blank" rel="noopener noreferrer"
+          <button 
+            onClick={() => window.scrollTo({ top: 600, behavior: 'smooth' })}
             className="w-full md:w-auto flex items-center justify-center gap-3 px-6 py-3 md:px-8 md:py-4 bg-white text-emerald-900 font-black text-sm md:text-lg rounded-xl md:rounded-2xl hover:bg-emerald-50 hover:-translate-y-1 transition-all shadow-xl active:scale-95"
           >
-            Hubungi via Telegram
-          </a>
+            Lihat Koleksi Game
+          </button>
         </div>
       </div>
     </div>
