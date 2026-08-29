@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { storage } from '../../services/storage';
-import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home } from 'lucide-react';
+import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { formatRupiah } from '../../lib/checkout';
 import profileImage from '../../assets/profile.png';
@@ -716,6 +716,15 @@ const ProfilePage = () => {
                               <div key={i} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between bg-white p-3 border border-gray-100 rounded-lg shadow-sm">
                                 <span className="text-sm font-medium text-gray-600 break-all line-clamp-1">{url}</span>
                                 <div className="flex gap-2 w-full sm:w-auto">
+                                  <button 
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(url);
+                                      alert('Link disalin ke clipboard!');
+                                    }}
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg transition-colors whitespace-nowrap"
+                                  >
+                                    <Copy className="w-3 h-3" /> Salin
+                                  </button>
                                   <a href={url} target="_blank" rel="noreferrer" className="flex-1 sm:flex-none text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap">
                                     Buka Link
                                   </a>
