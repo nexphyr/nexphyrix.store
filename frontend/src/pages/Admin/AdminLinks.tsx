@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Copy, Edit2, Trash2 } from 'lucide-react';
+import { Search, Plus, Copy, Edit2, Trash2, ListPlus } from 'lucide-react';
 import { storage } from '../../services/storage';
 import AdminLinkModal from './AdminLinkModal';
+import AdminBulkLinkModal from './AdminBulkLinkModal';
 
 interface Link {
   id: number;
@@ -21,6 +22,7 @@ const AdminLinks = () => {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<Link | undefined>(undefined);
   const [fetchError, setFetchError] = useState<string>('');
 
@@ -88,13 +90,22 @@ const AdminLinks = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Semua Link</h1>
-        <button 
-          onClick={() => { setEditingLink(undefined); setIsModalOpen(true); }}
-          className="btn btn-primary"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Tambah Link
-        </button>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => setIsBulkModalOpen(true)}
+            className="btn btn-secondary flex items-center"
+          >
+            <ListPlus className="w-4 h-4 mr-2" />
+            Tambah Massal
+          </button>
+          <button 
+            onClick={() => { setEditingLink(undefined); setIsModalOpen(true); }}
+            className="btn btn-primary"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Tambah Link
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow mb-6 p-4">
@@ -191,6 +202,17 @@ const AdminLinks = () => {
             showToast('Data berhasil disimpan.');
           }}
           link={editingLink} 
+        />
+      )}
+
+      {isBulkModalOpen && (
+        <AdminBulkLinkModal 
+          isOpen={isBulkModalOpen} 
+          onClose={() => setIsBulkModalOpen(false)} 
+          onSaved={() => {
+            fetchLinks();
+            showToast('Semua judul berhasil disimpan.');
+          }}
         />
       )}
     </div>
