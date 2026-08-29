@@ -269,6 +269,9 @@ const ProfilePage = () => {
             <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <img src={logoImage} alt="Nexphyrix Logo" className="h-12 md:h-16 object-contain" />
             </Link>
+            <Link to="/" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-bold transition-colors border border-white/20 text-sm backdrop-blur-sm shadow-sm">
+              &larr; Kembali
+            </Link>
           </div>
 
           <div className="max-w-5xl mx-auto relative z-10 pt-8">
@@ -502,6 +505,9 @@ const ProfilePage = () => {
         <div className="absolute top-0 left-0 right-0 p-4 md:p-6 z-50 flex items-center justify-between w-full">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <img src={logoImage} alt="Nexphyrix Logo" className="h-12 md:h-16 object-contain" />
+          </Link>
+          <Link to="/" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-bold transition-colors border border-white/20 text-sm backdrop-blur-sm shadow-sm">
+            &larr; Kembali
           </Link>
         </div>
         
