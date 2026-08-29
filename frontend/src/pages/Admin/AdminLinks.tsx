@@ -5,7 +5,7 @@ import AdminLinkModal from './AdminLinkModal';
 import AdminBulkLinkModal from './AdminBulkLinkModal';
 
 interface Link {
-  id: number;
+  id: string;
   title: string;
   url?: string;
   urls?: string[];
@@ -25,7 +25,7 @@ const AdminLinks = () => {
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<Link | undefined>(undefined);
   const [fetchError, setFetchError] = useState<string>('');
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const fetchLinks = async () => {
     setLoading(true);
@@ -80,11 +80,15 @@ const AdminLinks = () => {
     setTimeout(() => setToast(''), 3000);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('Apakah Anda yakin ingin menghapus link ini?')) {
-      await storage.deleteLink(id);
-      showToast('Link berhasil dihapus.');
-      fetchLinks();
+      try {
+        await storage.deleteLink(id);
+        showToast('Link berhasil dihapus.');
+        fetchLinks();
+      } catch (err: any) {
+        showToast(`Gagal menghapus: ${err.message}`);
+      }
     }
   };
 
@@ -96,7 +100,7 @@ const AdminLinks = () => {
     }
   };
 
-  const handleSelectOne = (id: number, checked: boolean) => {
+  const handleSelectOne = (id: string, checked: boolean) => {
     const newSet = new Set(selectedIds);
     if (checked) newSet.add(id);
     else newSet.delete(id);
@@ -106,10 +110,14 @@ const AdminLinks = () => {
   const handleBulkDelete = async () => {
     if (selectedIds.size === 0) return;
     if (window.confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.size} link terpilih?`)) {
-      await storage.deleteLinks(Array.from(selectedIds));
-      showToast(`${selectedIds.size} link berhasil dihapus.`);
-      setSelectedIds(new Set());
-      fetchLinks();
+      try {
+        await storage.deleteLinks(Array.from(selectedIds));
+        showToast(`${selectedIds.size} link berhasil dihapus.`);
+        setSelectedIds(new Set());
+        fetchLinks();
+      } catch (err: any) {
+        showToast(`Gagal menghapus massal: ${err.message}`);
+      }
     }
   };
 
