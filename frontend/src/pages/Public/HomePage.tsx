@@ -8,6 +8,7 @@ import CheckoutModal from '../../components/Cart/CheckoutModal';
 import ToastContainer from '../../components/Cart/ToastContainer';
 import AuthMenu from '../../components/AuthMenu';
 import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface Category {
   id: string;
@@ -35,6 +36,7 @@ const HomePage = () => {
   const [activeCategory, setActiveCategory] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
+  const { user, signInWithGoogle } = useAuth();
 
   useEffect(() => {
     fetchCategories();
@@ -161,6 +163,42 @@ const HomePage = () => {
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-4 py-12">
+
+        {/* Promo Banner */}
+        {!user && (
+          <div className="mb-12 relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-900 via-[#00439C] to-indigo-900 shadow-[0_10px_40px_-10px_rgba(0,67,156,0.5)] border border-blue-400/20 group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400 opacity-20 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 group-hover:scale-110 transition-transform duration-700"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-yellow-400 opacity-10 rounded-full blur-2xl transform -translate-x-1/2 translate-y-1/2 group-hover:scale-110 transition-transform duration-700"></div>
+            
+            <div className="relative z-10 px-6 py-10 md:px-12 md:py-12 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="flex-1 text-center md:text-left text-white">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-950 text-xs font-black uppercase tracking-wider rounded-full mb-5 shadow-lg shadow-yellow-500/20">
+                  <span className="w-2 h-2 rounded-full bg-yellow-900 animate-pulse"></span>
+                  Keuntungan Eksklusif Member
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black mb-3 leading-tight">
+                  Beli 10 Game,<br className="hidden md:block" /> 
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">Gratis 1 Game!</span> 🎉
+                </h2>
+                <p className="text-blue-100 text-sm md:text-base font-medium max-w-xl leading-relaxed">
+                  Nikmati potongan otomatis sebesar <strong className="text-yellow-400 text-lg">Rp 10.000</strong> untuk setiap kelipatan 11 item di keranjang belanja Anda. 
+                </p>
+              </div>
+              
+              <div className="flex-shrink-0 w-full md:w-auto">
+                <button 
+                  onClick={signInWithGoogle}
+                  className="w-full md:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-950 font-black text-lg rounded-2xl hover:from-yellow-300 hover:to-yellow-400 hover:-translate-y-1 transition-all shadow-[0_0_30px_rgba(250,204,21,0.3)] active:scale-95"
+                >
+                  Daftar Member Sekarang
+                </button>
+                <p className="text-center text-blue-200/70 text-xs font-medium mt-3">
+                  Pendaftaran gratis 100% via Google
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Categories */}
         <div className="flex flex-wrap gap-3 mb-12 justify-center">
