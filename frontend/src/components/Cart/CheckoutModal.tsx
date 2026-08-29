@@ -132,7 +132,7 @@ const CheckoutModal = () => {
 
               <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-6">
                 <p className="text-xs text-blue-800 font-medium leading-relaxed">
-                  Silakan scan atau unduh QRIS di atas untuk melakukan pembayaran melalui M-Banking atau E-Wallet Anda. 
+                  Silakan lakukan pembayaran melalui QRIS di atas sesuai dengan total pesanan Anda. 
                   <br/><br/>
                   <b className="text-blue-900">PENTING:</b> Simpan (*screenshot*) bukti transfer Anda karena nantinya wajib dikirimkan ke Admin melalui Messenger atau Telegram untuk proses verifikasi!
                 </p>
