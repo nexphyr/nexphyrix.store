@@ -140,7 +140,7 @@ const ProfilePage = () => {
               </Link>
             </div>
             <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
-              <img src="./profile.png" alt="Super Admin" className="w-24 h-24 rounded-full border-4 border-white/20 shadow-xl bg-white" />
+              <img src={`${import.meta.env.BASE_URL}profile.png`} alt="Super Admin" className="w-24 h-24 rounded-full border-4 border-white/20 shadow-xl bg-white" />
               <div className="text-center md:text-left flex-1">
                 <h1 className="text-3xl font-extrabold mb-1">Super Admin Dashboard</h1>
                 <p className="text-red-200">{user.email}</p>

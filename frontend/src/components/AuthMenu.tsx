@@ -38,7 +38,7 @@ const AuthMenu = () => {
         className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-sm text-white p-1 pr-3 rounded-full transition-all shadow-sm hover:shadow-md"
       >
         {user.role === 'admin' ? (
-          <img src="./profile.png" alt="Admin" className="w-8 h-8 rounded-full border border-white/40" />
+          <img src={`${import.meta.env.BASE_URL}profile.png`} alt="Admin" className="w-8 h-8 rounded-full border border-white/40" />
         ) : user.avatar_url ? (
           <img src={user.avatar_url} alt={user.full_name || 'User avatar'} className="w-8 h-8 rounded-full border border-white/40" />
         ) : (
