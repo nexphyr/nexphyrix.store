@@ -169,6 +169,14 @@ export const storage = {
       throw new Error(error.message || 'Gagal menghapus link.');
     }
   },
+  deleteLinks: async (ids: number[]): Promise<void> => {
+    await supabase.from('link_secrets').delete().in('link_id', ids);
+    const { error } = await supabase.from('links').delete().in('id', ids);
+    if (error) {
+      console.error('Error deleting links:', error);
+      throw new Error(error.message || 'Gagal menghapus link.');
+    }
+  },
 };
 
 export const sanitizeForSQLi = (input: string): string => {

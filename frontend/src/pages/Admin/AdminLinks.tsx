@@ -25,6 +25,7 @@ const AdminLinks = () => {
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<Link | undefined>(undefined);
   const [fetchError, setFetchError] = useState<string>('');
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
   const fetchLinks = async () => {
     setLoading(true);
@@ -47,6 +48,7 @@ const AdminLinks = () => {
       });
       
       setLinks(formatted);
+      setSelectedIds(new Set());
     } catch (err: any) {
       console.error('Error fetching admin links:', err);
       setFetchError(err.message || String(err));
@@ -86,11 +88,45 @@ const AdminLinks = () => {
     }
   };
 
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(new Set(links.map(l => l.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectOne = (id: number, checked: boolean) => {
+    const newSet = new Set(selectedIds);
+    if (checked) newSet.add(id);
+    else newSet.delete(id);
+    setSelectedIds(newSet);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    if (window.confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.size} link terpilih?`)) {
+      await storage.deleteLinks(Array.from(selectedIds));
+      showToast(`${selectedIds.size} link berhasil dihapus.`);
+      setSelectedIds(new Set());
+      fetchLinks();
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Semua Link</h1>
         <div className="flex gap-2">
+          {selectedIds.size > 0 && (
+            <button 
+              onClick={handleBulkDelete}
+              className="btn bg-red-600 hover:bg-red-700 text-white flex items-center"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Hapus Terpilih ({selectedIds.size})
+            </button>
+          )}
           <button 
             onClick={() => setIsBulkModalOpen(true)}
             className="btn btn-secondary flex items-center"
@@ -128,6 +164,14 @@ const AdminLinks = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50/50">
               <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                  <input 
+                    type="checkbox" 
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    onChange={handleSelectAll}
+                    checked={links.length > 0 && selectedIds.size === links.length}
+                  />
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
@@ -137,9 +181,17 @@ const AdminLinks = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {loading ? (
-                <tr><td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">Loading...</td></tr>
+                <tr><td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">Loading...</td></tr>
               ) : links.map((link) => (
-                <tr key={link.id}>
+                <tr key={link.id} className={selectedIds.has(link.id) ? 'bg-blue-50/50' : ''}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      checked={selectedIds.has(link.id)}
+                      onChange={(e) => handleSelectOne(link.id, e.target.checked)}
+                    />
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{link.title}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium bg-blue-100 text-blue-800">
@@ -177,10 +229,10 @@ const AdminLinks = () => {
                 </tr>
               ))}
               {!loading && !fetchError && links.length === 0 && (
-                <tr><td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">Data tidak ditemukan.</td></tr>
+                <tr><td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">Data tidak ditemukan.</td></tr>
               )}
               {!loading && fetchError && (
-                <tr><td colSpan={5} className="px-6 py-4 text-center text-sm text-red-500 font-bold">Error: {fetchError}</td></tr>
+                <tr><td colSpan={6} className="px-6 py-4 text-center text-sm text-red-500 font-bold">Error: {fetchError}</td></tr>
               )}
             </tbody>
           </table>
