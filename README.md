@@ -1,79 +1,101 @@
-# Link Database Management System (PS4 Sub Indo)
+# 🎮 Nexphyrix Store - PS4 Mod & Game Sub Indo
 
-## Overview
-A modern web application designed to securely manage a database of links (specifically PS4 Sub Indo games). It features a public-facing search interface that hides sensitive URLs, and a secure admin dashboard for complete CRUD operations.
+![Nexphyrix Banner](./frontend/public/banner.png)
 
-## Requirements
-- Windows 10/11
-- Node.js LTS (v18+)
-- PostgreSQL
-- npm
+**Nexphyrix Store** adalah sebuah *platform* e-commerce khusus untuk mendistribusikan *Mod* dan game PS4 (PlayStation 4) dengan *Subtitle Indonesia*. Platform ini dirancang dengan antarmuka yang sangat responsif, modern, dan dilengkapi dengan *Dark Mode* untuk kenyamanan pengguna.
 
-## Install PostgreSQL
-1. Download installer resmi dari [PostgreSQL Official Website](https://www.postgresql.org/download/windows/).
-2. Jalankan installer dan ikuti petunjuknya. 
-3. **Ingat password** yang Anda buat saat instalasi untuk user `postgres`.
-4. Buka **pgAdmin** atau **psql**, lalu buat database baru:
-   ```sql
-   CREATE DATABASE ps4_link_database;
+Sistem ini memastikan transaksi yang aman, penyembunyian *link* rahasia untuk publik, dan dashboard manajemen yang lengkap bagi admin maupun member.
+
+---
+
+## ✨ Fitur Utama
+
+### 🛒 Untuk Pengunjung & Member (Publik)
+- **Katalog Game Modern**: Tampilan *grid* katalog game dengan animasi *glassmorphism* dan pencarian pintar secara *real-time*.
+- **Dark Mode & Light Mode**: Tema situs yang bisa disesuaikan dengan preferensi pengguna hanya dengan satu klik.
+- **Keranjang Belanja (Cart)**: Fitur keranjang dinamis untuk membeli beberapa *mod* sekaligus.
+- **Member Diskon**: Fitur keanggotaan (Member) yang akan otomatis mendapatkan diskon setiap pembelian.
+- **Pembayaran Mudah**: Pilihan *checkout* instan melalui **Messenger** atau **Telegram** langsung ke Admin, dilengkapi dengan *QRIS* otomatis.
+- **Profil Member**: Dashboard privat di mana member dapat melacak status pesanan, total penghematan, mengelola biodata, serta mengakses **Link Download Game** secara otomatis saat pesanan selesai.
+
+### 🛡️ Untuk Super Admin
+- **Manajemen Pesanan**: Setujui atau batalkan pesanan masuk. Saat pesanan disetujui (Selesai), link *download* akan otomatis muncul di akun member pembeli.
+- **Manajemen Database Link**: Tambah, edit, dan kelola katalog game dengan mudah. (Mendukung *Bulk Import* via Paste Teks).
+- **Manajemen Kategori**: Buat dan kelompokkan game berdasarkan kategori.
+- **Tabel Daftar Member**: Pantau seluruh data member yang terdaftar, termasuk informasi alamat dan lokasi.
+
+---
+
+## 🛠️ Teknologi yang Digunakan
+
+Website ini dibangun menggunakan arsitektur modern **Jamstack** (*Serverless*):
+
+*   **Frontend**: React.js (v18), Vite, TypeScript
+*   **Styling**: Tailwind CSS, Lucide Icons
+*   **Routing**: React Router DOM (HashRouter untuk GitHub Pages)
+*   **Backend & Database**: **Supabase** (PostgreSQL, GoTrue Auth, PostgREST API)
+*   **Keamanan**: Row Level Security (RLS) di lapisan Database (Anti-SQLi & Data Breach)
+*   **Hosting**: GitHub Pages (Frontend) & Supabase Cloud (Backend)
+
+---
+
+## 🚀 Cara Akses & Penggunaan (Live Website)
+
+Website ini sudah di-deploy secara publik dan dapat diakses langsung tanpa perlu instalasi lokal.
+
+1. **Buka Halaman Utama**: Kunjungi URL Live GitHub Pages Anda (misal: `https://nexphyr.github.io/nexphyrix.store`).
+2. **Sebagai Pengunjung**: Anda bisa mencari game, memfilter kategori, dan memasukkan game ke keranjang.
+3. **Mendaftar Member**: Klik "Login" di pojok kanan atas, lalu gunakan akun Google Anda untuk mendaftar sebagai Member secara gratis.
+4. **Checkout**: Saat checkout, Anda akan diberikan panduan QRIS dan akan dialihkan ke Telegram/Messenger untuk konfirmasi ke admin.
+5. **Akses Admin**: Login menggunakan email Super Admin (misal: `nexphyrix@atomicmail.io`). Sistem akan otomatis mengenali Anda sebagai admin dan menampilkan menu rahasia **"Admin Panel"** di ujung kanan layar.
+
+---
+
+## 💻 Instalasi Lokal (Untuk Developer)
+
+Jika Anda ingin menjalankan atau memodifikasi kode sumber (*source code*) ini di komputer lokal Anda:
+
+### Prasyarat
+- **Node.js** (v18 ke atas) terinstall di komputer.
+- Akun dan Project di **Supabase**.
+
+### Langkah-langkah
+1. **Kloning Repositori**
+   ```bash
+   git clone https://github.com/nexphyr/nexphyrix.store.git
+   cd nexphyrix.store/frontend
    ```
 
-## Installation & Setup
+2. **Instalasi Dependensi**
+   ```bash
+   npm install
+   ```
 
-1. **Configure Environment**
-   Buka folder `backend/`, copy file `.env.example` menjadi `.env`.
-   Sesuaikan `DATABASE_URL` dengan password PostgreSQL Anda:
+3. **Konfigurasi Environment**
+   Buat file `.env` di dalam folder `frontend/` dan masukkan URL serta Anon Key dari project Supabase Anda:
    ```env
-   DATABASE_URL="postgresql://postgres:PASSWORD_ANDA@localhost:5432/ps4_link_database?schema=public"
+   VITE_SUPABASE_URL="https://xxxxx.supabase.co"
+   VITE_SUPABASE_PUBLISHABLE_KEY="eyJhxxxx..."
    ```
 
-2. **Backend Setup**
-   ```powershell
-   cd backend
-   npm install
-
-   # Generate password admin (Copy the output hash and paste into .env as ADMIN_PASSWORD_HASH)
-   npm run hash-password
-
-   # Push schema to database
-   npx prisma generate
-   npx prisma db push
-
-   # Seed initial categories & admin user
-   npm run db:seed
+4. **Jalankan Mode Development**
+   ```bash
+   npm run dev
    ```
+   Buka `http://localhost:5173` di browser Anda. Setiap perubahan pada kode (*save*) akan otomatis me-refresh halaman (*Hot Reload*).
 
-3. **Frontend Setup**
-   ```powershell
-   cd ../frontend
-   npm install
-   ```
-
-## Running the Application (Development)
-
-Untuk menjalankan aplikasi secara langsung di Windows, Anda bisa kembali ke root folder dan menggunakan:
-
-```powershell
-# Jalankan command ini di root project
-npm run dev
-```
-
-Atau cukup klik dua kali pada file **`start-dev.bat`** untuk membuka terminal frontend dan backend secara bersamaan.
-
-### URLs
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:5000
-- **Health Check**: http://localhost:5000/api/health
-
-## Production Deployment (GitHub Pages)
-
-Karena frontend akan di-deploy ke GitHub Pages (Public) dan Backend di server terpisah (Private/Secure):
-1. Ubah `VITE_API_URL` (atau sesuaikan `baseURL` axios) di `frontend/src/services/api.ts` agar mengarah ke domain backend production Anda.
-2. Build Frontend:
-   ```powershell
-   cd frontend
+5. **Build untuk Produksi**
+   ```bash
    npm run build
    ```
-   Folder `dist/` siap di-deploy ke GitHub Pages.
+   Folder `dist/` akan dihasilkan dan siap untuk di-deploy ke server atau layanan hosting statis manapun (seperti GitHub Pages atau Vercel).
 
-> **PENTING**: Jangan pernah commit file `.env` atau memasukkan secret key (password, database url) ke dalam frontend codebase. File konfigurasi `.env` harus ditambahkan ke server backend Anda secara manual.
+---
+
+## 🔒 Catatan Keamanan
+- Kredensial *database* asli (seperti *Service Role Key* atau *Password Postgres*) **TIDAK PERNAH** diekspos ke frontend.
+- Semua perlindungan baca/tulis data dikontrol dengan ketat oleh *Row Level Security (RLS)* di Supabase, memastikan pengunjung tidak bisa mengakses Link Game rahasia tanpa membelinya.
+- Untuk ketahanan maksimal terhadap serangan **DDoS**, disarankan mengarahkan Domain website Anda melalui **Cloudflare**.
+
+---
+*© 2026 Nexphyrix Store. All rights reserved.*
