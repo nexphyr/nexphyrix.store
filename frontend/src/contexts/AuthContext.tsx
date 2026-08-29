@@ -10,12 +10,20 @@ interface User {
   avatar_url?: string;
 }
 
+interface OnlineUser {
+  id: string;
+  role: string;
+  email: string | null;
+  full_name: string | null;
+}
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (session: Session) => void;
   logout: () => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  onlineUsers: Record<string, OnlineUser[]>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -23,6 +31,8 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [onlineUsers, setOnlineUsers] = useState<Record<string, OnlineUser[]>>({});
+  const [sessionId] = useState(() => 'visitor-' + Math.random().toString(36).substr(2, 9));
 
   const fetchProfile = async (session: Session | null) => {
     if (!session?.user) {
@@ -94,6 +104,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Sync Presence
+  useEffect(() => {
+    // Only subscribe once
+    const channel = supabase.channel('online-users', {
+      config: {
+        presence: {
+          key: user ? user.id : sessionId,
+        },
+      },
+    });
+
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState<OnlineUser>();
+        setOnlineUsers(state);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({
+            id: user ? user.id : sessionId,
+            role: user ? user.role : 'guest',
+            email: user ? user.email : null,
+            full_name: user ? user.full_name : null,
+          });
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, sessionId]);
+
   const login = (session: Session) => {
     fetchProfile(session);
   };
@@ -116,7 +158,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, signInWithGoogle }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, signInWithGoogle, onlineUsers }}>
       {children}
     </AuthContext.Provider>
   );

@@ -37,19 +37,27 @@ const AuthMenu = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-sm text-white p-1 pr-3 rounded-full transition-all shadow-sm hover:shadow-md"
       >
-        {user.avatar_url ? (
+        {user.role === 'admin' ? (
+          <img src="./profile.png" alt="Admin" className="w-8 h-8 rounded-full border border-white/40" />
+        ) : user.avatar_url ? (
           <img src={user.avatar_url} alt={user.full_name || 'User avatar'} className="w-8 h-8 rounded-full border border-white/40" />
         ) : (
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center border border-white/40">
             <User className="w-4 h-4 text-white" />
           </div>
         )}
-        <span className="text-sm font-bold hidden sm:block max-w-[100px] truncate">{user.full_name || user.email?.split('@')[0]}</span>
+        <span className="text-sm font-bold hidden sm:block max-w-[100px] truncate">{user.role === 'admin' ? 'Admin' : (user.full_name || user.email?.split('@')[0])}</span>
         
-        {/* MEMBER Badge */}
-        <span className="bg-yellow-400 text-yellow-900 text-[9px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-wider hidden sm:block">
-          MEMBER
-        </span>
+        {/* Badge */}
+        {user.role === 'admin' ? (
+          <span className="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-wider hidden sm:block">
+            SUPER ADMIN
+          </span>
+        ) : (
+          <span className="bg-yellow-400 text-yellow-900 text-[9px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-wider hidden sm:block">
+            MEMBER
+          </span>
+        )}
       </button>
 
       {isOpen && (
