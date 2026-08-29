@@ -3,8 +3,11 @@ import { supabase } from '../lib/supabase';
 import { Session } from '@supabase/supabase-js';
 
 interface User {
+  id: string;
   email: string;
   role: string;
+  full_name?: string;
+  avatar_url?: string;
 }
 
 interface AuthContextType {
@@ -12,6 +15,7 @@ interface AuthContextType {
   loading: boolean;
   login: (session: Session) => void;
   logout: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -19,6 +23,46 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const fetchProfile = async (session: Session | null) => {
+    if (!session?.user) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching profile:', error);
+        // Fallback to user role if profile not yet created by trigger
+        setUser({ 
+          id: session.user.id,
+          email: session.user.email || '', 
+          role: 'user',
+          full_name: session.user.user_metadata?.full_name,
+          avatar_url: session.user.user_metadata?.avatar_url
+        });
+      } else if (data) {
+        setUser({ 
+          id: session.user.id,
+          email: data.email || session.user.email || '', 
+          role: data.role || 'user',
+          full_name: data.full_name,
+          avatar_url: data.avatar_url
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Check "Remember Me" logic
@@ -39,28 +83,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser({ email: session.user.email || '', role: 'admin' });
-      }
-      setLoading(false);
+      fetchProfile(session);
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser({ email: session.user.email || '', role: 'admin' });
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
+      fetchProfile(session);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   const login = (session: Session) => {
-    if (session.user) {
-      setUser({ email: session.user.email || '', role: 'admin' });
+    fetchProfile(session);
+  };
+
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+      }
+    });
+    if (error) {
+      console.error('Google Login Error:', error.message);
     }
   };
 
@@ -70,7 +116,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, signInWithGoogle }}>
       {children}
     </AuthContext.Provider>
   );

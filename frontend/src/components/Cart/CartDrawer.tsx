@@ -1,9 +1,11 @@
 import { X, Trash2, ShoppingBag } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { formatRupiah } from '../../lib/checkout';
 
 const CartDrawer = () => {
-  const { cart, isCartOpen, setIsCartOpen, removeFromCart, totalAmount, clearCart, setIsCheckoutOpen } = useCart();
+  const { cart, isCartOpen, setIsCartOpen, removeFromCart, totalAmount, memberDiscount, finalTotal, totalItems, clearCart, setIsCheckoutOpen } = useCart();
+  const { user, signInWithGoogle } = useAuth();
 
   if (!isCartOpen) return null;
 
@@ -76,10 +78,50 @@ const CartDrawer = () => {
               </button>
             </div>
             
-            <div className="flex justify-between items-end mb-6">
-              <span className="text-gray-600 font-bold">Total</span>
-              <span className="text-2xl font-black text-gray-900">{formatRupiah(totalAmount)}</span>
+            <div className="flex justify-between items-end mb-2">
+              <span className="text-gray-600 font-bold">Subtotal ({totalItems} Item)</span>
+              <span className="text-lg font-bold text-gray-700">{formatRupiah(totalAmount)}</span>
             </div>
+
+            {user ? (
+              // MEMBER UI
+              <>
+                {memberDiscount > 0 && (
+                  <div className="flex justify-between items-end mb-2 text-green-600">
+                    <span className="font-bold flex items-center gap-1">
+                      Diskon Member Aktif
+                    </span>
+                    <span className="font-bold">- {formatRupiah(memberDiscount)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-end mb-6 pt-2 border-t border-gray-100">
+                  <span className="text-gray-900 font-black text-lg">Total Pembayaran</span>
+                  <span className="text-2xl font-black text-gray-900">{formatRupiah(finalTotal)}</span>
+                </div>
+              </>
+            ) : (
+              // GUEST UI
+              <>
+                <div className="flex justify-between items-end mb-6 pt-2 border-t border-gray-100">
+                  <span className="text-gray-900 font-black text-lg">Total Pembayaran</span>
+                  <span className="text-2xl font-black text-gray-900">{formatRupiah(totalAmount)}</span>
+                </div>
+                
+                {totalItems >= 11 && (
+                  <div className="mb-4 bg-blue-50 border border-blue-100 rounded-xl p-3 flex flex-col items-center text-center gap-2">
+                    <p className="text-sm text-blue-800 font-medium">
+                      Login dengan Google dan hemat <b>{formatRupiah(Math.floor(totalItems / 11) * 10000)}</b> untuk pesanan ini!
+                    </p>
+                    <button 
+                      onClick={signInWithGoogle}
+                      className="text-xs bg-white text-blue-600 font-bold px-4 py-1.5 rounded-full border border-blue-200 shadow-sm hover:shadow transition-shadow"
+                    >
+                      Masuk dengan Google
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
 
             <button
               onClick={() => {

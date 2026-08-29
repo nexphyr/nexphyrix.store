@@ -6,6 +6,7 @@ import FloatingCart from '../../components/Cart/FloatingCart';
 import CartDrawer from '../../components/Cart/CartDrawer';
 import CheckoutModal from '../../components/Cart/CheckoutModal';
 import ToastContainer from '../../components/Cart/ToastContainer';
+import AuthMenu from '../../components/AuthMenu';
 import { useCart } from '../../contexts/CartContext';
 
 interface Category {
@@ -103,7 +104,12 @@ const HomePage = () => {
         {/* Semi-transparent overlay to ensure text is readable if the banner is bright */}
         <div className="absolute inset-0 bg-black/20"></div>
 
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-[clamp(1.5rem,4vw,3rem)] relative z-10 py-[clamp(2rem,6vw,6rem)] px-4 md:py-24">
+        {/* Top Navbar */}
+        <div className="absolute top-0 right-0 p-4 md:p-6 z-50 flex items-center justify-end w-full">
+          <AuthMenu />
+        </div>
+
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-[clamp(1.5rem,4vw,3rem)] relative z-10 py-[clamp(2rem,6vw,6rem)] px-4 md:py-24 pt-20 md:pt-24">
 
           {/* Left Column: Text & Search */}
           <div className="flex-1 text-center md:text-left">

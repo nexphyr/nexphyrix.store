@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { X, CheckCircle2 } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
-import { generateOrderId, generateCheckoutMessage, copyToClipboardFallback } from '../../lib/checkout';
+import { generateCheckoutMessage, copyToClipboardFallback, createOrderInDatabase } from '../../lib/checkout';
 
 const MessengerIcon = () => (
   <svg viewBox="0 0 36 36" fill="url(#messenger-grad)" className="w-8 h-8 md:w-12 md:h-12">
@@ -23,33 +23,45 @@ const TelegramIcon = () => (
 );
 
 const CheckoutModal = () => {
-  const { isCheckoutOpen, setIsCheckoutOpen, cart, totalAmount, addToast } = useCart();
+  const { isCheckoutOpen, setIsCheckoutOpen, cart, addToast, clearCart } = useCart();
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'failed'>('idle');
   const [generatedMessage, setGeneratedMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!isCheckoutOpen) return null;
 
   const handleCheckout = async (platform: 'messenger' | 'telegram') => {
-    const orderId = generateOrderId();
-    const msg = generateCheckoutMessage(cart, totalAmount, orderId);
-    setGeneratedMessage(msg);
-
-    const success = await copyToClipboardFallback(msg);
-    
-    if (success) {
-      setCopyStatus('success');
-      addToast('Detail pesanan berhasil disalin');
+    setIsLoading(true);
+    try {
+      const orderData = await createOrderInDatabase(cart, platform);
       
-      // Delay before opening the app so user reads the feedback
-      setTimeout(() => {
-        const url = platform === 'messenger' ? 'https://m.me/zephyrus.yan' : 'https://t.me/nexphyrix';
-        window.open(url, '_blank');
-        setIsCheckoutOpen(false);
-        setCopyStatus('idle');
-      }, 1500);
-    } else {
-      setCopyStatus('failed');
-      addToast('Gagal menyalin. Silakan copy manual.');
+      const msg = generateCheckoutMessage(cart, orderData, platform);
+      setGeneratedMessage(msg);
+
+      const success = await copyToClipboardFallback(msg);
+      
+      if (success) {
+        setCopyStatus('success');
+        addToast('Detail pesanan berhasil disalin');
+        
+        // Clear cart after successful order creation
+        clearCart();
+        
+        // Delay before opening the app so user reads the feedback
+        setTimeout(() => {
+          const url = platform === 'messenger' ? 'https://m.me/zephyrus.yan' : 'https://t.me/nexphyrix';
+          window.open(url, '_blank');
+          setIsCheckoutOpen(false);
+          setCopyStatus('idle');
+        }, 1500);
+      } else {
+        setCopyStatus('failed');
+        addToast('Gagal menyalin. Silakan copy manual.');
+      }
+    } catch (error: any) {
+      addToast(error.message || 'Terjadi kesalahan saat memproses pesanan.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -96,7 +108,8 @@ const CheckoutModal = () => {
               <div className="flex justify-center gap-4 md:gap-6">
                 <button 
                   onClick={() => handleCheckout('messenger')}
-                  className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 group"
+                  disabled={isLoading}
+                  className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 group disabled:opacity-50 disabled:hover:scale-100"
                 >
                   <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] group-hover:shadow-[0_8px_30px_rgba(0,106,255,0.3)] flex items-center justify-center transition-shadow">
                     <MessengerIcon />
@@ -106,7 +119,8 @@ const CheckoutModal = () => {
 
                 <button 
                   onClick={() => handleCheckout('telegram')}
-                  className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 group"
+                  disabled={isLoading}
+                  className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 group disabled:opacity-50 disabled:hover:scale-100"
                 >
                   <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] group-hover:shadow-[0_8px_30px_rgba(42,171,238,0.3)] flex items-center justify-center transition-shadow">
                     <TelegramIcon />
@@ -114,6 +128,12 @@ const CheckoutModal = () => {
                   <span className="font-bold text-sm md:text-base text-gray-700 group-hover:text-[#2AABEE]">Telegram</span>
                 </button>
               </div>
+              
+              {isLoading && (
+                <div className="mt-6 text-center text-primary font-bold animate-pulse">
+                  Memproses pesanan...
+                </div>
+              )}
             </div>
           </>
         )}

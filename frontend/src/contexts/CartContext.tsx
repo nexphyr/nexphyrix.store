@@ -27,6 +27,8 @@ interface CartContextType {
   toasts: ToastMessage[];
   addToast: (message: string) => void;
   removeToast: (id: string) => void;
+  memberDiscount: number;
+  finalTotal: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -38,7 +40,10 @@ const parsePrice = (priceStr?: string): number => {
   return digits ? parseInt(digits, 10) : 0;
 };
 
+import { useAuth } from './AuthContext';
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuth();
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const stored = localStorage.getItem('nexphyrix_cart');
@@ -93,6 +98,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const totalAmount = cart.reduce((total, item) => total + (item.priceValue * item.quantity), 0);
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
+  // Calculate member discount for UI (Backend still calculates final truth)
+  const isMember = !!user;
+  const discountTier = Math.floor(totalItems / 11);
+  const memberDiscount = isMember ? discountTier * 10000 : 0;
+  const finalTotal = Math.max(totalAmount - memberDiscount, 0);
+
   return (
     <CartContext.Provider
       value={{
@@ -108,7 +119,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setIsCheckoutOpen,
         toasts,
         addToast,
-        removeToast
+        removeToast,
+        memberDiscount,
+        finalTotal
       }}
     >
       {children}
