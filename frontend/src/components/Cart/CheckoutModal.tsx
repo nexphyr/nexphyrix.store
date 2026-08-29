@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, CheckCircle2, QrCode } from 'lucide-react';
+import { X, CheckCircle2, QrCode, Download } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { generateCheckoutMessage, copyToClipboardFallback, createOrderInDatabase, formatRupiah } from '../../lib/checkout';
 import qrisImage from '../../assets/qris.png';
@@ -118,10 +118,26 @@ const CheckoutModal = () => {
                 <p className="text-sm text-gray-500 mb-1">Total yang harus dibayar:</p>
                 <p className="text-2xl font-black text-primary">{formatRupiah(displayTotal || 0)}</p>
               </div>
-              <img src={qrisImage} alt="QRIS Barcode" className="w-full max-w-[200px] mx-auto rounded-lg shadow-sm border border-gray-100 mb-4" />
-              <p className="text-xs text-gray-500 mb-6">
-                Silakan scan QRIS di atas untuk melakukan pembayaran sesuai total pesanan Anda. Simpan bukti transfer untuk dikirim ke admin.
-              </p>
+              
+              <div className="mb-4">
+                <img src={qrisImage} alt="QRIS Barcode" className="w-full max-w-[200px] mx-auto rounded-lg shadow-sm border border-gray-100 mb-3" />
+                <a 
+                  href={qrisImage} 
+                  download="QRIS-Nexphyrix.png"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg transition-colors border border-gray-200"
+                >
+                  <Download className="w-4 h-4" /> Unduh QRIS
+                </a>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-6">
+                <p className="text-xs text-blue-800 font-medium leading-relaxed">
+                  Silakan scan atau unduh QRIS di atas untuk melakukan pembayaran melalui M-Banking atau E-Wallet Anda. 
+                  <br/><br/>
+                  <b className="text-blue-900">PENTING:</b> Simpan (*screenshot*) bukti transfer Anda karena nantinya wajib dikirimkan ke Admin melalui Messenger atau Telegram untuk proses verifikasi!
+                </p>
+              </div>
+
               <button 
                 onClick={() => setCheckoutStep('platform')}
                 className="w-full btn btn-primary py-3 text-sm rounded-xl font-bold shadow-sm"
