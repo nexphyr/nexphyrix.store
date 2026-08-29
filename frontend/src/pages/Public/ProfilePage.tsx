@@ -215,11 +215,16 @@ const ProfilePage = () => {
     if (!user) return;
     setIsSavingProfile(true);
     try {
-      const res = await storage.updateProfile(user.id, editProfileForm);
+      const payload: any = { ...editProfileForm };
+      if (!payload.birth_date) {
+        payload.birth_date = null;
+      }
+
+      const res = await storage.updateProfile(user.id, payload);
       if (res.error) throw res.error;
       
       // Update local state
-      setUserProfile(prev => prev ? { ...prev, ...editProfileForm } : null);
+      setUserProfile(prev => prev ? { ...prev, ...payload } : null);
       setIsEditProfileModalOpen(false);
     } catch (err: any) {
       alert("Gagal menyimpan profil: " + err.message);
