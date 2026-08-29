@@ -98,21 +98,37 @@ const PromoCarousel = () => {
     </div>
   );
 
-  // Banner 3: Kualitas Terjamin
+  // Banner 3: Akses Instan Member
   banners.push(
-    <div className="w-full h-full relative overflow-hidden bg-gradient-to-br from-slate-900 to-black group">
-      <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-700 via-gray-900 to-black"></div>
-      <div className="relative z-10 px-6 py-8 md:px-12 md:py-10 flex flex-col items-center justify-center text-center gap-4 h-full">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-gray-300 text-xs font-black uppercase tracking-wider rounded-full backdrop-blur-sm border border-gray-600">
-          💯 Kualitas Premium
+    <div className="w-full h-full relative overflow-hidden bg-gradient-to-br from-blue-900 to-indigo-950 group">
+      <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-600 via-indigo-900 to-transparent"></div>
+      <div className="absolute top-10 left-10 w-32 h-32 bg-blue-400 opacity-20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+      
+      <div className="relative z-10 px-6 py-8 md:px-12 md:py-10 flex flex-col md:flex-row items-center justify-between gap-6 h-full">
+        <div className="flex-1 text-center md:text-left text-white flex flex-col justify-center h-full">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-blue-200 text-xs font-black uppercase tracking-wider rounded-full backdrop-blur-sm border border-blue-400/30 mb-3 md:mb-5 w-fit mx-auto md:mx-0">
+            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+            Fitur Baru Khusus Member
+          </div>
+          <h2 className="text-2xl md:text-4xl font-black leading-tight text-white mb-2 md:mb-3">
+            Akses Link Game <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">Secara Instan ⚡</span>
+          </h2>
+          <p className="text-blue-100 text-xs md:text-base font-medium max-w-xl leading-relaxed hidden sm:block">
+            Tidak perlu lagi menunggu balasan chat Admin! Cukup login, dan link download game Anda akan otomatis muncul di halaman <b>Profil</b> saat pesanan selesai. Lebih cepat, lebih praktis!
+          </p>
         </div>
-        <h2 className="text-2xl md:text-4xl font-black leading-tight text-white">
-          Terjemahan Bahasa Indonesia <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-300 to-white">Terbaik & Akurat</span>
-        </h2>
-        <p className="text-gray-400 text-xs md:text-base font-medium max-w-2xl leading-relaxed hidden sm:block">
-          Dikerjakan oleh profesional untuk memastikan Anda memahami setiap alur cerita dan fitur game tanpa merusak esensi aslinya.
-        </p>
+        
+        {!user && (
+          <div className="flex-shrink-0 w-full md:w-auto flex flex-col items-center">
+            <button 
+              onClick={signInWithGoogle}
+              className="w-full md:w-auto flex items-center justify-center gap-3 px-6 py-3 md:px-8 md:py-4 bg-white text-blue-900 font-black text-sm md:text-lg rounded-xl md:rounded-2xl hover:bg-blue-50 hover:-translate-y-1 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] active:scale-95"
+            >
+              Login Sekarang
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
