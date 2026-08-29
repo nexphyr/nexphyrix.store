@@ -72,7 +72,7 @@ export const generateCheckoutMessage = (
   
   const methodCapitalized = checkoutMethod.charAt(0).toUpperCase() + checkoutMethod.slice(1);
   message += `Checkout melalui: ${methodCapitalized}\n\n`;
-  message += `Mohon diproses. Terima kasih.`;
+  message += `Berikut saya lampirkan bukti pembayaran untuk pesanan ini. Mohon segera diproses. Terima kasih.`;
   
   return message;
 };

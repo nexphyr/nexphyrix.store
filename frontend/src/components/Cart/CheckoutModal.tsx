@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { X, CheckCircle2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, CheckCircle2, QrCode } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
-import { generateCheckoutMessage, copyToClipboardFallback, createOrderInDatabase } from '../../lib/checkout';
+import { generateCheckoutMessage, copyToClipboardFallback, createOrderInDatabase, formatRupiah } from '../../lib/checkout';
 
 const MessengerIcon = () => (
   <svg viewBox="0 0 36 36" fill="url(#messenger-grad)" className="w-8 h-8 md:w-12 md:h-12">
@@ -23,12 +23,22 @@ const TelegramIcon = () => (
 );
 
 const CheckoutModal = () => {
-  const { isCheckoutOpen, setIsCheckoutOpen, cart, addToast, clearCart } = useCart();
+  const { isCheckoutOpen, setIsCheckoutOpen, cart, addToast, clearCart, finalTotal, totalAmount } = useCart();
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'failed'>('idle');
   const [generatedMessage, setGeneratedMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [checkoutStep, setCheckoutStep] = useState<'payment' | 'platform'>('payment');
+
+  useEffect(() => {
+    if (isCheckoutOpen) {
+      setCheckoutStep('payment');
+      setCopyStatus('idle');
+    }
+  }, [isCheckoutOpen]);
 
   if (!isCheckoutOpen) return null;
+
+  const displayTotal = finalTotal !== undefined ? finalTotal : totalAmount;
 
   const handleCheckout = async (platform: 'messenger' | 'telegram') => {
     setIsLoading(true);
@@ -91,6 +101,34 @@ const CheckoutModal = () => {
               <a href="https://t.me/nexphyrix" target="_blank" rel="noreferrer" className="btn bg-[#2AABEE] text-white flex-1 hover:bg-[#2299D6]">Telegram</a>
             </div>
           </div>
+        ) : checkoutStep === 'payment' ? (
+          <>
+            <div className="flex justify-between items-center p-5 border-b border-gray-100">
+              <h2 className="text-lg font-extrabold text-gray-900 flex items-center gap-2">
+                <QrCode className="w-5 h-5 text-primary" /> Pembayaran QRIS
+              </h2>
+              <button onClick={() => setIsCheckoutOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-4 md:p-6 text-center">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
+                <p className="text-sm text-gray-500 mb-1">Total yang harus dibayar:</p>
+                <p className="text-2xl font-black text-primary">{formatRupiah(displayTotal || 0)}</p>
+              </div>
+              <img src="/qris.png" alt="QRIS Barcode" className="w-full max-w-[200px] mx-auto rounded-lg shadow-sm border border-gray-100 mb-4" />
+              <p className="text-xs text-gray-500 mb-6">
+                Silakan scan QRIS di atas untuk melakukan pembayaran sesuai total pesanan Anda. Simpan bukti transfer untuk dikirim ke admin.
+              </p>
+              <button 
+                onClick={() => setCheckoutStep('platform')}
+                className="w-full btn btn-primary py-3 text-sm rounded-xl font-bold shadow-sm"
+              >
+                Sudah Bayar? Lanjutkan
+              </button>
+            </div>
+          </>
         ) : (
           <>
             <div className="flex justify-between items-center p-5 border-b border-gray-100">
@@ -102,7 +140,7 @@ const CheckoutModal = () => {
             
             <div className="p-4 md:p-6">
               <p className="text-center text-gray-500 text-xs md:text-sm mb-4 md:mb-6">
-                Detail pesanan akan otomatis disalin ke clipboard Anda.
+                Pilih platform chat untuk mengirim bukti pembayaran. Detail pesanan akan otomatis disalin ke clipboard Anda.
               </p>
               
               <div className="flex justify-center gap-4 md:gap-6">
