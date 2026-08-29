@@ -143,19 +143,21 @@ export const storage = {
       throw new Error(linkError.message || 'Gagal mengubah link.');
     }
 
-    // Update secrets: Since multiple URLs are supported, simplest way is delete old and insert new.
-    // If cascade is not enabled or if we just manage it:
-    await supabase.from('link_secrets').delete().eq('link_id', id);
-    
+    // Update secrets
     const urlsToInsert = urls && urls.length > 0 ? urls : (url ? [url] : []);
     if (urlsToInsert.length > 0) {
-      // Store all URLs as a JSON string in a single secret record to avoid unique constraint violations
-      const secretData = [{ link_id: id, url: JSON.stringify(urlsToInsert) }];
-      const { error: secretError } = await supabase.from('link_secrets').insert(secretData);
+      // Use upsert to overwrite existing secret for this link_id, 
+      // preventing duplicate key violation when delete fails (e.g. due to RLS policies)
+      const secretData = { link_id: id, url: JSON.stringify(urlsToInsert) };
+      const { error: secretError } = await supabase.from('link_secrets').upsert(secretData, { onConflict: 'link_id' });
       if (secretError) {
         console.error('Error updating secrets:', secretError);
         throw new Error(secretError.message || 'Gagal memperbarui URL rahasia.');
       }
+    } else {
+      // If cleared, set it to empty array string
+      const secretData = { link_id: id, url: "[]" };
+      await supabase.from('link_secrets').upsert(secretData, { onConflict: 'link_id' });
     }
   },
   deleteLink: async (id: number): Promise<void> => {
