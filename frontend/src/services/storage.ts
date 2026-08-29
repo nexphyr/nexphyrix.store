@@ -177,6 +177,24 @@ export const storage = {
       throw new Error(error.message || 'Gagal menghapus link.');
     }
   },
+
+  // Orders
+  deleteOrder: async (id: string): Promise<void> => {
+    await supabase.from('order_items').delete().eq('order_id', id);
+    const { error } = await supabase.from('orders').delete().eq('id', id);
+    if (error) {
+      console.error('Error deleting order:', error);
+      throw new Error(error.message || 'Gagal menghapus pesanan.');
+    }
+  },
+  deleteOrders: async (ids: string[]): Promise<void> => {
+    await supabase.from('order_items').delete().in('order_id', ids);
+    const { error } = await supabase.from('orders').delete().in('id', ids);
+    if (error) {
+      console.error('Error deleting orders:', error);
+      throw new Error(error.message || 'Gagal menghapus pesanan.');
+    }
+  },
 };
 
 export const sanitizeForSQLi = (input: string): string => {

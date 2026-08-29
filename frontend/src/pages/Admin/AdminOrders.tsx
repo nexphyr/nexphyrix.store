@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Search, Filter, ShoppingBag, Trash2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { ShoppingBag, Search, Filter } from 'lucide-react';
+import { storage } from '../../services/storage';
 import { formatRupiah } from '../../lib/checkout';
 
 interface Order {
@@ -21,6 +22,13 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [toast, setToast] = useState('');
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(''), 3000);
+  };
 
   useEffect(() => {
     fetchOrders();
@@ -62,6 +70,47 @@ const AdminOrders = () => {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
+      try {
+        await storage.deleteOrder(id);
+        showToast('Pesanan berhasil dihapus.');
+        fetchOrders();
+      } catch (err: any) {
+        showToast(`Gagal menghapus: ${err.message}`);
+      }
+    }
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(new Set(filteredOrders.map(o => o.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectOne = (id: string, checked: boolean) => {
+    const newSet = new Set(selectedIds);
+    if (checked) newSet.add(id);
+    else newSet.delete(id);
+    setSelectedIds(newSet);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    if (window.confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.size} pesanan terpilih?`)) {
+      try {
+        await storage.deleteOrders(Array.from(selectedIds));
+        showToast(`${selectedIds.size} pesanan berhasil dihapus.`);
+        setSelectedIds(new Set());
+        fetchOrders();
+      } catch (err: any) {
+        showToast(`Gagal menghapus massal: ${err.message}`);
+      }
+    }
+  };
+
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
       order.order_number.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -90,6 +139,17 @@ const AdminOrders = () => {
           <h1 className="text-2xl font-bold text-gray-900">Manajemen Pesanan</h1>
           <p className="text-gray-500 mt-1">Kelola semua transaksi masuk dari pelanggan.</p>
         </div>
+        {selectedIds.size > 0 && (
+          <div>
+            <button 
+              onClick={handleBulkDelete}
+              className="btn bg-red-600 hover:bg-red-700 text-white flex items-center shadow-sm"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Hapus Terpilih ({selectedIds.size})
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -126,6 +186,14 @@ const AdminOrders = () => {
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-gray-500 uppercase font-semibold text-xs tracking-wider">
               <tr>
+                <th className="px-6 py-4 w-12">
+                  <input 
+                    type="checkbox" 
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    onChange={handleSelectAll}
+                    checked={filteredOrders.length > 0 && selectedIds.size === filteredOrders.length}
+                  />
+                </th>
                 <th className="px-6 py-4">ID Pesanan</th>
                 <th className="px-6 py-4">Pelanggan</th>
                 <th className="px-6 py-4">Tipe</th>
@@ -138,18 +206,26 @@ const AdminOrders = () => {
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-gray-400">Memuat data...</td>
+                  <td colSpan={8} className="px-6 py-8 text-center text-gray-400">Memuat data...</td>
                 </tr>
               ) : filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
                     <ShoppingBag className="w-10 h-10 mx-auto mb-3 text-gray-300" />
                     Tidak ada pesanan ditemukan.
                   </td>
                 </tr>
               ) : (
                 filteredOrders.map(order => (
-                  <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={order.id} className={`transition-colors ${selectedIds.has(order.id) ? 'bg-blue-50/50' : 'hover:bg-gray-50/50'}`}>
+                    <td className="px-6 py-4">
+                      <input 
+                        type="checkbox" 
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        checked={selectedIds.has(order.id)}
+                        onChange={(e) => handleSelectOne(order.id, e.target.checked)}
+                      />
+                    </td>
                     <td className="px-6 py-4 font-bold text-gray-900">{order.order_number}</td>
                     <td className="px-6 py-4">
                       {order.customer_name ? (
@@ -187,16 +263,25 @@ const AdminOrders = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <select 
-                        className="bg-white border border-gray-200 rounded px-2 py-1 text-xs font-medium text-gray-700 focus:outline-none"
-                        value={order.status}
-                        onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                      >
-                        <option value="pending">Set Menunggu</option>
-                        <option value="processing">Set Diproses</option>
-                        <option value="completed">Set Selesai</option>
-                        <option value="cancelled">Batalkan</option>
-                      </select>
+                      <div className="flex items-center justify-end gap-2">
+                        <select 
+                          className="bg-white border border-gray-200 rounded px-2 py-1 text-xs font-medium text-gray-700 focus:outline-none"
+                          value={order.status}
+                          onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                        >
+                          <option value="pending">Set Menunggu</option>
+                          <option value="processing">Set Diproses</option>
+                          <option value="completed">Set Selesai</option>
+                          <option value="cancelled">Batalkan</option>
+                        </select>
+                        <button 
+                          onClick={() => handleDelete(order.id)} 
+                          className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors" 
+                          title="Hapus"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -205,6 +290,12 @@ const AdminOrders = () => {
           </table>
         </div>
       </div>
+      
+      {toast && (
+        <div className="fixed bottom-4 right-4 bg-gray-900 text-white px-6 py-3 rounded shadow-lg z-50">
+          {toast}
+        </div>
+      )}
     </div>
   );
 };
