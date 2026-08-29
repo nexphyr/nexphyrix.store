@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export interface CartItem {
-  id: string;
+  id: number;
   title: string;
   price: string; 
   priceValue: number; 
@@ -16,7 +16,7 @@ interface ToastMessage {
 interface CartContextType {
   cart: CartItem[];
   addToCart: (item: Omit<CartItem, 'quantity' | 'priceValue'>) => void;
-  removeFromCart: (id: string) => void;
+  removeFromCart: (id: number) => void;
   clearCart: () => void;
   totalAmount: number;
   totalItems: number;
@@ -87,7 +87,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const removeFromCart = (id: string) => {
+  const removeFromCart = (id: number) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
