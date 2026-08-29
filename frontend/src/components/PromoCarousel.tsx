@@ -69,7 +69,7 @@ const PromoCarousel = () => {
     );
   }
 
-  // Banner 2: Akses Instan
+  // Banner 2: Koleksi Terlengkap
   banners.push(
     <div className="w-full h-full relative overflow-hidden bg-gradient-to-r from-teal-900 to-emerald-950 group">
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-500 opacity-20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700"></div>
@@ -77,13 +77,13 @@ const PromoCarousel = () => {
         <div className="flex-1 text-center md:text-left text-white flex flex-col justify-center h-full">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-emerald-100 text-xs font-black uppercase tracking-wider rounded-full mb-3 md:mb-5 backdrop-blur-sm border border-emerald-400/30 w-fit mx-auto md:mx-0">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Akses Instan 24/7
+            Koleksi Terlengkap
           </div>
           <h2 className="text-2xl md:text-4xl font-black mb-2 md:mb-3 leading-tight">
-            Checkout Cepat, <br className="hidden md:block" /> Mainkan Langsung!
+            Ratusan Game PS4 <br className="hidden md:block" /> Sub Indo Pilihan!
           </h2>
           <p className="text-emerald-50 text-xs md:text-base font-medium max-w-xl leading-relaxed hidden sm:block">
-            Semua link download otomatis tersedia sesaat setelah pesanan Anda selesai. Tanpa perlu menunggu balasan admin, kapan pun Anda mau main.
+            Dari Action RPG hingga petualangan AAA, jelajahi berbagai mahakarya dunia yang kini bisa Anda nikmati sepenuhnya dalam bahasa ibu kita.
           </p>
         </div>
         <div className="flex-shrink-0 w-full md:w-auto flex flex-col items-center">
