@@ -17,7 +17,7 @@ const AdminLayout = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="h-screen bg-gray-100 flex overflow-hidden">
       {/* Mobile sidebar toggle */}
       <div className="lg:hidden fixed top-0 left-0 w-full bg-primary border-b border-primary/20 p-4 z-20 flex justify-between items-center shadow-md">
         <span className="font-extrabold text-xl text-white tracking-wide">Admin Panel</span>
