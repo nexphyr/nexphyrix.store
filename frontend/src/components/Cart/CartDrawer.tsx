@@ -18,16 +18,16 @@ const CartDrawer = () => {
       ></div>
 
       {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 z-50 w-full md:w-[400px] bg-white shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out">
+      <div className="fixed inset-y-0 right-0 z-50 w-full md:w-[400px] bg-white dark:bg-gray-900 shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+        <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-bold text-gray-900">Keranjang Belanja</h2>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Keranjang Belanja</h2>
           </div>
           <button 
             onClick={() => setIsCartOpen(false)}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -38,7 +38,7 @@ const CartDrawer = () => {
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-400">
               <ShoppingBag className="w-16 h-16 mb-4 opacity-50" />
-              <p className="font-medium text-gray-600">Keranjang kamu masih kosong.</p>
+              <p className="font-medium text-gray-600 dark:text-gray-400">Keranjang kamu masih kosong.</p>
               <button 
                 onClick={() => setIsCartOpen(false)}
                 className="mt-4 text-primary font-bold hover:underline"
@@ -48,9 +48,9 @@ const CartDrawer = () => {
             </div>
           ) : (
             cart.map((item) => (
-              <div key={item.id} className="flex flex-col p-4 bg-gray-50 rounded-xl border border-gray-100 relative group">
+              <div key={item.id} className="flex flex-col p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-800 relative group">
                 <div className="pr-8">
-                  <h3 className="font-bold text-sm text-gray-900 mb-1">{item.title}</h3>
+                  <h3 className="font-bold text-sm text-gray-900 dark:text-white mb-1">{item.title}</h3>
                   <p className="text-primary font-extrabold text-sm">{formatRupiah(item.priceValue)}</p>
                 </div>
                 <button
@@ -67,9 +67,9 @@ const CartDrawer = () => {
 
         {/* Footer */}
         {cart.length > 0 && (
-          <div className="p-4 border-t border-gray-100 bg-white">
+          <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-semibold text-gray-500">{cart.length} Produk</span>
+              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">{cart.length} Produk</span>
               <button 
                 onClick={clearCart}
                 className="text-xs text-red-500 hover:text-red-700 font-medium"
@@ -79,8 +79,8 @@ const CartDrawer = () => {
             </div>
             
             <div className="flex justify-between items-end mb-2">
-              <span className="text-gray-600 font-bold">Subtotal ({totalItems} Item)</span>
-              <span className="text-lg font-bold text-gray-700">{formatRupiah(totalAmount)}</span>
+              <span className="text-gray-600 dark:text-gray-400 font-bold">Subtotal ({totalItems} Item)</span>
+              <span className="text-lg font-bold text-gray-700 dark:text-gray-300">{formatRupiah(totalAmount)}</span>
             </div>
 
             {user ? (
@@ -94,17 +94,17 @@ const CartDrawer = () => {
                     <span className="font-bold">- {formatRupiah(memberDiscount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between items-end mb-6 pt-2 border-t border-gray-100">
-                  <span className="text-gray-900 font-black text-lg">Total Pembayaran</span>
-                  <span className="text-2xl font-black text-gray-900">{formatRupiah(finalTotal)}</span>
+                <div className="flex justify-between items-end mb-6 pt-2 border-t border-gray-100 dark:border-gray-800">
+                  <span className="text-gray-900 dark:text-white font-black text-lg">Total Pembayaran</span>
+                  <span className="text-2xl font-black text-gray-900 dark:text-white">{formatRupiah(finalTotal)}</span>
                 </div>
               </>
             ) : (
               // GUEST UI
               <>
-                <div className="flex justify-between items-end mb-6 pt-2 border-t border-gray-100">
-                  <span className="text-gray-900 font-black text-lg">Total Pembayaran</span>
-                  <span className="text-2xl font-black text-gray-900">{formatRupiah(totalAmount)}</span>
+                <div className="flex justify-between items-end mb-6 pt-2 border-t border-gray-100 dark:border-gray-800">
+                  <span className="text-gray-900 dark:text-white font-black text-lg">Total Pembayaran</span>
+                  <span className="text-2xl font-black text-gray-900 dark:text-white">{formatRupiah(totalAmount)}</span>
                 </div>
                 
                 {totalItems >= 11 && (
@@ -114,7 +114,7 @@ const CartDrawer = () => {
                     </p>
                     <button 
                       onClick={signInWithGoogle}
-                      className="text-xs bg-white text-blue-600 font-bold px-4 py-1.5 rounded-full border border-blue-200 shadow-sm hover:shadow transition-shadow"
+                      className="text-xs bg-white dark:bg-gray-900 text-blue-600 font-bold px-4 py-1.5 rounded-full border border-blue-200 shadow-sm hover:shadow transition-shadow"
                     >
                       Masuk dengan Google
                     </button>

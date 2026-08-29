@@ -10,6 +10,7 @@ import AdminCategories from './pages/Admin/AdminCategories';
 import Settings from './pages/Admin/Settings';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
+import ThemeToggle from './components/ThemeToggle';
 
 const ProtectedRoute = ({ children, requireAdmin = false }: { children: React.ReactNode, requireAdmin?: boolean }) => {
   const { user, loading } = useAuth();
@@ -51,6 +52,7 @@ function App() {
               <Route path="settings" element={<Settings />} />
             </Route>
           </Routes>
+          <ThemeToggle />
         </Router>
       </CartProvider>
     </AuthProvider>

@@ -94,7 +94,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0F5FA] font-sans">
+    <div className="min-h-screen bg-[#F0F5FA] dark:bg-gray-950 font-sans transition-colors duration-300">
       {/* Hero Section with Custom Banner */}
       <header className="relative w-full overflow-hidden shadow-2xl bg-[#00439C]">
         {/* Full Edge-to-Edge Background Image */}
@@ -142,7 +142,7 @@ const HomePage = () => {
               </div>
               <input
                 type="text"
-                className="block w-full pl-12 md:pl-14 pr-6 py-3 md:py-5 rounded-full text-base md:text-lg text-gray-900 border-2 border-transparent shadow-[0_0_20px_rgba(255,255,255,0.2)] focus:border-white focus:ring-4 focus:ring-white/30 transition-all outline-none bg-white/95 backdrop-blur-md hover:bg-white"
+                className="block w-full pl-12 md:pl-14 pr-6 py-3 md:py-5 rounded-full text-base md:text-lg text-gray-900 dark:text-white border-2 border-transparent shadow-[0_0_20px_rgba(255,255,255,0.2)] focus:border-white focus:ring-4 focus:ring-white/30 transition-all outline-none bg-white/95 backdrop-blur-md hover:bg-white dark:bg-gray-900"
                 placeholder="Ketik judul game atau mod..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -175,7 +175,7 @@ const HomePage = () => {
             onClick={() => setActiveCategory('')}
             className={`px-4 py-2 md:px-6 md:py-3 text-sm md:text-base rounded-full font-bold transition-all shadow-md transform hover:-translate-y-1 ${activeCategory === ''
               ? 'bg-primary text-white scale-105 shadow-primary/40'
-              : 'bg-white text-gray-600 hover:text-primary hover:shadow-lg border border-gray-100'
+              : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:text-primary hover:shadow-lg border border-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700'
               }`}
           >
             Semua
@@ -186,7 +186,7 @@ const HomePage = () => {
               onClick={() => setActiveCategory(cat.slug)}
               className={`px-4 py-2 md:px-6 md:py-3 text-sm md:text-base rounded-full font-bold transition-all shadow-md transform hover:-translate-y-1 ${activeCategory === cat.slug
                 ? 'bg-primary text-white scale-105 shadow-primary/40'
-                : 'bg-white text-gray-600 hover:text-primary hover:shadow-lg border border-gray-100'
+                : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:text-primary hover:shadow-lg border border-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700'
                 }`}
             >
               {cat.name}
@@ -200,7 +200,7 @@ const HomePage = () => {
             <div className="col-span-full p-12 text-center text-primary font-bold animate-pulse">Mencari Data...</div>
           ) : links.length > 0 ? (
             links.map((link) => (
-              <div key={link.id} className="glass-card rounded-2xl p-4 md:p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-white relative overflow-hidden flex flex-col">
+              <div key={link.id} className="glass-card rounded-2xl p-4 md:p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-white dark:border-gray-800 relative overflow-hidden flex flex-col bg-white dark:bg-gray-900">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-secondary to-transparent rounded-bl-full opacity-50 transition-opacity group-hover:opacity-100"></div>
 
                 <div className="relative z-10 flex flex-col flex-grow">
@@ -217,14 +217,14 @@ const HomePage = () => {
                     )}
                   </div>
 
-                  <h3 className="text-lg md:text-xl font-extrabold text-gray-900 mb-1 md:mb-2 leading-tight group-hover:text-primary transition-colors line-clamp-2">{link.title}</h3>
+                  <h3 className="text-lg md:text-xl font-extrabold text-gray-900 dark:text-white mb-1 md:mb-2 leading-tight group-hover:text-primary transition-colors line-clamp-2">{link.title}</h3>
 
                   {link.description && (
-                    <p className="text-gray-600 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2">{link.description}</p>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2">{link.description}</p>
                   )}
 
                   {link.category.slug === 'gta-v-mod-nusantara' && link.status && (
-                    <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-100">
+                    <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-100 dark:border-gray-800">
                       <span className="flex items-center gap-2 text-[10px] md:text-sm font-bold">
                         <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-green-500"></span>
                         <span className="text-green-700 uppercase tracking-wide">{link.status}</span>
@@ -249,9 +249,9 @@ const HomePage = () => {
               </div>
             ))
           ) : (
-            <div className="col-span-full p-16 text-center text-gray-400 flex flex-col items-center glass-card rounded-2xl">
-              <SearchX className="w-16 h-16 mb-6 text-gray-300" />
-              <p className="text-xl font-bold text-gray-500">Tidak ada data yang ditemukan.</p>
+            <div className="col-span-full p-16 text-center text-gray-400 dark:text-gray-600 dark:text-gray-400 flex flex-col items-center glass-card rounded-2xl bg-white dark:bg-gray-900">
+              <SearchX className="w-16 h-16 mb-6 text-gray-300 dark:text-gray-700 dark:text-gray-300" />
+              <p className="text-xl font-bold text-gray-500 dark:text-gray-400">Tidak ada data yang ditemukan.</p>
               <p className="text-sm mt-2">Coba kata kunci lain atau ubah kategori.</p>
             </div>
           )}
@@ -259,7 +259,7 @@ const HomePage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="text-center py-8 text-gray-500 text-sm">
+      <footer className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
         &copy; {new Date().getFullYear()} NEXPHYRIX STORE. All rights reserved.
         <div className="mt-2">
           <RouterLink to="/login" className="text-blue-600 hover:underline">Admin Login</RouterLink>

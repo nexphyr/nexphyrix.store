@@ -62,10 +62,10 @@ const AuthMenu = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden transform origin-top-right animate-fade-in">
+        <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden transform origin-top-right animate-fade-in">
           <div className="p-4 border-b border-gray-50 bg-gray-50/50">
-            <p className="font-bold text-gray-900 truncate">{user.full_name || 'Member'}</p>
-            <p className="text-xs text-gray-500 truncate">{user.email}</p>
+            <p className="font-bold text-gray-900 dark:text-white truncate">{user.full_name || 'Member'}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
             {user.role === 'admin' && (
                <span className="mt-2 inline-flex items-center gap-1 bg-red-100 text-red-700 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
                  <ShieldCheck className="w-3 h-3" /> Admin
@@ -76,7 +76,7 @@ const AuthMenu = () => {
           <div className="py-2">
             <Link 
               to="/profile" 
-              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-800 hover:text-primary transition-colors"
             >
               <User className="w-4 h-4" />
               Profil Saya
@@ -84,7 +84,7 @@ const AuthMenu = () => {
             
             <Link 
               to="/profile" 
-              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-800 hover:text-primary transition-colors"
             >
               <ShoppingBag className="w-4 h-4" />
               Pesanan Saya
@@ -93,7 +93,7 @@ const AuthMenu = () => {
             {user.role === 'admin' && (
                <Link 
                  to="/admin" 
-                 className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors"
+                 className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-800 hover:text-primary transition-colors"
                >
                  <ShieldCheck className="w-4 h-4" />
                  Admin Panel

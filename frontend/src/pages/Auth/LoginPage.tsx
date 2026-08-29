@@ -66,18 +66,18 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-800 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center text-primary">
           <img src="./logo.png" alt="Logo" className="w-16 h-16 object-contain drop-shadow-md" />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
           Admin Login
         </h2>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100">
+        <div className="bg-white dark:bg-gray-900 py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100 dark:border-gray-800">
           
           {error && (
             <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4">
@@ -125,7 +125,7 @@ const LoginPage = () => {
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
               />
-              <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
+              <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900 dark:text-white">
                 Ingat Saya
               </label>
             </div>

@@ -78,21 +78,21 @@ const CheckoutModal = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all">
         {copyStatus === 'success' ? (
           <div className="p-8 text-center flex flex-col items-center">
             <CheckCircle2 className="w-16 h-16 text-green-500 mb-4 animate-bounce" />
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Berhasil Disalin!</h2>
-            <p className="text-gray-600 text-sm mb-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Berhasil Disalin!</h2>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
               Membuka aplikasi chat...<br/>Silakan <b>Paste</b> pesan tersebut untuk mengirim pesanan.
             </p>
           </div>
         ) : copyStatus === 'failed' ? (
           <div className="p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Copy Manual</h2>
-            <p className="text-sm text-gray-600 mb-4">Browser Anda tidak mendukung copy otomatis. Silakan copy teks di bawah ini lalu buka aplikasi chat.</p>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Copy Manual</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Browser Anda tidak mendukung copy otomatis. Silakan copy teks di bawah ini lalu buka aplikasi chat.</p>
             <textarea 
-              className="w-full h-48 p-3 text-sm border border-gray-200 rounded-lg bg-gray-50 mb-4" 
+              className="w-full h-48 p-3 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 mb-4" 
               readOnly 
               value={generatedMessage} 
             />
@@ -104,27 +104,27 @@ const CheckoutModal = () => {
           </div>
         ) : checkoutStep === 'payment' ? (
           <>
-            <div className="flex justify-between items-center p-5 border-b border-gray-100">
-              <h2 className="text-lg font-extrabold text-gray-900 flex items-center gap-2">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100 dark:border-gray-800">
+              <h2 className="text-lg font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
                 <QrCode className="w-5 h-5 text-primary" /> Pembayaran QRIS
               </h2>
-              <button onClick={() => setIsCheckoutOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <button onClick={() => setIsCheckoutOpen(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
             
             <div className="p-4 md:p-6 text-center">
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
-                <p className="text-sm text-gray-500 mb-1">Total yang harus dibayar:</p>
+              <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-4">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Total yang harus dibayar:</p>
                 <p className="text-2xl font-black text-primary">{formatRupiah(displayTotal || 0)}</p>
               </div>
               
               <div className="mb-4">
-                <img src={qrisImage} alt="QRIS Barcode" className="w-full max-w-[200px] mx-auto rounded-lg shadow-sm border border-gray-100 mb-3" />
+                <img src={qrisImage} alt="QRIS Barcode" className="w-full max-w-[200px] mx-auto rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-3" />
                 <a 
                   href={qrisImage} 
                   download="QRIS-Nexphyrix.png"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg transition-colors border border-gray-200"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors border border-gray-200 dark:border-gray-700"
                 >
                   <Download className="w-4 h-4" /> Unduh QRIS
                 </a>
@@ -148,15 +148,15 @@ const CheckoutModal = () => {
           </>
         ) : (
           <>
-            <div className="flex justify-between items-center p-5 border-b border-gray-100">
-              <h2 className="text-lg font-extrabold text-gray-900">Pilih Metode Checkout</h2>
-              <button onClick={() => setIsCheckoutOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100 dark:border-gray-800">
+              <h2 className="text-lg font-extrabold text-gray-900 dark:text-white">Pilih Metode Checkout</h2>
+              <button onClick={() => setIsCheckoutOpen(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
             
             <div className="p-4 md:p-6">
-              <p className="text-center text-gray-500 text-xs md:text-sm mb-4 md:mb-6">
+              <p className="text-center text-gray-500 dark:text-gray-400 text-xs md:text-sm mb-4 md:mb-6">
                 Pilih platform chat untuk mengirim bukti pembayaran. Detail pesanan akan otomatis disalin ke clipboard Anda.
               </p>
               
@@ -164,23 +164,23 @@ const CheckoutModal = () => {
                 <button 
                   onClick={() => handleCheckout('messenger')}
                   disabled={isLoading}
-                  className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 group disabled:opacity-50 disabled:hover:scale-100"
+                  className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-2xl hover:bg-gray-50 dark:bg-gray-800 transition-all duration-300 transform hover:scale-105 group disabled:opacity-50 disabled:hover:scale-100"
                 >
-                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] group-hover:shadow-[0_8px_30px_rgba(0,106,255,0.3)] flex items-center justify-center transition-shadow">
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white dark:bg-gray-900 shadow-[0_8px_30px_rgb(0,0,0,0.12)] group-hover:shadow-[0_8px_30px_rgba(0,106,255,0.3)] flex items-center justify-center transition-shadow">
                     <MessengerIcon />
                   </div>
-                  <span className="font-bold text-sm md:text-base text-gray-700 group-hover:text-[#006AFF]">Messenger</span>
+                  <span className="font-bold text-sm md:text-base text-gray-700 dark:text-gray-300 group-hover:text-[#006AFF]">Messenger</span>
                 </button>
 
                 <button 
                   onClick={() => handleCheckout('telegram')}
                   disabled={isLoading}
-                  className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 group disabled:opacity-50 disabled:hover:scale-100"
+                  className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-2xl hover:bg-gray-50 dark:bg-gray-800 transition-all duration-300 transform hover:scale-105 group disabled:opacity-50 disabled:hover:scale-100"
                 >
-                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] group-hover:shadow-[0_8px_30px_rgba(42,171,238,0.3)] flex items-center justify-center transition-shadow">
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white dark:bg-gray-900 shadow-[0_8px_30px_rgb(0,0,0,0.12)] group-hover:shadow-[0_8px_30px_rgba(42,171,238,0.3)] flex items-center justify-center transition-shadow">
                     <TelegramIcon />
                   </div>
-                  <span className="font-bold text-sm md:text-base text-gray-700 group-hover:text-[#2AABEE]">Telegram</span>
+                  <span className="font-bold text-sm md:text-base text-gray-700 dark:text-gray-300 group-hover:text-[#2AABEE]">Telegram</span>
                 </button>
               </div>
               
