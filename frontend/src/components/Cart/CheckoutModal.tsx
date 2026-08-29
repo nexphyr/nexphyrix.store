@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, CheckCircle2, QrCode } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { generateCheckoutMessage, copyToClipboardFallback, createOrderInDatabase, formatRupiah } from '../../lib/checkout';
+import qrisImage from '../../assets/qris.png';
 
 const MessengerIcon = () => (
   <svg viewBox="0 0 36 36" fill="url(#messenger-grad)" className="w-8 h-8 md:w-12 md:h-12">
@@ -117,7 +118,7 @@ const CheckoutModal = () => {
                 <p className="text-sm text-gray-500 mb-1">Total yang harus dibayar:</p>
                 <p className="text-2xl font-black text-primary">{formatRupiah(displayTotal || 0)}</p>
               </div>
-              <img src="/qris.png" alt="QRIS Barcode" className="w-full max-w-[200px] mx-auto rounded-lg shadow-sm border border-gray-100 mb-4" />
+              <img src={qrisImage} alt="QRIS Barcode" className="w-full max-w-[200px] mx-auto rounded-lg shadow-sm border border-gray-100 mb-4" />
               <p className="text-xs text-gray-500 mb-6">
                 Silakan scan QRIS di atas untuk melakukan pembayaran sesuai total pesanan Anda. Simpan bukti transfer untuk dikirim ke admin.
               </p>
