@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LayoutDashboard, Link as LinkIcon, Folder, Settings, LogOut, Menu, ShoppingBag } from 'lucide-react';
+import { LayoutDashboard, Link as LinkIcon, Folder, Settings, LogOut, Menu, ShoppingBag, Home } from 'lucide-react';
 import { useState } from 'react';
 
 const AdminLayout = () => {
@@ -52,7 +52,14 @@ const AdminLayout = () => {
             })}
           </nav>
           
-          <div className="p-4 border-t">
+          <div className="p-4 border-t border-gray-100 space-y-2">
+            <Link
+              to="/"
+              className="flex w-full items-center px-4 py-3 text-blue-600 rounded-xl hover:bg-blue-50 hover:text-blue-700 transition-colors font-bold"
+            >
+              <Home className="w-5 h-5 mr-3" />
+              Kembali ke Beranda
+            </Link>
             <button
               onClick={() => {
                 logout();
@@ -61,7 +68,7 @@ const AdminLayout = () => {
               className="flex w-full items-center px-4 py-3 text-red-600 rounded-xl hover:bg-red-50 hover:text-red-700 transition-colors font-bold"
             >
               <LogOut className="w-5 h-5 mr-3" />
-              Logout
+              Keluar Akun
             </button>
           </div>
         </div>
