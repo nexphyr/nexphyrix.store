@@ -1,0 +1,100 @@
+import { X, Trash2, ShoppingBag } from 'lucide-react';
+import { useCart } from '../../contexts/CartContext';
+import { formatRupiah } from '../../lib/checkout';
+
+const CartDrawer = () => {
+  const { cart, isCartOpen, setIsCartOpen, removeFromCart, totalAmount, clearCart, setIsCheckoutOpen } = useCart();
+
+  if (!isCartOpen) return null;
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm transition-opacity"
+        onClick={() => setIsCartOpen(false)}
+      ></div>
+
+      {/* Drawer */}
+      <div className="fixed inset-y-0 right-0 z-50 w-full md:w-[400px] bg-white shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-bold text-gray-900">Keranjang Belanja</h2>
+          </div>
+          <button 
+            onClick={() => setIsCartOpen(false)}
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Cart Items */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {cart.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-gray-400">
+              <ShoppingBag className="w-16 h-16 mb-4 opacity-50" />
+              <p className="font-medium text-gray-600">Keranjang kamu masih kosong.</p>
+              <button 
+                onClick={() => setIsCartOpen(false)}
+                className="mt-4 text-primary font-bold hover:underline"
+              >
+                Lihat Produk
+              </button>
+            </div>
+          ) : (
+            cart.map((item) => (
+              <div key={item.id} className="flex flex-col p-4 bg-gray-50 rounded-xl border border-gray-100 relative group">
+                <div className="pr-8">
+                  <h3 className="font-bold text-sm text-gray-900 mb-1">{item.title}</h3>
+                  <p className="text-primary font-extrabold text-sm">{formatRupiah(item.priceValue)}</p>
+                </div>
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+                  title="Hapus produk"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Footer */}
+        {cart.length > 0 && (
+          <div className="p-4 border-t border-gray-100 bg-white">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm font-semibold text-gray-500">{cart.length} Produk</span>
+              <button 
+                onClick={clearCart}
+                className="text-xs text-red-500 hover:text-red-700 font-medium"
+              >
+                Kosongkan Keranjang
+              </button>
+            </div>
+            
+            <div className="flex justify-between items-end mb-6">
+              <span className="text-gray-600 font-bold">Total</span>
+              <span className="text-2xl font-black text-gray-900">{formatRupiah(totalAmount)}</span>
+            </div>
+
+            <button
+              onClick={() => {
+                setIsCartOpen(false);
+                setIsCheckoutOpen(true);
+              }}
+              className="w-full btn btn-primary py-3 text-lg rounded-xl shadow-primary/30"
+            >
+              CHECKOUT
+            </button>
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
+
+export default CartDrawer;

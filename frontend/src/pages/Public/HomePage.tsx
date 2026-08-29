@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
-import { SearchX } from 'lucide-react';
+import { SearchX, ShoppingCart } from 'lucide-react';
 import { Link as RouterLink } from 'react-router-dom';
 import { storage } from '../../services/storage';
+import FloatingCart from '../../components/Cart/FloatingCart';
+import CartDrawer from '../../components/Cart/CartDrawer';
+import CheckoutModal from '../../components/Cart/CheckoutModal';
+import ToastContainer from '../../components/Cart/ToastContainer';
+import { useCart } from '../../contexts/CartContext';
 
 interface Category {
   id: number;
@@ -28,6 +33,7 @@ const HomePage = () => {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     fetchCategories();
@@ -181,10 +187,10 @@ const HomePage = () => {
             <div className="col-span-full p-12 text-center text-primary font-bold animate-pulse">Mencari Data...</div>
           ) : links.length > 0 ? (
             links.map((link) => (
-              <div key={link.id} className="glass-card rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-white relative overflow-hidden">
+              <div key={link.id} className="glass-card rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-white relative overflow-hidden flex flex-col">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-secondary to-transparent rounded-bl-full opacity-50 transition-opacity group-hover:opacity-100"></div>
 
-                <div className="relative z-10">
+                <div className="relative z-10 flex flex-col flex-grow">
                   <div className="flex justify-between items-start mb-4">
                     <span className={`inline-block px-3 py-1 text-xs font-black tracking-wider uppercase rounded-full shadow-sm ${link.category.slug === 'gta-v-mod-nusantara' ? 'bg-amber-100 text-amber-800' : 'bg-primary/10 text-primary'
                       }`}>
@@ -212,6 +218,20 @@ const HomePage = () => {
                       </span>
                     </div>
                   )}
+
+                  <div className="mt-auto pt-6">
+                    <button 
+                      onClick={() => addToCart({ 
+                        id: link.id, 
+                        title: link.title, 
+                        price: link.price || 'Rp 0' 
+                      })}
+                      className="w-full btn btn-primary flex items-center justify-center gap-2"
+                    >
+                      <ShoppingCart className="w-4 h-4" />
+                      Tambah ke Keranjang
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
@@ -232,6 +252,12 @@ const HomePage = () => {
           <RouterLink to="/login" className="text-blue-600 hover:underline">Admin Login</RouterLink>
         </div>
       </footer>
+
+      {/* Cart Components */}
+      <FloatingCart />
+      <CartDrawer />
+      <CheckoutModal />
+      <ToastContainer />
     </div>
   );
 };
