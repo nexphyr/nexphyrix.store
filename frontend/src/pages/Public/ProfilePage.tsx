@@ -6,6 +6,7 @@ import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity
 import { Link, Navigate } from 'react-router-dom';
 import { formatRupiah } from '../../lib/checkout';
 import profileImage from '../../assets/profile.png';
+import logoImage from '../../assets/nexphyrix.png';
 
 interface Order {
   id: string;
@@ -162,12 +163,15 @@ const ProfilePage = () => {
       <div className="min-h-screen bg-[#F0F5FA] font-sans pb-12">
         <header className="bg-gradient-to-r from-red-700 to-red-900 text-white pt-12 pb-24 px-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-black/20"></div>
-          <div className="max-w-5xl mx-auto relative z-10">
-            <div className="flex items-center gap-4 mb-6">
-              <Link to="/" className="text-white/80 hover:text-white font-medium text-sm transition-colors">
-                &larr; Kembali ke Beranda
-              </Link>
-            </div>
+          
+          {/* Top Navbar */}
+          <div className="absolute top-0 left-0 right-0 p-4 md:p-6 z-50 flex items-center justify-between w-full">
+            <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <img src={logoImage} alt="Nexphyrix Logo" className="h-6 md:h-8 object-contain" />
+            </Link>
+          </div>
+
+          <div className="max-w-5xl mx-auto relative z-10 pt-8">
             <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
               <img src={profileImage} alt="Super Admin" className="w-24 h-24 rounded-full border-4 border-white/20 shadow-xl bg-white" />
               <div className="text-center md:text-left flex-1">
@@ -379,12 +383,15 @@ const ProfilePage = () => {
       {/* Header */}
       <header className="bg-[#00439C] text-white pt-12 pb-24 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
-        <div className="max-w-4xl mx-auto relative z-10">
-          <div className="flex items-center gap-4 mb-6">
-            <Link to="/" className="text-white/80 hover:text-white font-medium text-sm transition-colors">
-              &larr; Kembali ke Beranda
-            </Link>
-          </div>
+
+        {/* Top Navbar */}
+        <div className="absolute top-0 left-0 right-0 p-4 md:p-6 z-50 flex items-center justify-between w-full">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <img src={logoImage} alt="Nexphyrix Logo" className="h-6 md:h-8 object-contain" />
+          </Link>
+        </div>
+        
+        <div className="max-w-4xl mx-auto relative z-10 pt-8">
           <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
             {user.avatar_url ? (
               <img src={user.avatar_url} alt={user.full_name} className="w-24 h-24 rounded-full border-4 border-white/20 shadow-xl" />
