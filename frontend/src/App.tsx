@@ -11,11 +11,12 @@ import Settings from './pages/Admin/Settings';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectedRoute = ({ children, requireAdmin = false }: { children: React.ReactNode, requireAdmin?: boolean }) => {
   const { user, loading } = useAuth();
   
   if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
   if (!user) return <Navigate to="/login" />;
+  if (requireAdmin && user.role !== 'admin') return <Navigate to="/profile" />;
   
   return <>{children}</>;
 };
@@ -39,7 +40,7 @@ function App() {
 
             {/* Admin Routes */}
             <Route path="/admin" element={
-              <ProtectedRoute>
+              <ProtectedRoute requireAdmin={true}>
                 <AdminLayout />
               </ProtectedRoute>
             }>
