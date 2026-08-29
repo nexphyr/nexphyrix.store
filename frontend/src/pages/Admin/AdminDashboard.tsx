@@ -6,7 +6,7 @@ interface Stats {
   totalLinks: number;
   totalCategories: number;
   ps4LinksCount: number;
-  recentLinks: Array<{ id: number; title: string; category: { name: string } }>;
+  recentLinks: Array<{ id: string; title: string; category: { name: string } }>;
 }
 
 const AdminDashboard = () => {

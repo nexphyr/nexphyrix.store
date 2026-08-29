@@ -9,7 +9,7 @@ interface Category {
 }
 
 interface LinkData {
-  id?: number;
+  id?: string;
   title: string;
   url?: string;
   urls?: string[];
