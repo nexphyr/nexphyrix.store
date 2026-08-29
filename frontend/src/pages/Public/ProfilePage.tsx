@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye } from 'lucide-react';
+import { storage } from '../../services/storage';
+import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { formatRupiah } from '../../lib/checkout';
 import profileImage from '../../assets/profile.png';
@@ -45,6 +46,11 @@ const ProfilePage = () => {
 
   // Tab state for Admin
   const [activeTab, setActiveTab] = useState<'pesanan' | 'member'>('pesanan');
+
+  // Member links modal state
+  const [selectedOrderLinks, setSelectedOrderLinks] = useState<{product_title: string, urls: string}[] | null>(null);
+  const [isLinksModalOpen, setIsLinksModalOpen] = useState(false);
+  const [loadingLinks, setLoadingLinks] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -109,6 +115,20 @@ const ProfilePage = () => {
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleViewLinks = async (orderId: string) => {
+    setLoadingLinks(true);
+    setIsLinksModalOpen(true);
+    try {
+      const data = await storage.getPurchasedLinks(orderId);
+      setSelectedOrderLinks(data);
+    } catch (err: any) {
+      alert(err.message || 'Gagal mengambil link');
+      setIsLinksModalOpen(false);
+    } finally {
+      setLoadingLinks(false);
     }
   };
 
@@ -477,11 +497,21 @@ const ProfilePage = () => {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start pt-3 sm:pt-0 border-t sm:border-0 border-gray-200 sm:border-l sm:pl-4">
-                        <span className="text-gray-400 whitespace-nowrap">Checkout via</span>
-                        <span className="font-bold text-gray-700 capitalize px-3 py-1 bg-white rounded-md shadow-sm border border-gray-200">
-                          {order.checkout_method}
-                        </span>
+                      <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-start pt-3 sm:pt-0 border-t sm:border-0 border-gray-200 sm:border-l sm:pl-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-400 whitespace-nowrap">Checkout via</span>
+                          <span className="font-bold text-gray-700 capitalize px-3 py-1 bg-white rounded-md shadow-sm border border-gray-200">
+                            {order.checkout_method}
+                          </span>
+                        </div>
+                        {order.status === 'completed' && (
+                          <button 
+                            onClick={() => handleViewLinks(order.id)}
+                            className="w-full sm:w-auto px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+                          >
+                            <Package className="w-4 h-4" /> Lihat Link Game
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -492,6 +522,73 @@ const ProfilePage = () => {
         </div>
 
       </main>
+
+      {/* Purchased Links Modal */}
+      {isLinksModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100 bg-green-50">
+              <h2 className="text-lg font-extrabold text-green-900 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-green-600" /> Link Download Tersedia
+              </h2>
+              <button onClick={() => { setIsLinksModalOpen(false); setSelectedOrderLinks(null); }} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto">
+              {loadingLinks ? (
+                <div className="text-center py-12 text-gray-400 animate-pulse">
+                  Memuat link pesanan Anda...
+                </div>
+              ) : selectedOrderLinks && selectedOrderLinks.length > 0 ? (
+                <div className="space-y-6">
+                  {selectedOrderLinks.map((item, idx) => {
+                    let parsedUrls: string[] = [];
+                    try {
+                      parsedUrls = JSON.parse(item.urls);
+                    } catch (e) {
+                      if (item.urls) parsedUrls = [item.urls];
+                    }
+
+                    return (
+                      <div key={idx} className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                        <h3 className="font-bold text-gray-900 mb-3 pb-2 border-b border-gray-200">{item.product_title}</h3>
+                        {parsedUrls.length > 0 ? (
+                          <div className="space-y-2">
+                            {parsedUrls.map((url, i) => (
+                              <div key={i} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between bg-white p-3 border border-gray-100 rounded-lg shadow-sm">
+                                <span className="text-sm font-medium text-gray-600 break-all line-clamp-1">{url}</span>
+                                <div className="flex gap-2 w-full sm:w-auto">
+                                  <a href={url} target="_blank" rel="noreferrer" className="flex-1 sm:flex-none text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap">
+                                    Buka Link
+                                  </a>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-gray-500 italic">Link belum tersedia untuk produk ini.</p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-gray-500">
+                  <p>Tidak ada link yang ditemukan untuk pesanan ini.</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="p-4 border-t border-gray-100 bg-gray-50 text-right">
+              <button onClick={() => { setIsLinksModalOpen(false); setSelectedOrderLinks(null); }} className="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-lg transition-colors">
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

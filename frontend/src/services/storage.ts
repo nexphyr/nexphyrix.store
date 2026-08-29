@@ -195,6 +195,20 @@ export const storage = {
       throw new Error(error.message || 'Gagal menghapus pesanan.');
     }
   },
+
+  // Member - Retrieve purchased links
+  getPurchasedLinks: async (orderId: string): Promise<{ product_title: string, urls: string }[]> => {
+    const { data, error } = await supabase.rpc('get_purchased_links', {
+      p_order_id: orderId
+    });
+
+    if (error) {
+      console.error('Error fetching purchased links:', error);
+      throw new Error(error.message || 'Gagal mengambil link pesanan.');
+    }
+
+    return data || [];
+  },
 };
 
 export const sanitizeForSQLi = (input: string): string => {
