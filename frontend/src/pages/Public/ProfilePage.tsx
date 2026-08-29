@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { storage } from '../../services/storage';
-import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X } from 'lucide-react';
+import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { formatRupiah } from '../../lib/checkout';
 import profileImage from '../../assets/profile.png';
@@ -269,8 +269,11 @@ const ProfilePage = () => {
             <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <img src={logoImage} alt="Nexphyrix Logo" className="h-12 md:h-16 object-contain" />
             </Link>
-            <Link to="/" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-bold transition-colors border border-white/20 text-sm backdrop-blur-sm shadow-sm">
-              &larr; Kembali
+            <Link to="/" className="flex items-center gap-3 text-white/90 hover:text-white group transition-all">
+              <div className="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center group-hover:-translate-x-1 transition-all group-hover:bg-white/20 shadow-inner border border-white/10 group-hover:border-white/30 backdrop-blur-sm">
+                <Home className="w-4 h-4" />
+              </div>
+              <span className="font-semibold text-sm tracking-wide hidden sm:inline-block">Beranda</span>
             </Link>
           </div>
 
@@ -506,8 +509,11 @@ const ProfilePage = () => {
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <img src={logoImage} alt="Nexphyrix Logo" className="h-12 md:h-16 object-contain" />
           </Link>
-          <Link to="/" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-bold transition-colors border border-white/20 text-sm backdrop-blur-sm shadow-sm">
-            &larr; Kembali
+          <Link to="/" className="flex items-center gap-3 text-white/90 hover:text-white group transition-all">
+            <div className="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center group-hover:-translate-x-1 transition-all group-hover:bg-white/20 shadow-inner border border-white/10 group-hover:border-white/30 backdrop-blur-sm">
+              <Home className="w-4 h-4" />
+            </div>
+            <span className="font-semibold text-sm tracking-wide hidden sm:inline-block">Beranda</span>
           </Link>
         </div>
         
