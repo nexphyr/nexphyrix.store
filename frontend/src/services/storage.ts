@@ -16,6 +16,7 @@ export interface Link {
   price?: string;
   category_id: string;
   created_at: string;
+  is_free_claim?: boolean;
 }
 
 export const storage = {
@@ -287,6 +288,29 @@ export const storage = {
         throw new Error(error.message || 'Gagal menyimpan tautan bukti pembayaran ke pesanan. Pastikan Anda telah menjalankan script SQL rpc_update_receipt.sql');
       }
     }
+  },
+
+  // Free Game Claims
+  toggleFreeClaim: async (id: string, is_free_claim: boolean): Promise<void> => {
+    const { error } = await supabase.from('links').update({ is_free_claim }).eq('id', id);
+    if (error) throw new Error(error.message || 'Gagal mengupdate status game gratis.');
+  },
+
+  claimFreeGame: async (gameId: string): Promise<void> => {
+    const { error } = await supabase.rpc('claim_free_game', { p_game_id: gameId });
+    if (error) {
+      console.error('Error claiming free game:', error);
+      throw new Error(error.message || 'Gagal mengklaim game.');
+    }
+  },
+
+  getClaimedLinks: async (): Promise<{ product_title: string, urls: string }[]> => {
+    const { data, error } = await supabase.rpc('get_claimed_links');
+    if (error) {
+      console.error('Error fetching claimed links:', error);
+      throw new Error(error.message || 'Gagal mengambil link klaim.');
+    }
+    return data || [];
   }
 };
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { storage } from '../../services/storage';
-import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy, Upload } from 'lucide-react';
+import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy, Upload, Gift, Download } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { useConfirm } from '../../contexts/ConfirmContext';
 import { formatRupiah } from '../../lib/checkout';
@@ -91,7 +91,8 @@ const ProfilePage = () => {
   const [referralInput, setReferralInput] = useState('');
   const [isApplyingReferral, setIsApplyingReferral] = useState(false);
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
-  const [rewardLinks, setRewardLinks] = useState<{id: number, title: string, price: string}[]>([]);
+  const [rewardLinks, setRewardLinks] = useState<{id: string, title: string, price: string}[]>([]);
+  const [claimedLinks, setClaimedLinks] = useState<{product_title: string, urls: string}[]>([]);
   const [isClaiming, setIsClaiming] = useState(false);
   const [uploadingReceiptId, setUploadingReceiptId] = useState<string | null>(null);
 
@@ -101,6 +102,7 @@ const ProfilePage = () => {
         fetchAllAdminData();
       } else {
         fetchUserData();
+        fetchClaimedLinks();
       }
     }
   }, [user]);
@@ -324,6 +326,15 @@ const ProfilePage = () => {
     }
   };
 
+  const fetchClaimedLinks = async () => {
+    try {
+      const data = await storage.getClaimedLinks();
+      setClaimedLinks(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleApplyReferral = async () => {
     if (!referralInput.trim()) return;
     setIsApplyingReferral(true);
@@ -344,7 +355,7 @@ const ProfilePage = () => {
   const handleOpenClaimModal = async () => {
     setIsClaimModalOpen(true);
     try {
-      const { data, error } = await supabase.from('links').select('id, title, price').eq('is_referral_reward', true);
+      const { data, error } = await supabase.from('links').select('id, title, price').eq('is_free_claim', true);
       if (error) throw error;
       if (data) setRewardLinks(data);
     } catch (err) {
@@ -352,16 +363,14 @@ const ProfilePage = () => {
     }
   };
 
-  const handleClaimReward = async (productId: number) => {
+  const handleClaimReward = async (productId: string) => {
     setIsClaiming(true);
     try {
-      const { error } = await supabase.rpc('claim_referral_reward', {
-        p_product_id: productId
-      });
-      if (error) throw error;
+      await storage.claimFreeGame(productId);
       alert("Game gratis berhasil diklaim!");
       setIsClaimModalOpen(false);
       fetchUserData();
+      fetchClaimedLinks();
     } catch (err: any) {
       alert("Gagal klaim: " + err.message);
     } finally {
@@ -1197,6 +1206,30 @@ const ProfilePage = () => {
           </div>
         </div>
       )}
+
+        {/* Claimed Games Section */}
+        {claimedLinks.length > 0 && (
+          <div className="mt-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-xl p-4 sm:p-6 shadow-sm border border-green-100 dark:border-green-800/50">
+            <h3 className="text-lg font-bold text-green-800 dark:text-green-400 mb-4 flex items-center gap-2">
+              <Gift className="w-5 h-5" /> Game Gratis Anda
+            </h3>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {claimedLinks.map((link, idx) => (
+                <div key={idx} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-green-100 dark:border-green-800/30">
+                  <div className="font-bold text-gray-900 dark:text-white mb-2">{link.product_title}</div>
+                  <a 
+                    href={link.urls} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-xs font-bold text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    <Download className="w-4 h-4" /> Unduh Game
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
       {/* Claim Modal */}
       {isClaimModalOpen && (

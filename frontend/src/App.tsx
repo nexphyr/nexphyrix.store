@@ -5,6 +5,7 @@ import LoginPage from './pages/Auth/LoginPage';
 import AdminLayout from './components/AdminLayout';
 import AdminOrders from './pages/Admin/AdminOrders';
 import AdminLinks from './pages/Admin/AdminLinks';
+import AdminFreeGames from './pages/Admin/AdminFreeGames';
 import AdminCategories from './pages/Admin/AdminCategories';
 import Settings from './pages/Admin/Settings';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -49,6 +50,7 @@ function App() {
                 <Route index element={<Navigate to="/admin/orders" replace />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="links" element={<AdminLinks />} />
+                <Route path="free-games" element={<AdminFreeGames />} />
                 <Route path="categories" element={<AdminCategories />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
