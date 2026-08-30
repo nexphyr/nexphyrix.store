@@ -385,13 +385,13 @@ const ProfilePage = () => {
 
           {/* Active Members Detailed List (Only show if > 0) */}
           {onlineMembers.length > 0 && (
-            <div className="bg-green-50 border border-green-100 rounded-2xl p-4 shadow-sm">
-              <h3 className="text-green-800 font-bold mb-3 flex items-center gap-2 text-sm">
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 rounded-2xl p-4 shadow-sm">
+              <h3 className="text-green-800 dark:text-green-400 font-bold mb-3 flex items-center gap-2 text-sm">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Member Sedang Online
               </h3>
               <div className="flex flex-wrap gap-2">
                 {onlineMembers.map((m, idx) => (
-                  <span key={idx} className="bg-white dark:bg-gray-900 px-3 py-1.5 rounded-lg border border-green-200 text-xs font-medium text-green-900 shadow-sm flex items-center gap-2">
+                  <span key={idx} className="bg-white dark:bg-gray-800 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-800 text-xs font-medium text-green-900 dark:text-green-300 shadow-sm flex items-center gap-2">
                     {m.full_name || m.email?.split('@')[0]}
                   </span>
                 ))}
