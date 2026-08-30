@@ -163,6 +163,23 @@ const ProfilePage = () => {
     }
   };
 
+  const handleCancelOrder = async (orderId: string) => {
+    if (!window.confirm("Apakah Anda yakin ingin membatalkan pesanan ini?")) return;
+    
+    try {
+      const { error } = await supabase.rpc('cancel_member_order', {
+        p_order_id: orderId
+      });
+      
+      if (error) throw error;
+      
+      setOrders(orders.map(o => o.id === orderId ? { ...o, status: 'cancelled' } : o));
+      alert("Pesanan berhasil dibatalkan.");
+    } catch (err: any) {
+      alert(err.message || "Gagal membatalkan pesanan.");
+    }
+  };
+
   const handleViewLinks = async (orderId: string) => {
     setLoadingLinks(true);
     setIsLinksModalOpen(true);
@@ -798,6 +815,14 @@ const ProfilePage = () => {
                             {order.checkout_method}
                           </span>
                         </div>
+                        {order.status === 'pending' && (
+                          <button 
+                            onClick={() => handleCancelOrder(order.id)}
+                            className="w-full sm:w-auto px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg shadow-sm transition-colors flex flex-shrink-0 items-center justify-center gap-2 whitespace-nowrap"
+                          >
+                            <X className="w-4 h-4" /> Batalkan Pesanan
+                          </button>
+                        )}
                         {order.status === 'completed' && (
                           <button 
                             onClick={() => handleViewLinks(order.id)}
