@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { storage } from '../../services/storage';
+import { useConfirm } from '../../contexts/ConfirmContext';
 
 interface Category {
   id: string;
@@ -9,6 +10,7 @@ interface Category {
 }
 
 const AdminCategories = () => {
+  const { confirm } = useConfirm();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState('');
@@ -54,7 +56,14 @@ const AdminCategories = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Apakah Anda yakin ingin menghapus kategori ini? (Pastikan tidak ada link di dalamnya)')) {
+    const isConfirmed = await confirm('Apakah Anda yakin ingin menghapus kategori ini? (Pastikan tidak ada link di dalamnya)', {
+      title: 'Hapus Kategori',
+      type: 'danger',
+      confirmText: 'Ya, Hapus',
+      cancelText: 'Batal'
+    });
+    
+    if (isConfirmed) {
       const links = await storage.getLinks(true);
       if (links.some(l => String(l.category_id) === String(id))) {
         showToast('Gagal menghapus kategori: Masih ada link di dalamnya.');

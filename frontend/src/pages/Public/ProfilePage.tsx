@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase';
 import { storage } from '../../services/storage';
 import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
+import { useConfirm } from '../../contexts/ConfirmContext';
 import { formatRupiah } from '../../lib/checkout';
 import profileImage from '../../assets/profile.png';
 import logoImage from '../../assets/nexphyrix.png';
@@ -54,6 +55,7 @@ interface Profile {
 
 const ProfilePage = () => {
   const { user, loading: authLoading, onlineUsers } = useAuth();
+  const { confirm } = useConfirm();
   const [orders, setOrders] = useState<Order[]>([]);
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
   const [userProfile, setUserProfile] = useState<Profile | null>(null);
@@ -164,7 +166,14 @@ const ProfilePage = () => {
   };
 
   const handleCancelOrder = async (orderId: string) => {
-    if (!window.confirm("Apakah Anda yakin ingin membatalkan pesanan ini?")) return;
+    const isConfirmed = await confirm("Apakah Anda yakin ingin membatalkan pesanan ini?", {
+      title: "Batalkan Pesanan",
+      type: "danger",
+      confirmText: "Ya, Batalkan",
+      cancelText: "Kembali"
+    });
+    
+    if (!isConfirmed) return;
     
     try {
       const { error } = await supabase.rpc('cancel_member_order', {
@@ -752,7 +761,7 @@ const ProfilePage = () => {
         {/* Orders List */}
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">
-            <h2 className="text-xl font-extrabold text-gray-900 dark:text-white">Riwayat Pesanan</h2>
+            <h2 className="text-xl font-extrabold text-gray-900 dark:white">Riwayat Pesanan</h2>
           </div>
           
           <div className="p-6">
@@ -1060,8 +1069,13 @@ const ProfilePage = () => {
                         <p className="text-xs text-gray-500 line-through">{link.price}</p>
                       </div>
                       <button
-                        onClick={() => {
-                          if (confirm(`Klaim game "${link.title}" secara gratis?`)) {
+                        onClick={async () => {
+                          const isConfirmed = await confirm(`Klaim game "${link.title}" secara gratis?`, {
+                            title: "Klaim Game Gratis",
+                            confirmText: "Klaim Sekarang",
+                            type: "info"
+                          });
+                          if (isConfirmed) {
                             handleClaimReward(link.id);
                           }
                         }}

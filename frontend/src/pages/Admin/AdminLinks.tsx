@@ -3,6 +3,7 @@ import { Search, Plus, Copy, Edit2, Trash2, ListPlus } from 'lucide-react';
 import { storage } from '../../services/storage';
 import AdminLinkModal from './AdminLinkModal';
 import AdminBulkLinkModal from './AdminBulkLinkModal';
+import { useConfirm } from '../../contexts/ConfirmContext';
 
 interface Link {
   id: string;
@@ -18,6 +19,7 @@ interface Link {
 }
 
 const AdminLinks = () => {
+  const { confirm } = useConfirm();
   const [links, setLinks] = useState<Link[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -82,7 +84,14 @@ const AdminLinks = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Apakah Anda yakin ingin menghapus link ini?')) {
+    const isConfirmed = await confirm('Apakah Anda yakin ingin menghapus link ini?', {
+      title: 'Hapus Link',
+      type: 'danger',
+      confirmText: 'Ya, Hapus',
+      cancelText: 'Batal'
+    });
+
+    if (isConfirmed) {
       try {
         await storage.deleteLink(id);
         showToast('Link berhasil dihapus.');
@@ -110,7 +119,15 @@ const AdminLinks = () => {
 
   const handleBulkDelete = async () => {
     if (selectedIds.size === 0) return;
-    if (window.confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.size} link terpilih?`)) {
+    
+    const isConfirmed = await confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.size} link terpilih?`, {
+      title: 'Hapus Link Masal',
+      type: 'danger',
+      confirmText: 'Ya, Hapus Semua',
+      cancelText: 'Batal'
+    });
+
+    if (isConfirmed) {
       try {
         await storage.deleteLinks(Array.from(selectedIds));
         showToast(`${selectedIds.size} link berhasil dihapus.`);

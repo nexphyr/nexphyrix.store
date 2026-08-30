@@ -3,6 +3,7 @@ import { Search, Filter, ShoppingBag, Trash2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { storage } from '../../services/storage';
 import { formatRupiah } from '../../lib/checkout';
+import { useConfirm } from '../../contexts/ConfirmContext';
 
 interface Order {
   id: string;
@@ -18,6 +19,7 @@ interface Order {
 }
 
 const AdminOrders = () => {
+  const { confirm } = useConfirm();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -71,7 +73,14 @@ const AdminOrders = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
+    const isConfirmed = await confirm('Apakah Anda yakin ingin menghapus pesanan ini?', {
+      title: 'Hapus Pesanan',
+      type: 'danger',
+      confirmText: 'Ya, Hapus',
+      cancelText: 'Batal'
+    });
+    
+    if (isConfirmed) {
       try {
         await storage.deleteOrder(id);
         showToast('Pesanan berhasil dihapus.');
@@ -99,7 +108,14 @@ const AdminOrders = () => {
 
   const handleBulkDelete = async () => {
     if (selectedIds.size === 0) return;
-    if (window.confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.size} pesanan terpilih?`)) {
+    const isConfirmed = await confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.size} pesanan terpilih?`, {
+      title: 'Hapus Pesanan Masal',
+      type: 'danger',
+      confirmText: 'Ya, Hapus Semua',
+      cancelText: 'Batal'
+    });
+
+    if (isConfirmed) {
       try {
         await storage.deleteOrders(Array.from(selectedIds));
         showToast(`${selectedIds.size} pesanan berhasil dihapus.`);

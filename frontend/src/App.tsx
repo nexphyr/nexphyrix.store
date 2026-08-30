@@ -3,13 +3,13 @@ import HomePage from './pages/Public/HomePage';
 import ProfilePage from './pages/Public/ProfilePage';
 import LoginPage from './pages/Auth/LoginPage';
 import AdminLayout from './components/AdminLayout';
-import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminOrders from './pages/Admin/AdminOrders';
 import AdminLinks from './pages/Admin/AdminLinks';
 import AdminCategories from './pages/Admin/AdminCategories';
 import Settings from './pages/Admin/Settings';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
+import { ConfirmProvider } from './contexts/ConfirmContext';
 import ThemeToggle from './components/ThemeToggle';
 
 const ProtectedRoute = ({ children, requireAdmin = false }: { children: React.ReactNode, requireAdmin?: boolean }) => {
@@ -25,36 +25,38 @@ const ProtectedRoute = ({ children, requireAdmin = false }: { children: React.Re
 function App() {
   return (
     <AuthProvider>
-      <CartProvider>
-        <Router>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            
-            {/* Protected User Routes */}
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            } />
+      <ConfirmProvider>
+        <CartProvider>
+          <Router>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              
+              {/* Protected User Routes */}
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              } />
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={
-              <ProtectedRoute requireAdmin={true}>
-                <AdminLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<AdminDashboard />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="links" element={<AdminLinks />} />
-              <Route path="categories" element={<AdminCategories />} />
-              <Route path="settings" element={<Settings />} />
-            </Route>
-          </Routes>
-          <ThemeToggle />
-        </Router>
-      </CartProvider>
+              {/* Admin Routes */}
+              <Route path="/admin" element={
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Navigate to="/admin/orders" replace />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="links" element={<AdminLinks />} />
+                <Route path="categories" element={<AdminCategories />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
+            </Routes>
+            <ThemeToggle />
+          </Router>
+        </CartProvider>
+      </ConfirmProvider>
     </AuthProvider>
   );
 }
