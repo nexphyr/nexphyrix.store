@@ -183,9 +183,56 @@ const ProfilePage = () => {
       if (error) throw error;
       
       setOrders(orders.map(o => o.id === orderId ? { ...o, status: 'cancelled' } : o));
-      alert("Pesanan berhasil dibatalkan.");
+      // alert("Pesanan berhasil dibatalkan.");
     } catch (err: any) {
       alert(err.message || "Gagal membatalkan pesanan.");
+    }
+  };
+
+  const handleContactAdmin = async (order: Order, platform: 'messenger' | 'telegram') => {
+    try {
+      let message = `Halo Admin, saya ingin konfirmasi pembayaran pesanan saya.\n\n`;
+      message += `ID Pesanan: ${order.order_number}\n`;
+      message += `Daftar Pesanan:\n`;
+      
+      order.order_items?.forEach((item) => {
+        message += `- ${item.product_title} - ${formatRupiah(item.unit_price)}\n`;
+      });
+      
+      message += `\nTotal Produk: ${order.total_items}\n`;
+      message += `Subtotal: ${formatRupiah(order.subtotal_amount)}\n`;
+      
+      if (order.is_member_order && order.discount_amount > 0) {
+        message += `Diskon Member: -${formatRupiah(order.discount_amount)}\n`;
+      }
+      
+      message += `Total Pembayaran: ${formatRupiah(order.total_amount)}\n\n`;
+      const methodCapitalized = platform.charAt(0).toUpperCase() + platform.slice(1);
+      message += `Checkout melalui: ${methodCapitalized}\n\n`;
+      message += `Berikut saya lampirkan bukti pembayaran.`;
+      
+      // Attempt copy
+      try {
+        await navigator.clipboard.writeText(message);
+      } catch (e) {
+        console.error("Gagal menyalin pesan", e);
+      }
+      
+      // Update checkout method in DB
+      await supabase.rpc('update_checkout_method', {
+        p_order_id: order.id,
+        p_method: platform
+      });
+      
+      // Update local state
+      setOrders(orders.map(o => o.id === order.id ? { ...o, checkout_method: platform } : o));
+      
+      // Open URL
+      const url = platform === 'messenger' ? 'https://m.me/zephyrus.yan' : 'https://t.me/nexphyrix';
+      window.open(url, '_blank');
+      
+    } catch (err: any) {
+      alert("Gagal memproses. Silakan coba lagi.");
     }
   };
 
@@ -819,18 +866,37 @@ const ProfilePage = () => {
                       </div>
                       <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto flex-shrink-0 justify-between sm:justify-start pt-3 sm:pt-0 border-t sm:border-0 border-gray-200 dark:border-gray-700 sm:border-l sm:pl-4">
                         <div className="flex items-center gap-2">
-                          <span className="text-gray-400 whitespace-nowrap">Checkout via</span>
-                          <span className="font-bold text-gray-700 dark:text-gray-300 capitalize px-3 py-1 bg-white dark:bg-gray-900 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
-                            {order.checkout_method}
-                          </span>
+                          {order.checkout_method !== 'pending' && (
+                            <>
+                              <span className="text-gray-400 whitespace-nowrap">Checkout via</span>
+                              <span className="font-bold text-gray-700 dark:text-gray-300 capitalize px-3 py-1 bg-white dark:bg-gray-900 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
+                                {order.checkout_method}
+                              </span>
+                            </>
+                          )}
                         </div>
                         {order.status === 'pending' && (
-                          <button 
-                            onClick={() => handleCancelOrder(order.id)}
-                            className="w-full sm:w-auto px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg shadow-sm transition-colors flex flex-shrink-0 items-center justify-center gap-2 whitespace-nowrap"
-                          >
-                            <X className="w-4 h-4" /> Batalkan Pesanan
-                          </button>
+                          <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto">
+                            <button 
+                              onClick={() => handleContactAdmin(order, 'messenger')}
+                              className="flex-1 sm:flex-none px-4 py-2 bg-[#006AFF] hover:bg-[#005AE0] text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
+                            >
+                              Messenger
+                            </button>
+                            <button 
+                              onClick={() => handleContactAdmin(order, 'telegram')}
+                              className="flex-1 sm:flex-none px-4 py-2 bg-[#2AABEE] hover:bg-[#2299D6] text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
+                            >
+                              Telegram
+                            </button>
+                            <button 
+                              onClick={() => handleCancelOrder(order.id)}
+                              className="flex-1 sm:flex-none px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
+                              title="Batalkan Pesanan"
+                            >
+                              <X className="w-4 h-4" /> Batal
+                            </button>
+                          </div>
                         )}
                         {order.status === 'completed' && (
                           <button 
