@@ -27,6 +27,7 @@ interface Link {
   };
   status?: string;
   price?: string;
+  is_active?: boolean;
   created_at: string;
 }
 
@@ -84,6 +85,7 @@ const HomePage = () => {
         description: link.description,
         status: link.status,
         price: link.price,
+        is_active: link.is_active,
         created_at: link.created_at,
         category: { name: cat?.name || 'Unknown', slug: cat?.slug || '' }
       };
@@ -233,17 +235,26 @@ const HomePage = () => {
                   )}
 
                   <div className="mt-auto pt-4 md:pt-6">
-                    <button
-                      onClick={() => addToCart({
-                        id: link.id,
-                        title: link.title,
-                        price: link.price || 'Rp 0'
-                      })}
-                      className="w-full btn btn-primary flex items-center justify-center gap-2 py-2.5 md:py-3 text-sm md:text-base"
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                      Tambah ke Keranjang
-                    </button>
+                    {link.is_active === false ? (
+                      <button
+                        disabled
+                        className="w-full btn bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed flex items-center justify-center gap-2 py-2.5 md:py-3 text-sm md:text-base font-bold rounded-lg shadow-sm"
+                      >
+                        Belum Tersedia
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => addToCart({
+                          id: link.id,
+                          title: link.title,
+                          price: link.price || 'Rp 0'
+                        })}
+                        className="w-full btn btn-primary flex items-center justify-center gap-2 py-2.5 md:py-3 text-sm md:text-base"
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                        Tambah ke Keranjang
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Copy, Edit2, Trash2, ListPlus } from 'lucide-react';
+import { Search, Plus, Copy, Edit2, Trash2, ListPlus, Eye, EyeOff } from 'lucide-react';
 import { storage } from '../../services/storage';
 import AdminLinkModal from './AdminLinkModal';
 import AdminBulkLinkModal from './AdminBulkLinkModal';
 import { useConfirm } from '../../contexts/ConfirmContext';
+import { supabase } from '../../lib/supabase';
 
 interface Link {
   id: string;
@@ -16,6 +17,7 @@ interface Link {
   category: { id: string; name: string; slug: string };
   category_id: string;
   is_referral_reward?: boolean;
+  is_active?: boolean;
 }
 
 const AdminLinks = () => {
@@ -81,6 +83,23 @@ const AdminLinks = () => {
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(''), 3000);
+  };
+
+  const handleToggleActive = async (link: Link) => {
+    try {
+      const { error } = await supabase
+        .from('links')
+        .update({ is_active: !link.is_active })
+        .eq('id', link.id);
+        
+      if (error) throw error;
+      
+      setLinks(links.map(l => l.id === link.id ? { ...l, is_active: !link.is_active } : l));
+      setToast(`Link ${!link.is_active ? 'diaktifkan' : 'dinonaktifkan'}.`);
+      setTimeout(() => setToast(''), 3000);
+    } catch (err: any) {
+      alert('Gagal mengubah status: ' + err.message);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -251,6 +270,13 @@ const AdminLinks = () => {
                         <Copy className="w-4 h-4" />
                       </button>
                     )}
+                    <button 
+                      onClick={() => handleToggleActive(link)}
+                      className={`${link.is_active === false ? 'text-gray-400 hover:text-gray-600' : 'text-green-600 hover:text-green-900'} mr-3`} 
+                      title={link.is_active === false ? "Aktifkan" : "Nonaktifkan"}
+                    >
+                      {link.is_active === false ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                     <button 
                       onClick={() => { setEditingLink({ ...link, category_id: link.category?.id }); setIsModalOpen(true); }}
                       className="text-indigo-600 hover:text-indigo-900 mr-3" title="Edit"

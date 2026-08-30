@@ -17,6 +17,7 @@ export interface Link {
   category_id: string;
   created_at: string;
   is_free_claim?: boolean;
+  is_active?: boolean;
 }
 
 export const storage = {

@@ -18,6 +18,7 @@ interface LinkData {
   price?: string;
   category_id: string;
   is_referral_reward?: boolean;
+  is_active?: boolean;
 }
 
 interface Props {
@@ -35,6 +36,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
   const [price, setPrice] = useState(link?.price || '');
   const [categoryId, setCategoryId] = useState<string>(link?.category_id || '');
   const [isReferralReward, setIsReferralReward] = useState(link?.is_referral_reward || false);
+  const [isActive, setIsActive] = useState(link?.is_active ?? true);
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -90,6 +92,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
       price,
       category_id: categoryId,
       is_referral_reward: isReferralReward,
+      is_active: isActive,
       ...(isGta ? { status } : { urls })
     };
 
@@ -230,17 +233,32 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
             />
           </div>
 
-          <div className="flex items-center gap-2 pt-2 pb-2">
-            <input 
-              type="checkbox" 
-              id="is_referral_reward"
-              checked={isReferralReward} 
-              onChange={e => setIsReferralReward(e.target.checked)}
-              className="w-4 h-4 text-primary rounded focus:ring-primary border-gray-300"
-            />
-            <label htmlFor="is_referral_reward" className="text-sm font-bold text-gray-700 dark:text-gray-300">
-              Bisa Diklaim Gratis via Fitur Referral
-            </label>
+          <div className="flex flex-col gap-3 pt-2 pb-2 border-t border-gray-100 dark:border-gray-800">
+            <div className="flex items-center gap-2">
+              <input 
+                type="checkbox" 
+                id="is_active"
+                checked={isActive} 
+                onChange={e => setIsActive(e.target.checked)}
+                className="w-4 h-4 text-primary rounded focus:ring-primary border-gray-300"
+              />
+              <label htmlFor="is_active" className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                Tombol "Tambah ke Keranjang" Aktif
+              </label>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input 
+                type="checkbox" 
+                id="is_referral_reward"
+                checked={isReferralReward} 
+                onChange={e => setIsReferralReward(e.target.checked)}
+                className="w-4 h-4 text-primary rounded focus:ring-primary border-gray-300"
+              />
+              <label htmlFor="is_referral_reward" className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                Bisa Diklaim Gratis via Fitur Referral
+              </label>
+            </div>
           </div>
 
           <div className="pt-4 flex justify-end gap-2">
