@@ -17,7 +17,7 @@ const AdminLayout = () => {
   ];
 
   return (
-    <div className="h-screen bg-gray-100 flex overflow-hidden">
+    <div className="h-screen bg-gray-100 dark:bg-gray-950 flex overflow-hidden transition-colors duration-300">
       {/* Mobile sidebar toggle */}
       <div className="lg:hidden fixed top-0 left-0 w-full bg-primary border-b border-primary/20 p-4 z-20 flex justify-between items-center shadow-md">
         <span className="font-extrabold text-xl text-white tracking-wide">Admin Panel</span>
@@ -27,9 +27,9 @@ const AdminLayout = () => {
       </div>
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-10 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto shadow-xl ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`fixed inset-y-0 left-0 z-10 w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto shadow-xl ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-full flex flex-col pt-16 lg:pt-0">
-          <div className="flex items-center justify-center h-20 border-b border-gray-100 hidden lg:flex bg-gradient-to-r from-primary to-accent">
+          <div className="flex items-center justify-center h-20 border-b border-gray-100 dark:border-gray-800 hidden lg:flex bg-gradient-to-r from-primary to-accent">
             <span className="text-2xl font-extrabold text-white tracking-wider">Admin Panel</span>
           </div>
           
@@ -41,7 +41,7 @@ const AdminLayout = () => {
                   key={item.name}
                   to={item.href}
                   className={`flex items-center px-4 py-3 rounded-xl transition-all font-semibold ${
-                    isActive ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-[1.02]' : 'text-gray-600 hover:bg-secondary hover:text-primary'
+                    isActive ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-[1.02]' : 'text-gray-600 dark:text-gray-400 hover:bg-secondary hover:text-primary dark:hover:bg-gray-800 dark:hover:text-primary'
                   }`}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -52,10 +52,10 @@ const AdminLayout = () => {
             })}
           </nav>
           
-          <div className="p-4 border-t border-gray-100 space-y-2">
+          <div className="p-4 border-t border-gray-100 dark:border-gray-800 space-y-2">
             <Link
               to="/"
-              className="flex w-full items-center px-4 py-3 text-blue-600 rounded-xl hover:bg-blue-50 hover:text-blue-700 transition-colors font-bold"
+              className="flex w-full items-center px-4 py-3 text-blue-600 dark:text-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-700 dark:hover:text-blue-300 transition-colors font-bold"
             >
               <Home className="w-5 h-5 mr-3" />
               Kembali ke Beranda
@@ -65,7 +65,7 @@ const AdminLayout = () => {
                 logout();
                 setSidebarOpen(false);
               }}
-              className="flex w-full items-center px-4 py-3 text-red-600 rounded-xl hover:bg-red-50 hover:text-red-700 transition-colors font-bold"
+              className="flex w-full items-center px-4 py-3 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-300 transition-colors font-bold"
             >
               <LogOut className="w-5 h-5 mr-3" />
               Keluar Akun
@@ -76,7 +76,7 @@ const AdminLayout = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden pt-16 lg:pt-0">
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#F0F5FA] p-6 lg:p-10">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#F0F5FA] dark:bg-gray-950 p-6 lg:p-10 transition-colors duration-300">
           <div className="max-w-7xl mx-auto">
             <Outlet />
           </div>
