@@ -982,8 +982,9 @@ const ProfilePage = () => {
                             </button>
                             <button 
                               onClick={() => handleCancelOrder(order.id)}
-                              className="flex-1 sm:flex-none px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
-                              title="Batalkan Pesanan"
+                              disabled={order.status === 'processing'}
+                              className={`flex-1 sm:flex-none px-4 py-2 text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap ${order.status === 'processing' ? 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 cursor-not-allowed opacity-70' : 'bg-red-100 hover:bg-red-200 text-red-700'}`}
+                              title={order.status === 'processing' ? "Pesanan sedang diproses dan tidak dapat dibatalkan" : "Batalkan Pesanan"}
                             >
                               <X className="w-4 h-4" /> Batal
                             </button>
