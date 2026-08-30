@@ -44,6 +44,12 @@ interface Profile {
   birth_date?: string;
   bio?: string;
   created_at: string;
+  referral_code?: string;
+  referred_by?: string;
+  referral_count?: number;
+  available_free_claims?: number;
+  used_free_claims?: number;
+  has_used_new_user_promo?: boolean;
 }
 
 const ProfilePage = () => {
@@ -75,6 +81,13 @@ const ProfilePage = () => {
   const [selectedOrderLinks, setSelectedOrderLinks] = useState<{product_title: string, urls: string}[] | null>(null);
   const [isLinksModalOpen, setIsLinksModalOpen] = useState(false);
   const [loadingLinks, setLoadingLinks] = useState(false);
+
+  // Referral states
+  const [referralInput, setReferralInput] = useState('');
+  const [isApplyingReferral, setIsApplyingReferral] = useState(false);
+  const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
+  const [rewardLinks, setRewardLinks] = useState<{id: number, title: string, price: string}[]>([]);
+  const [isClaiming, setIsClaiming] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -230,6 +243,50 @@ const ProfilePage = () => {
       alert("Gagal menyimpan profil: " + err.message);
     } finally {
       setIsSavingProfile(false);
+    }
+  };
+
+  const handleApplyReferral = async () => {
+    if (!referralInput.trim()) return;
+    setIsApplyingReferral(true);
+    try {
+      const { error } = await supabase.rpc('set_referred_by', {
+        p_referral_code: referralInput.trim().toUpperCase()
+      });
+      if (error) throw error;
+      alert("Kode referral berhasil diterapkan!");
+      fetchUserData();
+    } catch (err: any) {
+      alert("Gagal: " + err.message);
+    } finally {
+      setIsApplyingReferral(false);
+    }
+  };
+
+  const handleOpenClaimModal = async () => {
+    setIsClaimModalOpen(true);
+    try {
+      const { data, error } = await supabase.from('links').select('id, title, price').eq('is_referral_reward', true);
+      if (data) setRewardLinks(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleClaimReward = async (productId: number) => {
+    setIsClaiming(true);
+    try {
+      const { error } = await supabase.rpc('claim_referral_reward', {
+        p_product_id: productId
+      });
+      if (error) throw error;
+      alert("Game gratis berhasil diklaim!");
+      setIsClaimModalOpen(false);
+      fetchUserData();
+    } catch (err: any) {
+      alert("Gagal klaim: " + err.message);
+    } finally {
+      setIsClaiming(false);
     }
   };
 
@@ -594,6 +651,86 @@ const ProfilePage = () => {
           </div>
         </div>
 
+        {/* Referral Section */}
+        <div className="bg-gradient-to-r from-indigo-900 to-purple-900 rounded-3xl shadow-lg border border-purple-800 p-6 relative overflow-hidden text-white">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500 opacity-20 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+          <div className="relative z-10">
+            <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5 text-purple-300" /> Program Referral
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p className="text-sm text-purple-200 mb-2">Kode Referral Anda:</p>
+                <div className="flex items-center gap-2">
+                  <div className="bg-black/30 px-4 py-2 rounded-xl font-mono text-lg tracking-wider font-bold border border-white/10 flex-1">
+                    {userProfile?.referral_code || 'Memuat...'}
+                  </div>
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(userProfile?.referral_code || '');
+                      alert('Kode disalin!');
+                    }}
+                    className="p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors border border-white/10"
+                    title="Salin Kode"
+                  >
+                    <Copy className="w-5 h-5" />
+                  </button>
+                </div>
+                <p className="text-xs text-purple-300 mt-2">
+                  Undang 5 teman menggunakan kode ini untuk mendapatkan 1 game GRATIS!
+                </p>
+              </div>
+
+              <div className="bg-black/20 p-4 rounded-2xl border border-white/5 flex flex-col justify-center">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-purple-200">Teman Diundang:</span>
+                  <span className="font-bold text-xl">{userProfile?.referral_count || 0}</span>
+                </div>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm text-purple-200">Tiket Klaim Gratis:</span>
+                  <span className="font-bold text-xl text-green-400">{userProfile?.available_free_claims || 0}</span>
+                </div>
+                
+                {(!userProfile?.referred_by) ? (
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      placeholder="Masukkan Kode Teman" 
+                      value={referralInput}
+                      onChange={e => setReferralInput(e.target.value)}
+                      className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-purple-400 placeholder-purple-300/50 uppercase"
+                    />
+                    <button 
+                      onClick={handleApplyReferral}
+                      disabled={isApplyingReferral}
+                      className="px-4 py-1.5 bg-purple-500 hover:bg-purple-600 rounded-lg text-sm font-bold transition-colors disabled:opacity-50"
+                    >
+                      Gunakan
+                    </button>
+                  </div>
+                ) : (
+                  <div className="text-sm text-purple-300 bg-white/5 px-3 py-2 rounded-lg text-center border border-white/10">
+                    Diundang oleh: <span className="font-bold">{userProfile.referred_by}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {(userProfile?.available_free_claims || 0) > 0 && (
+              <div className="mt-6 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p className="text-sm text-purple-200">Anda memiliki tiket gratis yang belum diklaim!</p>
+                <button 
+                  onClick={handleOpenClaimModal}
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-black rounded-xl shadow-lg hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <Package className="w-5 h-5" /> Klaim Game Gratis Sekarang
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Orders List */}
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">
@@ -864,6 +1001,54 @@ const ProfilePage = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Claim Modal */}
+      {isClaimModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-800 flex flex-col max-h-[90vh]">
+            <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-800">
+              <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <Package className="w-5 h-5 text-green-500" /> Pilih Game Gratis
+              </h3>
+              <button 
+                onClick={() => setIsClaimModalOpen(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto flex-1">
+              {rewardLinks.length === 0 ? (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                  Belum ada game yang tersedia untuk diklaim saat ini.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {rewardLinks.map(link => (
+                    <div key={link.id} className="flex items-center justify-between p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                      <div>
+                        <h4 className="font-bold text-sm text-gray-900 dark:text-white">{link.title}</h4>
+                        <p className="text-xs text-gray-500 line-through">{link.price}</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Klaim game "${link.title}" secara gratis?`)) {
+                            handleClaimReward(link.id);
+                          }
+                        }}
+                        disabled={isClaiming}
+                        className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
+                      >
+                        Klaim Gratis
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

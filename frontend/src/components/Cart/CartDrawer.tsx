@@ -88,8 +88,11 @@ const CartDrawer = () => {
               <>
                 {memberDiscount > 0 && (
                   <div className="flex justify-between items-end mb-2 text-green-600">
-                    <span className="font-bold flex items-center gap-1">
-                      Diskon Member Aktif
+                    <span className="font-bold flex flex-col">
+                      <span>Diskon Member Aktif</span>
+                      <span className="text-[10px] bg-green-100 text-green-800 px-1.5 py-0.5 rounded w-fit mt-1 uppercase tracking-wider">
+                        {user.has_used_new_user_promo === false ? 'Promo Pengguna Baru' : 'Promo Reguler'}
+                      </span>
                     </span>
                     <span className="font-bold">- {formatRupiah(memberDiscount)}</span>
                   </div>
@@ -107,10 +110,10 @@ const CartDrawer = () => {
                   <span className="text-2xl font-black text-gray-900 dark:text-white">{formatRupiah(totalAmount)}</span>
                 </div>
                 
-                {totalItems >= 11 && (
+                {totalItems >= 6 && (
                   <div className="mb-4 bg-blue-50 border border-blue-100 rounded-xl p-3 flex flex-col items-center text-center gap-2">
                     <p className="text-sm text-blue-800 font-medium">
-                      Login dengan Google dan hemat <b>{formatRupiah(Math.floor(totalItems / 11) * 10000)}</b> untuk pesanan ini!
+                      Login dengan Google sekarang untuk mendapatkan promo pengguna baru (Beli 5 Gratis 1) dan hemat <b>Rp 10.000</b>!
                     </p>
                     <button 
                       onClick={signInWithGoogle}

@@ -8,6 +8,7 @@ interface User {
   role: string;
   full_name?: string;
   avatar_url?: string;
+  has_used_new_user_promo?: boolean;
 }
 
 interface OnlineUser {
@@ -56,7 +57,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           email: session.user.email || '', 
           role: 'user',
           full_name: session.user.user_metadata?.full_name,
-          avatar_url: session.user.user_metadata?.avatar_url
+          avatar_url: session.user.user_metadata?.avatar_url,
+          has_used_new_user_promo: false
         });
       } else if (data) {
         setUser({ 
@@ -64,7 +66,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           email: data.email || session.user.email || '', 
           role: data.role || 'user',
           full_name: data.full_name,
-          avatar_url: data.avatar_url
+          avatar_url: data.avatar_url,
+          has_used_new_user_promo: data.has_used_new_user_promo
         });
       }
     } catch (err) {

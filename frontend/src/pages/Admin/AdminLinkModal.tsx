@@ -17,6 +17,7 @@ interface LinkData {
   description: string;
   price?: string;
   category_id: string;
+  is_referral_reward?: boolean;
 }
 
 interface Props {
@@ -33,6 +34,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
   const [description, setDescription] = useState(link?.description || '');
   const [price, setPrice] = useState(link?.price || '');
   const [categoryId, setCategoryId] = useState<string>(link?.category_id || '');
+  const [isReferralReward, setIsReferralReward] = useState(link?.is_referral_reward || false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -87,6 +89,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
       description,
       price,
       category_id: categoryId,
+      is_referral_reward: isReferralReward,
       ...(isGta ? { status } : { urls })
     };
 
@@ -225,6 +228,19 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
               onChange={handlePriceChange} 
               placeholder="Contoh: 50000 (Otomatis jadi Rp 50.000) atau Gratis"
             />
+          </div>
+
+          <div className="flex items-center gap-2 pt-2 pb-2">
+            <input 
+              type="checkbox" 
+              id="is_referral_reward"
+              checked={isReferralReward} 
+              onChange={e => setIsReferralReward(e.target.checked)}
+              className="w-4 h-4 text-primary rounded focus:ring-primary border-gray-300"
+            />
+            <label htmlFor="is_referral_reward" className="text-sm font-bold text-gray-700 dark:text-gray-300">
+              Bisa Diklaim Gratis via Fitur Referral
+            </label>
           </div>
 
           <div className="pt-4 flex justify-end gap-2">

@@ -100,8 +100,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   // Calculate member discount for UI (Backend still calculates final truth)
   const isMember = !!user;
-  const discountTier = Math.floor(totalItems / 11);
-  const memberDiscount = isMember ? discountTier * 10000 : 0;
+  let memberDiscount = 0;
+  
+  if (isMember) {
+    if (user.has_used_new_user_promo === false) {
+      if (totalItems >= 6) {
+        memberDiscount = 10000;
+      }
+    } else {
+      const discountTier = Math.floor(totalItems / 11);
+      memberDiscount = discountTier * 10000;
+    }
+  }
   const finalTotal = Math.max(totalAmount - memberDiscount, 0);
 
   return (

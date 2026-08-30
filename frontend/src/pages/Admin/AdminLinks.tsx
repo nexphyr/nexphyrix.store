@@ -14,6 +14,7 @@ interface Link {
   price?: string;
   category: { id: string; name: string; slug: string };
   category_id: string;
+  is_referral_reward?: boolean;
 }
 
 const AdminLinks = () => {
@@ -200,7 +201,16 @@ const AdminLinks = () => {
                       onChange={(e) => handleSelectOne(link.id, e.target.checked)}
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{link.title}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <div className="flex flex-col">
+                      <span>{link.title}</span>
+                      {link.is_referral_reward && (
+                        <span className="mt-1 w-fit bg-purple-100 text-purple-800 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
+                          Referral Reward
+                        </span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium bg-blue-100 text-blue-800">
                       {link.category.name}
