@@ -78,7 +78,7 @@ const AdminCategories = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Kelola Kategori</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Kelola Kategori</h1>
         <button 
           onClick={() => setIsAdding(true)}
           className="btn btn-primary"
@@ -88,10 +88,10 @@ const AdminCategories = () => {
         </button>
       </div>
       <div className="glass-card rounded-2xl overflow-hidden max-w-3xl mt-6">
-        <ul className="divide-y divide-gray-100">
+        <ul className="divide-y divide-gray-100 dark:divide-gray-800">
           
           {isAdding && (
-            <li className="p-5 bg-white/50 flex flex-col sm:flex-row gap-3 items-center border-b border-primary/20">
+            <li className="p-5 bg-white/50 dark:bg-gray-800/50 flex flex-col sm:flex-row gap-3 items-center border-b border-primary/20">
               <input 
                 type="text" 
                 autoFocus
@@ -110,7 +110,7 @@ const AdminCategories = () => {
           {loading ? (
             <li className="p-8 text-center text-primary font-bold animate-pulse">Loading...</li>
           ) : categories.map((cat) => (
-            <li key={cat.id} className="p-5 flex flex-col sm:flex-row items-center justify-between hover:bg-white/60 transition-colors group">
+            <li key={cat.id} className="p-5 flex flex-col sm:flex-row items-center justify-between hover:bg-white/60 dark:hover:bg-gray-800/60 transition-colors group">
               {editingId === cat.id ? (
                 <div className="flex flex-col sm:flex-row gap-3 w-full">
                   <input 
@@ -128,19 +128,19 @@ const AdminCategories = () => {
               ) : (
                 <>
                   <div className="flex-1 mb-3 sm:mb-0 w-full">
-                    <span className="font-extrabold text-gray-900 block sm:inline">{cat.name}</span>
+                    <span className="font-extrabold text-gray-900 dark:text-white block sm:inline">{cat.name}</span>
                     <span className="sm:ml-4 text-xs font-semibold text-primary/60 bg-primary/10 px-2 py-1 rounded-full uppercase tracking-wider">slug: {cat.slug}</span>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto justify-end opacity-100 sm:opacity-50 sm:group-hover:opacity-100 transition-opacity">
                     <button 
                       onClick={() => { setEditingId(cat.id); setEditName(cat.name); }} 
-                      className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-lg transition-colors" title="Edit"
+                      className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 p-2 rounded-lg transition-colors" title="Edit"
                     >
                       <Edit2 className="w-5 h-5" />
                     </button>
                     <button 
                       onClick={() => handleDelete(cat.id)} 
-                      className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-colors" title="Delete"
+                      className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 p-2 rounded-lg transition-colors" title="Delete"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>

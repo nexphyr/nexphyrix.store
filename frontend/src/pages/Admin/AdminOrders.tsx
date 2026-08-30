@@ -168,14 +168,14 @@ const AdminOrders = () => {
         )}
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
         {/* Toolbar */}
-        <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row gap-4 justify-between items-center">
+        <div className="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 flex flex-col sm:flex-row gap-4 justify-between items-center">
           <div className="relative w-full sm:w-64">
             <input
               type="text"
               placeholder="Cari ID, nama, atau email..."
-              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm text-gray-900 dark:text-white"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -184,7 +184,7 @@ const AdminOrders = () => {
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Filter className="w-4 h-4 text-gray-400" />
             <select
-              className="w-full sm:w-auto bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full sm:w-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-gray-900 dark:text-white"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
@@ -200,12 +200,12 @@ const AdminOrders = () => {
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-gray-50 text-gray-500 uppercase font-semibold text-xs tracking-wider">
+            <thead className="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 uppercase font-semibold text-xs tracking-wider">
               <tr>
                 <th className="px-6 py-4 w-12">
                   <input 
                     type="checkbox" 
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-blue-600 focus:ring-blue-500"
                     onChange={handleSelectAll}
                     checked={filteredOrders.length > 0 && selectedIds.size === filteredOrders.length}
                   />
@@ -219,7 +219,7 @@ const AdminOrders = () => {
                 <th className="px-6 py-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {loading ? (
                 <tr>
                   <td colSpan={8} className="px-6 py-8 text-center text-gray-400">Memuat data...</td>
@@ -227,49 +227,49 @@ const AdminOrders = () => {
               ) : filteredOrders.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
-                    <ShoppingBag className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+                    <ShoppingBag className="w-10 h-10 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
                     Tidak ada pesanan ditemukan.
                   </td>
                 </tr>
               ) : (
                 filteredOrders.map(order => (
-                  <tr key={order.id} className={`transition-colors ${selectedIds.has(order.id) ? 'bg-blue-50/50' : 'hover:bg-gray-50/50'}`}>
+                  <tr key={order.id} className={`transition-colors ${selectedIds.has(order.id) ? 'bg-blue-50/50 dark:bg-blue-900/20' : 'hover:bg-gray-50/50 dark:hover:bg-gray-800/50'}`}>
                     <td className="px-6 py-4">
                       <input 
                         type="checkbox" 
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-blue-600 focus:ring-blue-500"
                         checked={selectedIds.has(order.id)}
                         onChange={(e) => handleSelectOne(order.id, e.target.checked)}
                       />
                     </td>
-                    <td className="px-6 py-4 font-bold text-gray-900">{order.order_number}</td>
+                    <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">{order.order_number}</td>
                     <td className="px-6 py-4">
                       {order.customer_name ? (
                         <div>
-                          <p className="font-medium text-gray-900">{order.customer_name}</p>
-                          <p className="text-xs text-gray-500">{order.customer_email}</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{order.customer_name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{order.customer_email}</p>
                         </div>
                       ) : (
-                        <span className="text-gray-400 italic">Guest</span>
+                        <span className="text-gray-400 dark:text-gray-500 italic">Guest</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
                       {order.is_member_order ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-yellow-100 text-yellow-800">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
                           Member
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-600">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
                           Guest
                         </span>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <p className="font-black text-gray-900">{formatRupiah(order.total_amount)}</p>
-                      <p className="text-xs text-gray-500">{order.total_items} item</p>
+                      <p className="font-black text-gray-900 dark:text-white">{formatRupiah(order.total_amount)}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{order.total_items} item</p>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="capitalize text-gray-700 font-medium">{order.checkout_method}</span>
+                      <span className="capitalize text-gray-700 dark:text-gray-300 font-medium">{order.checkout_method}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${getStatusColor(order.status)}`}>
@@ -281,7 +281,7 @@ const AdminOrders = () => {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <select 
-                          className="bg-white border border-gray-200 rounded px-2 py-1 text-xs font-medium text-gray-700 focus:outline-none"
+                          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 focus:outline-none"
                           value={order.status}
                           onChange={(e) => updateOrderStatus(order.id, e.target.value)}
                         >
@@ -292,7 +292,7 @@ const AdminOrders = () => {
                         </select>
                         <button 
                           onClick={() => handleDelete(order.id)} 
-                          className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors" 
+                          className="text-red-500 hover:text-red-700 dark:hover:text-red-400 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" 
                           title="Hapus"
                         >
                           <Trash2 className="w-4 h-4" />

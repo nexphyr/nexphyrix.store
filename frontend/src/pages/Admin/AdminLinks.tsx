@@ -142,7 +142,7 @@ const AdminLinks = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Semua Link</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Semua Link</h1>
         <div className="flex gap-2">
           {selectedIds.size > 0 && (
             <button 
@@ -170,14 +170,14 @@ const AdminLinks = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow mb-6 p-4">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow mb-6 p-4">
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400" />
           </div>
           <input
             type="text"
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white"
             placeholder="Cari judul game..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -187,38 +187,38 @@ const AdminLinks = () => {
 
       <div className="glass-card rounded-2xl overflow-hidden mt-6">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50/50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
+            <thead className="bg-gray-50/50 dark:bg-gray-800/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-12">
                   <input 
                     type="checkbox" 
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-blue-600 focus:ring-blue-500"
                     onChange={handleSelectAll}
                     checked={links.length > 0 && selectedIds.size === links.length}
                   />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">URL / Status</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Judul</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kategori</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Harga</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">URL / Status</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Aksi</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
               {loading ? (
                 <tr><td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">Loading...</td></tr>
               ) : links.map((link) => (
-                <tr key={link.id} className={selectedIds.has(link.id) ? 'bg-blue-50/50' : ''}>
+                <tr key={link.id} className={selectedIds.has(link.id) ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <input 
                       type="checkbox" 
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-blue-600 focus:ring-blue-500"
                       checked={selectedIds.has(link.id)}
                       onChange={(e) => handleSelectOne(link.id, e.target.checked)}
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                     <div className="flex flex-col">
                       <span>{link.title}</span>
                       {link.is_referral_reward && (
@@ -233,12 +233,12 @@ const AdminLinks = () => {
                       {link.category.name}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 font-semibold">
                     {link.price || '-'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">
                     {link.category.slug === 'gta-v-mod-nusantara' ? (
-                      <span className="font-semibold text-gray-700">{link.status}</span>
+                      <span className="font-semibold text-gray-700 dark:text-gray-300">{link.status}</span>
                     ) : (
                       link.urls && link.urls.length > 1 
                         ? <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold">{link.urls.length} Links</span>

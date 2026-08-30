@@ -26,7 +26,7 @@
   }
   
   .glass-card {
-    @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-xl;
+    @apply bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border border-white/40 dark:border-gray-800/40 shadow-xl;
   }
 }
 

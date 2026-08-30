@@ -54,7 +54,7 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Dashboard</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {statCards.map((stat) => (
@@ -64,24 +64,24 @@ const AdminDashboard = () => {
               <stat.icon className="w-8 h-8" />
             </div>
             <div className="relative z-10">
-              <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{stat.name}</p>
-              <p className="text-4xl font-extrabold text-gray-900">{stat.value}</p>
+              <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{stat.name}</p>
+              <p className="text-4xl font-extrabold text-gray-900 dark:text-white">{stat.value}</p>
             </div>
           </div>
         ))}
       </div>
 
       <div className="glass-card rounded-2xl overflow-hidden mt-10">
-        <div className="px-6 py-5 border-b border-gray-100 flex items-center bg-white/50">
+        <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center bg-white/50 dark:bg-gray-800/50">
           <Clock className="w-5 h-5 text-primary mr-3" />
-          <h2 className="text-lg font-bold text-gray-900">Link Terbaru</h2>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Link Terbaru</h2>
         </div>
-        <ul className="divide-y divide-gray-200">
+        <ul className="divide-y divide-gray-200 dark:divide-gray-800">
           {stats.recentLinks.map((link) => (
             <li key={link.id} className="px-6 py-4 flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-900">{link.title}</p>
-                <p className="text-sm text-gray-500">{link.category.name}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{link.title}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{link.category.name}</p>
               </div>
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                 Baru
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
             </li>
           ))}
           {stats.recentLinks.length === 0 && (
-            <li className="px-6 py-4 text-sm text-gray-500">Belum ada link.</li>
+            <li className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Belum ada link.</li>
           )}
         </ul>
       </div>
