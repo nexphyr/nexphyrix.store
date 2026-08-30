@@ -245,14 +245,23 @@ export const storage = {
   },
 
   updateOrderReceipt: async (orderId: string, receiptUrl: string): Promise<void> => {
-    const { error } = await supabase
-      .from('orders')
-      .update({ payment_receipt_url: receiptUrl })
-      .eq('id', orderId);
+    // Try updating via RPC first to bypass RLS for normal users
+    const { error: rpcError } = await supabase.rpc('update_order_receipt', {
+      p_order_id: orderId,
+      p_receipt_url: receiptUrl
+    });
 
-    if (error) {
-      console.error('Error updating order receipt:', error);
-      throw new Error(error.message || 'Gagal menyimpan tautan bukti pembayaran ke pesanan.');
+    if (rpcError) {
+      // Fallback to direct update if RPC doesn't exist yet (for admin or if RLS allows)
+      const { error } = await supabase
+        .from('orders')
+        .update({ payment_receipt_url: receiptUrl })
+        .eq('id', orderId);
+
+      if (error) {
+        console.error('Error updating order receipt:', error);
+        throw new Error(error.message || 'Gagal menyimpan tautan bukti pembayaran ke pesanan.');
+      }
     }
   }
 };
