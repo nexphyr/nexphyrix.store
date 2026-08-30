@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { storage } from '../../services/storage';
-import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy, Upload, Gift, Download } from 'lucide-react';
+import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy, Upload, Gift } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { useConfirm } from '../../contexts/ConfirmContext';
 import { formatRupiah } from '../../lib/checkout';
@@ -1214,19 +1214,46 @@ const ProfilePage = () => {
               <Gift className="w-5 h-5" /> Game Gratis Anda
             </h3>
             <div className="grid gap-4 sm:grid-cols-2">
-              {claimedLinks.map((link, idx) => (
-                <div key={idx} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-green-100 dark:border-green-800/30">
-                  <div className="font-bold text-gray-900 dark:text-white mb-2">{link.product_title}</div>
-                  <a 
-                    href={link.urls} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-xs font-bold text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg transition-colors"
-                  >
-                    <Download className="w-4 h-4" /> Unduh Game
-                  </a>
-                </div>
-              ))}
+              {claimedLinks.map((link, idx) => {
+                let parsedUrls: string[] = [];
+                try {
+                  parsedUrls = JSON.parse(link.urls);
+                } catch (e) {
+                  if (link.urls) parsedUrls = [link.urls];
+                }
+
+                return (
+                  <div key={idx} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-green-100 dark:border-green-800/30">
+                    <div className="font-bold text-gray-900 dark:text-white mb-3 pb-2 border-b border-gray-100 dark:border-gray-700">{link.product_title}</div>
+                    
+                    {parsedUrls.length > 0 ? (
+                      <div className="space-y-2">
+                        {parsedUrls.map((url, i) => (
+                          <div key={i} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between bg-gray-50 dark:bg-gray-900/50 p-3 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm">
+                            <span className="text-sm font-medium text-gray-600 dark:text-gray-400 break-all line-clamp-1">{url}</span>
+                            <div className="flex gap-2 w-full sm:w-auto">
+                              <button 
+                                onClick={() => {
+                                  navigator.clipboard.writeText(url);
+                                  alert('Link disalin ke clipboard!');
+                                }}
+                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors whitespace-nowrap border border-gray-200 dark:border-gray-700"
+                              >
+                                <Copy className="w-3 h-3" /> Salin
+                              </button>
+                              <a href={url} target="_blank" rel="noreferrer" className="flex-1 sm:flex-none text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap">
+                                Buka Link
+                              </a>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500 dark:text-gray-400 italic">Link belum tersedia untuk produk ini.</p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
