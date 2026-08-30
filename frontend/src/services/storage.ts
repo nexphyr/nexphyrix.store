@@ -244,6 +244,23 @@ export const storage = {
     return data.publicUrl;
   },
 
+  deletePaymentReceipt: async (receiptUrl: string): Promise<void> => {
+    try {
+      const urlParts = receiptUrl.split('/payment_receipts/');
+      if (urlParts.length === 2) {
+        const filePath = urlParts[1];
+        const { error } = await supabase.storage
+          .from('payment_receipts')
+          .remove([filePath]);
+        if (error) {
+          console.error('Error deleting old receipt:', error);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to parse or delete old receipt', e);
+    }
+  },
+
   updateOrderReceipt: async (orderId: string, receiptUrl: string): Promise<void> => {
     // Try updating via RPC first to bypass RLS for normal users
     let rpcFailed = false;

@@ -369,12 +369,15 @@ const ProfilePage = () => {
     }
   };
 
-  const handleUploadReceipt = async (orderId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadReceipt = async (orderId: string, e: React.ChangeEvent<HTMLInputElement>, oldReceiptUrl?: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setUploadingReceiptId(orderId);
     try {
+      if (oldReceiptUrl) {
+        await storage.deletePaymentReceipt(oldReceiptUrl);
+      }
       const url = await storage.uploadPaymentReceipt(file, orderId);
       await storage.updateOrderReceipt(orderId, url);
       
@@ -919,9 +922,36 @@ const ProfilePage = () => {
                         {(order.status === 'pending' || order.status === 'processing') && (
                           <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto mt-3 sm:mt-0 w-full sm:w-auto flex-shrink-0">
                             {order.payment_receipt_url ? (
-                              <span className="flex-1 sm:flex-none px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 whitespace-nowrap">
-                                ✅ Bukti Terkirim
-                              </span>
+                              <div className="flex-1 sm:flex-none flex items-center gap-2">
+                                <a 
+                                  href={order.payment_receipt_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex-1 sm:flex-none px-4 py-2 bg-green-100 hover:bg-green-200 dark:bg-green-900/30 dark:hover:bg-green-900/50 text-green-800 dark:text-green-300 text-xs font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 whitespace-nowrap transition-colors"
+                                  title="Lihat Bukti Transfer"
+                                >
+                                  <Eye className="w-4 h-4" /> Lihat Bukti
+                                </a>
+                                <label className="flex-1 sm:flex-none px-4 py-2 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-800 dark:text-blue-300 text-xs font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-colors" title="Ubah Bukti Transfer">
+                                  {uploadingReceiptId === order.id ? (
+                                    <span className="flex items-center gap-2">
+                                      <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                      Mengunggah...
+                                    </span>
+                                  ) : (
+                                    <>
+                                      <Upload className="w-4 h-4" /> Ubah Bukti
+                                    </>
+                                  )}
+                                  <input 
+                                    type="file" 
+                                    accept="image/*"
+                                    className="hidden" 
+                                    disabled={uploadingReceiptId === order.id}
+                                    onChange={(e) => handleUploadReceipt(order.id, e, order.payment_receipt_url)} 
+                                  />
+                                </label>
+                              </div>
                             ) : (
                               <label className="flex-1 sm:flex-none px-4 py-2 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900/30 dark:hover:bg-indigo-800/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer">
                                 {uploadingReceiptId === order.id ? 'Mengunggah...' : (
