@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Filter, ShoppingBag, Trash2 } from 'lucide-react';
+import { Search, Filter, ShoppingBag, Trash2, FileImage } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { storage } from '../../services/storage';
 import { formatRupiah } from '../../lib/checkout';
@@ -16,6 +16,7 @@ interface Order {
   checkout_method: string;
   is_member_order: boolean;
   created_at: string;
+  payment_receipt_url?: string;
 }
 
 const AdminOrders = () => {
@@ -269,7 +270,19 @@ const AdminOrders = () => {
                       <p className="text-xs text-gray-500 dark:text-gray-400">{order.total_items} item</p>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="capitalize text-gray-700 dark:text-gray-300 font-medium">{order.checkout_method}</span>
+                      <div className="flex flex-col gap-1">
+                        <span className="capitalize text-gray-700 dark:text-gray-300 font-medium">{order.checkout_method}</span>
+                        {order.payment_receipt_url && (
+                          <a 
+                            href={order.payment_receipt_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:underline bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded w-fit"
+                          >
+                            <FileImage className="w-3 h-3" /> Lihat Bukti
+                          </a>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${getStatusColor(order.status)}`}>

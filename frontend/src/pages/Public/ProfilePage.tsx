@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { storage } from '../../services/storage';
-import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy } from 'lucide-react';
+import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy, Upload } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { useConfirm } from '../../contexts/ConfirmContext';
 import { formatRupiah } from '../../lib/checkout';
@@ -22,6 +22,7 @@ interface Order {
   checkout_method: string;
   is_member_order: boolean;
   created_at: string;
+  payment_receipt_url?: string;
   order_items?: OrderItem[];
 }
 
@@ -361,6 +362,24 @@ const ProfilePage = () => {
       alert("Gagal klaim: " + err.message);
     } finally {
       setIsClaiming(false);
+    }
+  };
+
+  const handleUploadReceipt = async (orderId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingReceiptId(orderId);
+    try {
+      const url = await storage.uploadPaymentReceipt(file, orderId);
+      await storage.updateOrderReceipt(orderId, url);
+      
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, payment_receipt_url: url } : o));
+      alert('Bukti transfer berhasil diunggah!');
+    } catch (err: any) {
+      alert(err.message || 'Terjadi kesalahan saat mengunggah file.');
+    } finally {
+      setUploadingReceiptId(null);
     }
   };
 
@@ -877,6 +896,26 @@ const ProfilePage = () => {
                         </div>
                         {order.status === 'pending' && (
                           <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto">
+                            {order.payment_receipt_url ? (
+                              <span className="flex-1 sm:flex-none px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 whitespace-nowrap">
+                                ✅ Bukti Terkirim
+                              </span>
+                            ) : (
+                              <label className="flex-1 sm:flex-none px-4 py-2 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900/30 dark:hover:bg-indigo-800/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer">
+                                {uploadingReceiptId === order.id ? 'Mengunggah...' : (
+                                  <>
+                                    <Upload className="w-4 h-4" /> Unggah Bukti
+                                  </>
+                                )}
+                                <input 
+                                  type="file" 
+                                  accept="image/*"
+                                  className="hidden" 
+                                  disabled={uploadingReceiptId === order.id}
+                                  onChange={(e) => handleUploadReceipt(order.id, e)} 
+                                />
+                              </label>
+                            )}
                             <button 
                               onClick={() => handleContactAdmin(order, 'messenger')}
                               className="flex-1 sm:flex-none px-4 py-2 bg-[#006AFF] hover:bg-[#005AE0] text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap"

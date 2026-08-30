@@ -220,6 +220,40 @@ export const storage = {
       })
       .eq('id', id);
     return { error };
+  },
+
+  // Payment Receipts
+  uploadPaymentReceipt: async (file: File, orderId: string): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${orderId}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `receipts/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('payment_receipts')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      console.error('Error uploading receipt:', uploadError);
+      throw new Error(uploadError.message || 'Gagal mengunggah bukti pembayaran.');
+    }
+
+    const { data } = supabase.storage
+      .from('payment_receipts')
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+  },
+
+  updateOrderReceipt: async (orderId: string, receiptUrl: string): Promise<void> => {
+    const { error } = await supabase
+      .from('orders')
+      .update({ payment_receipt_url: receiptUrl })
+      .eq('id', orderId);
+
+    if (error) {
+      console.error('Error updating order receipt:', error);
+      throw new Error(error.message || 'Gagal menyimpan tautan bukti pembayaran ke pesanan.');
+    }
   }
 };
 
