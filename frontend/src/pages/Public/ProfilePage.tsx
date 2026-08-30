@@ -867,15 +867,15 @@ const ProfilePage = () => {
                       </div>
                     </div>
                     
-                    <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 text-sm flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center border border-gray-100 dark:border-gray-800">
-                      <div className="w-full sm:w-auto flex-1 min-w-0">
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 text-sm flex flex-col gap-4 border border-gray-100 dark:border-gray-800">
+                      <div className="w-full">
                         <div className="mb-3 space-y-1">
                           {order.order_items?.map((item) => {
                             const itemTitle = item.product_title || item.title || item.name || 'Produk';
                             return (
-                              <div key={item.id} className="flex justify-between items-center text-gray-700 dark:text-gray-300 text-xs sm:text-sm">
-                                <span className="truncate pr-4 flex-1">{item.quantity}x {itemTitle}</span>
-                                <span className="font-medium whitespace-nowrap">{formatRupiah(item.unit_price * item.quantity)}</span>
+                              <div key={item.id} className="flex justify-between items-start text-gray-700 dark:text-gray-300 text-xs sm:text-sm">
+                                <span className="pr-4 flex-1 break-words">{item.quantity}x {itemTitle}</span>
+                                <span className="font-medium whitespace-nowrap mt-0.5">{formatRupiah(item.unit_price * item.quantity)}</span>
                               </div>
                             );
                           })}
@@ -893,8 +893,8 @@ const ProfilePage = () => {
                           )}
                         </div>
                       </div>
-                      <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto flex-shrink-0 justify-between sm:justify-start pt-3 sm:pt-0 border-t sm:border-0 border-gray-200 dark:border-gray-700 sm:border-l sm:pl-4">
-                        <div className="flex items-center gap-2">
+                      <div className="flex flex-col sm:flex-row flex-wrap items-center gap-2 sm:gap-4 w-full justify-between sm:justify-start pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center gap-2 mr-auto">
                           {order.checkout_method !== 'pending' && (
                             <>
                               <span className="text-gray-400 whitespace-nowrap">Checkout via</span>
