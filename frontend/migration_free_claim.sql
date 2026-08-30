@@ -1,3 +1,12 @@
+-- 0. Buat tabel referral_claims jika belum ada
+CREATE TABLE IF NOT EXISTS public.referral_claims (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  game_id UUID REFERENCES public.links(id) ON DELETE CASCADE,
+  claimed_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, game_id)
+);
+
 -- 1. Tambahkan kolom is_free_claim ke tabel links
 ALTER TABLE public.links ADD COLUMN IF NOT EXISTS is_free_claim BOOLEAN DEFAULT false;
 
