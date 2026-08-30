@@ -28,7 +28,9 @@ interface Order {
 
 interface OrderItem {
   id: string;
-  product_title: string;
+  product_title?: string;
+  title?: string;
+  name?: string;
   unit_price: number;
   quantity: number;
 }
@@ -198,7 +200,8 @@ const ProfilePage = () => {
       message += `Daftar Pesanan:\n`;
       
       order.order_items?.forEach((item) => {
-        message += `- ${item.product_title} - ${formatRupiah(item.unit_price)}\n`;
+        const itemTitle = item.product_title || item.title || item.name || 'Produk';
+        message += `- ${itemTitle} - ${formatRupiah(item.unit_price)}\n`;
       });
       
       message += `\nTotal Produk: ${order.total_items}\n`;
@@ -551,11 +554,14 @@ const ProfilePage = () => {
                           <td className="px-6 py-4">
                             <p className="font-black text-gray-900 dark:text-white">{formatRupiah(order.total_amount)}</p>
                             <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-[200px]">
-                              {order.order_items?.map((item, idx) => (
-                                <div key={idx} className="truncate" title={item.product_title}>
-                                  {item.quantity}x {item.product_title}
-                                </div>
-                              ))}
+                              {order.order_items?.map((item, idx) => {
+                                const itemTitle = item.product_title || item.title || item.name || 'Produk';
+                                return (
+                                  <div key={idx} className="truncate" title={itemTitle}>
+                                    {item.quantity}x {itemTitle}
+                                  </div>
+                                );
+                              })}
                             </div>
                           </td>
                           <td className="px-6 py-4">
@@ -864,12 +870,15 @@ const ProfilePage = () => {
                     <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 text-sm flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center border border-gray-100 dark:border-gray-800">
                       <div className="w-full sm:w-auto flex-1 min-w-0">
                         <div className="mb-3 space-y-1">
-                          {order.order_items?.map((item) => (
-                            <div key={item.id} className="flex justify-between items-center text-gray-700 dark:text-gray-300 text-xs sm:text-sm">
-                              <span className="truncate pr-4 flex-1">{item.quantity}x {item.product_title}</span>
-                              <span className="font-medium whitespace-nowrap">{formatRupiah(item.unit_price * item.quantity)}</span>
-                            </div>
-                          ))}
+                          {order.order_items?.map((item) => {
+                            const itemTitle = item.product_title || item.title || item.name || 'Produk';
+                            return (
+                              <div key={item.id} className="flex justify-between items-center text-gray-700 dark:text-gray-300 text-xs sm:text-sm">
+                                <span className="truncate pr-4 flex-1">{item.quantity}x {itemTitle}</span>
+                                <span className="font-medium whitespace-nowrap">{formatRupiah(item.unit_price * item.quantity)}</span>
+                              </div>
+                            );
+                          })}
                         </div>
                         <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                           <p className="text-gray-500 dark:text-gray-400 mb-1 flex justify-between">
