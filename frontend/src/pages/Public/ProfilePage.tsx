@@ -91,6 +91,7 @@ const ProfilePage = () => {
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
   const [rewardLinks, setRewardLinks] = useState<{id: number, title: string, price: string}[]>([]);
   const [isClaiming, setIsClaiming] = useState(false);
+  const [uploadingReceiptId, setUploadingReceiptId] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
