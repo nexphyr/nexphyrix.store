@@ -631,7 +631,7 @@ const ProfilePage = () => {
                     </div>
                     
                     <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 text-sm flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center border border-gray-100 dark:border-gray-800">
-                      <div className="w-full sm:w-auto flex-1">
+                      <div className="w-full sm:w-auto flex-1 min-w-0">
                         <div className="mb-3 space-y-1">
                           {order.order_items?.map((item) => (
                             <div key={item.id} className="flex justify-between items-center text-gray-700 dark:text-gray-300 text-xs sm:text-sm">
@@ -653,7 +653,7 @@ const ProfilePage = () => {
                           )}
                         </div>
                       </div>
-                      <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-start pt-3 sm:pt-0 border-t sm:border-0 border-gray-200 dark:border-gray-700 sm:border-l sm:pl-4">
+                      <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto flex-shrink-0 justify-between sm:justify-start pt-3 sm:pt-0 border-t sm:border-0 border-gray-200 dark:border-gray-700 sm:border-l sm:pl-4">
                         <div className="flex items-center gap-2">
                           <span className="text-gray-400 whitespace-nowrap">Checkout via</span>
                           <span className="font-bold text-gray-700 dark:text-gray-300 capitalize px-3 py-1 bg-white dark:bg-gray-900 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
@@ -663,7 +663,7 @@ const ProfilePage = () => {
                         {order.status === 'completed' && (
                           <button 
                             onClick={() => handleViewLinks(order.id)}
-                            className="w-full sm:w-auto px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+                            className="w-full sm:w-auto px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex flex-shrink-0 items-center justify-center gap-2 whitespace-nowrap"
                           >
                             <Package className="w-4 h-4" /> Lihat Link Game
                           </button>
