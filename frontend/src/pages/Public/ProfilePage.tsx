@@ -91,6 +91,7 @@ const ProfilePage = () => {
   const [referralInput, setReferralInput] = useState('');
   const [isApplyingReferral, setIsApplyingReferral] = useState(false);
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
+  const [isClaimedGamesModalOpen, setIsClaimedGamesModalOpen] = useState(false);
   const [rewardLinks, setRewardLinks] = useState<{id: string, title: string, price: string}[]>([]);
   const [claimedLinks, setClaimedLinks] = useState<{product_title: string, urls: string}[]>([]);
   const [isClaiming, setIsClaiming] = useState(false);
@@ -852,6 +853,18 @@ const ProfilePage = () => {
                 </button>
               </div>
             )}
+
+            {claimedLinks.length > 0 && (
+              <div className="mt-4 pt-4 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p className="text-sm text-purple-200">Anda telah mengklaim {claimedLinks.length} game gratis.</p>
+                <button 
+                  onClick={() => setIsClaimedGamesModalOpen(true)}
+                  className="w-full md:w-auto px-6 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/20 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Gift className="w-4 h-4" /> Lihat Game Diklaim
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -1214,63 +1227,85 @@ const ProfilePage = () => {
         </div>
       )}
 
-        {/* Claimed Games Section */}
-        {claimedLinks.length > 0 && (
-          <div className="mt-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-xl p-4 sm:p-6 shadow-sm border border-green-100 dark:border-green-800/50">
-            <h3 className="text-lg font-bold text-green-800 dark:text-green-400 mb-4 flex items-center gap-2">
-              <Gift className="w-5 h-5" /> Game Gratis Anda
-            </h3>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {claimedLinks.map((link, idx) => {
-                let parsedUrls: string[] = [];
-                if (link.urls) {
-                  try {
-                    const parsed = JSON.parse(link.urls);
-                    if (Array.isArray(parsed)) {
-                      parsedUrls = parsed;
-                    } else {
-                      parsedUrls = [link.urls];
+      {/* Claimed Games Modal */}
+      {isClaimedGamesModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100 dark:border-gray-800 bg-green-50 dark:bg-green-900/10">
+              <h2 className="text-lg font-extrabold text-green-900 dark:text-green-400 flex items-center gap-2">
+                <Gift className="w-5 h-5" /> Game Gratis Anda
+              </h2>
+              <button onClick={() => setIsClaimedGamesModalOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto">
+              {claimedLinks.length > 0 ? (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {claimedLinks.map((link, idx) => {
+                    let parsedUrls: string[] = [];
+                    if (link.urls) {
+                      try {
+                        const parsed = JSON.parse(link.urls);
+                        if (Array.isArray(parsed)) {
+                          parsedUrls = parsed;
+                        } else {
+                          parsedUrls = [link.urls];
+                        }
+                      } catch (e) {
+                        parsedUrls = [link.urls];
+                      }
                     }
-                  } catch (e) {
-                    parsedUrls = [link.urls];
-                  }
-                }
 
-                return (
-                  <div key={idx} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-green-100 dark:border-green-800/30">
-                    <div className="font-bold text-gray-900 dark:text-white mb-3 pb-2 border-b border-gray-100 dark:border-gray-700">{link.product_title}</div>
-                    
-                    {parsedUrls.length > 0 ? (
-                      <div className="space-y-2">
-                        {parsedUrls.map((url, i) => (
-                          <div key={i} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between bg-gray-50 dark:bg-gray-900/50 p-3 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm">
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-400 break-all line-clamp-1">{url}</span>
-                            <div className="flex gap-2 w-full sm:w-auto">
-                              <button 
-                                onClick={() => {
-                                  navigator.clipboard.writeText(url);
-                                  alert('Link disalin ke clipboard!');
-                                }}
-                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors whitespace-nowrap border border-gray-200 dark:border-gray-700"
-                              >
-                                <Copy className="w-3 h-3" /> Salin
-                              </button>
-                              <a href={url} target="_blank" rel="noreferrer" className="flex-1 sm:flex-none text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap">
-                                Buka Link
-                              </a>
-                            </div>
+                    return (
+                      <div key={idx} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div className="font-bold text-gray-900 dark:text-white mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">{link.product_title}</div>
+                        
+                        {parsedUrls.length > 0 ? (
+                          <div className="space-y-2">
+                            {parsedUrls.map((url, i) => (
+                              <div key={i} className="flex flex-col gap-2 items-start bg-white dark:bg-gray-900 p-3 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm">
+                                <span className="text-sm font-medium text-gray-600 dark:text-gray-400 break-all line-clamp-1 w-full" title={url}>{url}</span>
+                                <div className="flex gap-2 w-full">
+                                  <button 
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(url);
+                                      alert('Link disalin ke clipboard!');
+                                    }}
+                                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors border border-gray-200 dark:border-gray-700"
+                                  >
+                                    <Copy className="w-3 h-3" /> Salin
+                                  </button>
+                                  <a href={url} target="_blank" rel="noreferrer" className="flex-1 text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors">
+                                    Buka Link
+                                  </a>
+                                </div>
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        ) : (
+                          <p className="text-sm text-gray-500 dark:text-gray-400 italic">Link belum tersedia untuk produk ini.</p>
+                        )}
                       </div>
-                    ) : (
-                      <p className="text-sm text-gray-500 dark:text-gray-400 italic">Link belum tersedia untuk produk ini.</p>
-                    )}
-                  </div>
-                );
-              })}
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                  Belum ada game gratis yang diklaim.
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 text-right">
+              <button onClick={() => setIsClaimedGamesModalOpen(false)} className="px-6 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 text-gray-800 dark:text-gray-200 font-bold rounded-lg transition-colors">
+                Tutup
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
       {/* Claim Modal */}
       {isClaimModalOpen && (
