@@ -1,6 +1,10 @@
 -- ============================================================
--- FIX CHECKOUT RPC
+-- FIX CHECKOUT RPC AND CONSTRAINTS
 -- ============================================================
+
+-- Drop the old constraint and add a new one that allows 'pending'
+ALTER TABLE public.orders DROP CONSTRAINT IF EXISTS orders_checkout_method_check;
+ALTER TABLE public.orders ADD CONSTRAINT orders_checkout_method_check CHECK (checkout_method IN ('messenger', 'telegram', 'pending'));
 
 -- Perbarui fungsi checkout agar membaca id sebagai text (untuk mendukung UUID frontend)
 CREATE OR REPLACE FUNCTION public.create_checkout_order(
