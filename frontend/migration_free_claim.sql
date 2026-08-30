@@ -9,7 +9,7 @@ DECLARE
   v_is_free BOOLEAN;
 BEGIN
   -- Periksa apakah tiket cukup
-  SELECT free_tickets INTO v_tickets FROM profiles WHERE id = auth.uid();
+  SELECT available_free_claims INTO v_tickets FROM profiles WHERE id = auth.uid();
   IF v_tickets < 1 THEN
     RAISE EXCEPTION 'Tiket tidak cukup untuk mengklaim game ini.';
   END IF;
@@ -26,7 +26,7 @@ BEGIN
   END IF;
 
   -- Potong tiket
-  UPDATE profiles SET free_tickets = free_tickets - 1 WHERE id = auth.uid();
+  UPDATE profiles SET available_free_claims = available_free_claims - 1 WHERE id = auth.uid();
   
   -- Catat klaim
   INSERT INTO referral_claims (user_id, game_id) VALUES (auth.uid(), p_game_id);
