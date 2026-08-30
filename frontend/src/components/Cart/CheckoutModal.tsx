@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, CheckCircle2, QrCode, Download } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
-import { generateCheckoutMessage, copyToClipboardFallback, createOrderInDatabase, formatRupiah } from '../../lib/checkout';
+import { generateCheckoutMessage, copyToClipboardFallback, updateCheckoutMethod } from '../../lib/checkout';
 import qrisImage from '../../assets/qris.png';
 
 const MessengerIcon = () => (
@@ -24,7 +24,7 @@ const TelegramIcon = () => (
 );
 
 const CheckoutModal = () => {
-  const { isCheckoutOpen, setIsCheckoutOpen, cart, addToast, clearCart, finalTotal, totalAmount } = useCart();
+  const { isCheckoutOpen, setIsCheckoutOpen, cart, addToast, clearCart, pendingOrderData } = useCart();
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'failed'>('idle');
   const [generatedMessage, setGeneratedMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -39,14 +39,18 @@ const CheckoutModal = () => {
 
   if (!isCheckoutOpen) return null;
 
-  const displayTotal = finalTotal !== undefined ? finalTotal : totalAmount;
-
   const handleCheckout = async (platform: 'messenger' | 'telegram') => {
+    if (!pendingOrderData) {
+      addToast('Pesanan belum dibuat. Silakan ulangi proses checkout.');
+      setIsCheckoutOpen(false);
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const orderData = await createOrderInDatabase(cart, platform);
+      await updateCheckoutMethod(pendingOrderData.order_id, platform);
       
-      const msg = generateCheckoutMessage(cart, orderData, platform);
+      const msg = generateCheckoutMessage(cart, pendingOrderData, platform);
       setGeneratedMessage(msg);
 
       const success = await copyToClipboardFallback(msg);
@@ -55,10 +59,8 @@ const CheckoutModal = () => {
         setCopyStatus('success');
         addToast('Detail pesanan berhasil disalin');
         
-        // Clear cart after successful order creation
         clearCart();
         
-        // Delay before opening the app so user reads the feedback
         setTimeout(() => {
           const url = platform === 'messenger' ? 'https://m.me/zephyrus.yan' : 'https://t.me/nexphyrix';
           window.open(url, '_blank');

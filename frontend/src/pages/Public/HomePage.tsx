@@ -129,7 +129,7 @@ const HomePage = () => {
             </h1>
 
             <p className="text-[clamp(1rem,3vw,1.5rem)] md:text-2xl text-blue-50 mb-6 md:mb-10 max-w-xl mx-auto md:mx-0 drop-shadow-lg font-medium">
-              Temukan koleksi Sub Indo PS4.
+              Temukan koleksi berbagai judul Sub Indo PS4 atau game PS4.
             </p>
 
             {/* Search Bar */}
@@ -197,7 +197,7 @@ const HomePage = () => {
         {/* Results */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {loading ? (
-            <div className="col-span-full p-12 text-center text-primary font-bold animate-pulse">Mencari Data...</div>
+            <div className="col-span-full p-12 text-center text-primary font-bold animate-pulse">Memuat Data...</div>
           ) : links.length > 0 ? (
             links.map((link) => (
               <div key={link.id} className="glass-card rounded-2xl p-4 md:p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-white dark:border-gray-800 relative overflow-hidden flex flex-col bg-white dark:bg-gray-900">
@@ -233,11 +233,11 @@ const HomePage = () => {
                   )}
 
                   <div className="mt-auto pt-4 md:pt-6">
-                    <button 
-                      onClick={() => addToCart({ 
-                        id: link.id, 
-                        title: link.title, 
-                        price: link.price || 'Rp 0' 
+                    <button
+                      onClick={() => addToCart({
+                        id: link.id,
+                        title: link.title,
+                        price: link.price || 'Rp 0'
                       })}
                       className="w-full btn btn-primary flex items-center justify-center gap-2 py-2.5 md:py-3 text-sm md:text-base"
                     >

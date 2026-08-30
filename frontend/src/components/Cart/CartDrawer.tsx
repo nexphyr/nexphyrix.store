@@ -1,11 +1,33 @@
 import { X, Trash2, ShoppingBag } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
-import { formatRupiah } from '../../lib/checkout';
+import { formatRupiah, createOrderInDatabase } from '../../lib/checkout';
+import { useState } from 'react';
 
 const CartDrawer = () => {
-  const { cart, isCartOpen, setIsCartOpen, removeFromCart, totalAmount, memberDiscount, finalTotal, totalItems, clearCart, setIsCheckoutOpen } = useCart();
+  const { cart, isCartOpen, setIsCartOpen, removeFromCart, totalAmount, memberDiscount, finalTotal, totalItems, clearCart, setIsCheckoutOpen, setPendingOrderData, addToast } = useCart();
   const { user, signInWithGoogle } = useAuth();
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+
+  const handleCheckoutClick = async () => {
+    if (!user) {
+      addToast("Silakan masuk dengan Google terlebih dahulu untuk checkout.");
+      return;
+    }
+    
+    setIsCreatingOrder(true);
+    try {
+      // Buat order dengan metode 'pending' terlebih dahulu
+      const orderData = await createOrderInDatabase(cart, 'pending');
+      setPendingOrderData(orderData);
+      setIsCartOpen(false);
+      setIsCheckoutOpen(true);
+    } catch (error: any) {
+      addToast(error.message || "Gagal membuat pesanan");
+    } finally {
+      setIsCreatingOrder(false);
+    }
+  };
 
   if (!isCartOpen) return null;
 
@@ -127,13 +149,11 @@ const CartDrawer = () => {
             )}
 
             <button
-              onClick={() => {
-                setIsCartOpen(false);
-                setIsCheckoutOpen(true);
-              }}
-              className="w-full btn btn-primary py-3 text-lg rounded-xl shadow-primary/30"
+              onClick={handleCheckoutClick}
+              disabled={isCreatingOrder}
+              className="w-full btn btn-primary py-3 text-lg rounded-xl shadow-primary/30 disabled:opacity-50"
             >
-              CHECKOUT
+              {isCreatingOrder ? 'MEMPROSES...' : 'CHECKOUT'}
             </button>
           </div>
         )}

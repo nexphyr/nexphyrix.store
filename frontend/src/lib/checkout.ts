@@ -105,3 +105,11 @@ export const copyToClipboardFallback = async (text: string): Promise<boolean> =>
     return false;
   }
 };
+
+export const updateCheckoutMethod = async (orderId: string, method: string): Promise<void> => {
+  const { error } = await supabase.rpc('update_checkout_method', {
+    p_order_id: orderId,
+    p_method: method
+  });
+  if (error) throw error;
+};
