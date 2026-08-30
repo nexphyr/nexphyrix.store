@@ -1,11 +1,52 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const PromoCarousel = () => {
   const { user, signInWithGoogle } = useAuth();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const minSwipeDistance = 50;
+
+  const onDragStart = (e: React.TouchEvent | React.MouseEvent) => {
+    setIsDragging(true);
+    setTouchEnd(null);
+    if ('targetTouches' in e) {
+      setTouchStart((e as React.TouchEvent).targetTouches[0].clientX);
+    } else {
+      setTouchStart((e as React.MouseEvent).clientX);
+    }
+  };
+
+  const onDragMove = (e: React.TouchEvent | React.MouseEvent) => {
+    if (!isDragging) return;
+    if ('targetTouches' in e) {
+      setTouchEnd((e as React.TouchEvent).targetTouches[0].clientX);
+    } else {
+      setTouchEnd((e as React.MouseEvent).clientX);
+    }
+  };
+
+  const onDragEnd = () => {
+    setIsDragging(false);
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      nextSlide();
+    }
+    if (isRightSwipe) {
+      prevSlide();
+    }
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
 
   // The banners array
   const banners = [];
@@ -135,21 +176,27 @@ const PromoCarousel = () => {
 
   // Auto slide logic
   useEffect(() => {
-    if (isHovered) return;
+    if (isHovered || isDragging) return;
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % banners.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [banners.length, isHovered]);
+  }, [banners.length, isHovered, isDragging]);
 
   const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % banners.length);
   const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
 
   return (
     <div 
-      className="relative w-full rounded-3xl overflow-hidden shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] mb-12 border border-gray-200/50 bg-gray-100 group"
+      className="relative w-full rounded-3xl overflow-hidden shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] mb-12 border border-gray-200/50 bg-gray-100 group select-none cursor-grab active:cursor-grabbing"
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => { setIsHovered(false); onDragEnd(); }}
+      onTouchStart={onDragStart}
+      onTouchMove={onDragMove}
+      onTouchEnd={onDragEnd}
+      onMouseDown={onDragStart}
+      onMouseMove={onDragMove}
+      onMouseUp={onDragEnd}
     >
       {/* Slider track */}
       <div 
@@ -162,20 +209,6 @@ const PromoCarousel = () => {
           </div>
         ))}
       </div>
-
-      {/* Navigation Buttons (hidden on mobile, visible on hover on desktop) */}
-      <button 
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/90 hover:bg-white rounded-full hidden md:flex items-center justify-center text-gray-800 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95 border border-gray-200"
-      >
-        <ChevronLeft className="w-6 h-6 ml-[-2px]" />
-      </button>
-      <button 
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/90 hover:bg-white rounded-full hidden md:flex items-center justify-center text-gray-800 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95 border border-gray-200"
-      >
-        <ChevronRight className="w-6 h-6 mr-[-2px]" />
-      </button>
 
       {/* Indicators (Dots) */}
       <div className="absolute bottom-4 left-6 z-20 flex gap-2">
