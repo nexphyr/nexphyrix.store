@@ -5,7 +5,7 @@ import { formatRupiah, createOrderInDatabase } from '../../lib/checkout';
 import { useState } from 'react';
 
 const CartDrawer = () => {
-  const { cart, isCartOpen, setIsCartOpen, removeFromCart, totalAmount, memberDiscount, finalTotal, totalItems, clearCart, setIsCheckoutOpen, setPendingOrderData, addToast } = useCart();
+  const { cart, isCartOpen, setIsCartOpen, removeFromCart, totalAmount, memberDiscount, finalTotal, totalItems, clearCart, setIsCheckoutOpen, setPendingOrderData, setPendingOrderItems, addToast } = useCart();
   const { user, signInWithGoogle } = useAuth();
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
@@ -20,6 +20,8 @@ const CartDrawer = () => {
       // Buat order dengan metode 'pending' terlebih dahulu
       const orderData = await createOrderInDatabase(cart, 'pending');
       setPendingOrderData(orderData);
+      setPendingOrderItems([...cart]);
+      clearCart();
       setIsCartOpen(false);
       setIsCheckoutOpen(true);
     } catch (error: any) {

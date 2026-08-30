@@ -24,7 +24,7 @@ const TelegramIcon = () => (
 );
 
 const CheckoutModal = () => {
-  const { isCheckoutOpen, setIsCheckoutOpen, cart, addToast, clearCart, pendingOrderData, finalTotal, totalAmount } = useCart();
+  const { isCheckoutOpen, setIsCheckoutOpen, addToast, pendingOrderData, pendingOrderItems, finalTotal, totalAmount } = useCart();
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'failed'>('idle');
   const [generatedMessage, setGeneratedMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +52,7 @@ const CheckoutModal = () => {
     try {
       await updateCheckoutMethod(pendingOrderData.order_id, platform);
       
-      const msg = generateCheckoutMessage(cart, pendingOrderData, platform);
+      const msg = generateCheckoutMessage(pendingOrderItems, pendingOrderData, platform);
       setGeneratedMessage(msg);
 
       const success = await copyToClipboardFallback(msg);
@@ -60,8 +60,6 @@ const CheckoutModal = () => {
       if (success) {
         setCopyStatus('success');
         addToast('Detail pesanan berhasil disalin');
-        
-        clearCart();
         
         setTimeout(() => {
           const url = platform === 'messenger' ? 'https://m.me/zephyrus.yan' : 'https://t.me/nexphyrix';

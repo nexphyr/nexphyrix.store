@@ -31,6 +31,8 @@ interface CartContextType {
   finalTotal: number;
   pendingOrderData: any;
   setPendingOrderData: (data: any) => void;
+  pendingOrderItems: CartItem[];
+  setPendingOrderItems: (items: CartItem[]) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -59,6 +61,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [pendingOrderData, setPendingOrderData] = useState<any>(null);
+  const [pendingOrderItems, setPendingOrderItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
     localStorage.setItem('nexphyrix_cart', JSON.stringify(cart));
@@ -136,7 +139,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         memberDiscount,
         finalTotal,
         pendingOrderData,
-        setPendingOrderData
+        setPendingOrderData,
+        pendingOrderItems,
+        setPendingOrderItems
       }}
     >
       {children}
