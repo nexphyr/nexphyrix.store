@@ -916,8 +916,8 @@ const ProfilePage = () => {
                             </>
                           )}
                         </div>
-                        {order.status === 'pending' && (
-                          <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto">
+                        {(order.status === 'pending' || order.status === 'processing') && (
+                          <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto mt-3 sm:mt-0 w-full sm:w-auto flex-shrink-0">
                             {order.payment_receipt_url ? (
                               <span className="flex-1 sm:flex-none px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 whitespace-nowrap">
                                 ✅ Bukti Terkirim
