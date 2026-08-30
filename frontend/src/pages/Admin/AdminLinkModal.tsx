@@ -110,10 +110,10 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-lg font-bold">{link ? 'Edit Link' : 'Tambah Link Baru'}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-md overflow-hidden border border-gray-200 dark:border-gray-800">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">{link ? 'Edit Link' : 'Tambah Link Baru'}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -171,7 +171,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
                 <button 
                   type="button" 
                   onClick={() => setUrls([...urls, ''])}
-                  className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold hover:bg-blue-200 transition-colors"
+                  className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2 py-1 rounded font-bold hover:bg-blue-200 dark:hover:bg-blue-900/60 transition-colors"
                 >
                   + Tambah URL
                 </button>
