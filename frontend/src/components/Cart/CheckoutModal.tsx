@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, CheckCircle2, QrCode, Download } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
-import { generateCheckoutMessage, copyToClipboardFallback, updateCheckoutMethod } from '../../lib/checkout';
+import { generateCheckoutMessage, copyToClipboardFallback, updateCheckoutMethod, formatRupiah } from '../../lib/checkout';
 import qrisImage from '../../assets/qris.png';
 
 const MessengerIcon = () => (
@@ -24,7 +24,7 @@ const TelegramIcon = () => (
 );
 
 const CheckoutModal = () => {
-  const { isCheckoutOpen, setIsCheckoutOpen, cart, addToast, clearCart, pendingOrderData } = useCart();
+  const { isCheckoutOpen, setIsCheckoutOpen, cart, addToast, clearCart, pendingOrderData, finalTotal, totalAmount } = useCart();
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'failed'>('idle');
   const [generatedMessage, setGeneratedMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +38,8 @@ const CheckoutModal = () => {
   }, [isCheckoutOpen]);
 
   if (!isCheckoutOpen) return null;
+
+  const displayTotal = finalTotal !== undefined ? finalTotal : totalAmount;
 
   const handleCheckout = async (platform: 'messenger' | 'telegram') => {
     if (!pendingOrderData) {
