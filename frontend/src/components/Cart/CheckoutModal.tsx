@@ -117,7 +117,7 @@ const CheckoutModal = () => {
             
             <div className="p-4 md:p-6 text-center">
               <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-4">
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Total yang harus dibayar:</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Tagihan:</p>
                 <p className="text-2xl font-black text-primary">{formatRupiah(displayTotal || 0)}</p>
               </div>
               
