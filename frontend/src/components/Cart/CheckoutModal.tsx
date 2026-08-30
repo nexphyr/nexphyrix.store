@@ -24,7 +24,7 @@ const TelegramIcon = () => (
 );
 
 const CheckoutModal = () => {
-  const { isCheckoutOpen, setIsCheckoutOpen, addToast, pendingOrderData, pendingOrderItems, finalTotal, totalAmount } = useCart();
+  const { isCheckoutOpen, setIsCheckoutOpen, addToast, pendingOrderData, pendingOrderItems } = useCart();
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'failed'>('idle');
   const [generatedMessage, setGeneratedMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +39,7 @@ const CheckoutModal = () => {
 
   if (!isCheckoutOpen) return null;
 
-  const displayTotal = finalTotal !== undefined ? finalTotal : totalAmount;
+  const displayTotal = pendingOrderData?.total || 0;
 
   const handleCheckout = async (platform: 'messenger' | 'telegram') => {
     if (!pendingOrderData) {
