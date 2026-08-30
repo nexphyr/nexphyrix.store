@@ -1040,10 +1040,17 @@ const ProfilePage = () => {
                 <div className="space-y-6">
                   {selectedOrderLinks.map((item, idx) => {
                     let parsedUrls: string[] = [];
-                    try {
-                      parsedUrls = JSON.parse(item.urls);
-                    } catch (e) {
-                      if (item.urls) parsedUrls = [item.urls];
+                    if (item.urls) {
+                      try {
+                        const parsed = JSON.parse(item.urls);
+                        if (Array.isArray(parsed)) {
+                          parsedUrls = parsed;
+                        } else {
+                          parsedUrls = [item.urls];
+                        }
+                      } catch (e) {
+                        parsedUrls = [item.urls];
+                      }
                     }
 
                     return (
@@ -1216,10 +1223,17 @@ const ProfilePage = () => {
             <div className="grid gap-4 sm:grid-cols-2">
               {claimedLinks.map((link, idx) => {
                 let parsedUrls: string[] = [];
-                try {
-                  parsedUrls = JSON.parse(link.urls);
-                } catch (e) {
-                  if (link.urls) parsedUrls = [link.urls];
+                if (link.urls) {
+                  try {
+                    const parsed = JSON.parse(link.urls);
+                    if (Array.isArray(parsed)) {
+                      parsedUrls = parsed;
+                    } else {
+                      parsedUrls = [link.urls];
+                    }
+                  } catch (e) {
+                    parsedUrls = [link.urls];
+                  }
                 }
 
                 return (
