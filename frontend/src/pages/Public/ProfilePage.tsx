@@ -267,6 +267,7 @@ const ProfilePage = () => {
     setIsClaimModalOpen(true);
     try {
       const { data, error } = await supabase.from('links').select('id, title, price').eq('is_referral_reward', true);
+      if (error) throw error;
       if (data) setRewardLinks(data);
     } catch (err) {
       console.error(err);
