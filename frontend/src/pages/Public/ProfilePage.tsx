@@ -565,7 +565,19 @@ const ProfilePage = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <span className="capitalize text-gray-700 dark:text-gray-300 font-medium px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 text-xs">{order.checkout_method}</span>
+                            <div className="flex flex-col gap-2">
+                              <span className="capitalize text-gray-700 dark:text-gray-300 font-medium px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 text-xs w-fit">{order.checkout_method}</span>
+                              {order.payment_receipt_url && (
+                                <a 
+                                  href={order.payment_receipt_url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:underline bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded w-fit border border-blue-100 dark:border-blue-800"
+                                >
+                                  <Eye className="w-3 h-3" /> Lihat Bukti
+                                </a>
+                              )}
+                            </div>
                           </td>
                           <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
                           <td className="px-6 py-4 text-right">
