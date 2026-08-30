@@ -594,7 +594,7 @@ const ProfilePage = () => {
                 </span>
                 <button 
                   onClick={handleOpenEditProfile}
-                  className="px-3 py-1 bg-white dark:bg-gray-900/20 hover:bg-white dark:bg-gray-900/30 text-white text-xs font-bold rounded-lg transition-colors border border-white/30"
+                  className="px-3 py-1 bg-white/20 hover:bg-white/30 text-white text-xs font-bold rounded-lg transition-colors border border-white/30"
                 >
                   Edit Profil
                 </button>
@@ -912,7 +912,7 @@ const ProfilePage = () => {
                   type="text" 
                   value={editProfileForm.full_name} 
                   onChange={e => setEditProfileForm({...editProfileForm, full_name: e.target.value})}
-                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                   placeholder="Nama Lengkap"
                 />
               </div>
@@ -923,7 +923,7 @@ const ProfilePage = () => {
                   type="text" 
                   value={editProfileForm.phone_number} 
                   onChange={e => setEditProfileForm({...editProfileForm, phone_number: e.target.value})}
-                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                   placeholder="08123456789"
                 />
               </div>
@@ -934,7 +934,7 @@ const ProfilePage = () => {
                   <select 
                     value={editProfileForm.gender} 
                     onChange={e => setEditProfileForm({...editProfileForm, gender: e.target.value})}
-                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                   >
                     <option value="">Pilih</option>
                     <option value="Laki-laki">Laki-laki</option>
@@ -947,7 +947,7 @@ const ProfilePage = () => {
                     type="date" 
                     value={editProfileForm.birth_date} 
                     onChange={e => setEditProfileForm({...editProfileForm, birth_date: e.target.value})}
-                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                   />
                 </div>
               </div>
@@ -958,7 +958,7 @@ const ProfilePage = () => {
                   <textarea 
                     value={editProfileForm.address} 
                     onChange={e => setEditProfileForm({...editProfileForm, address: e.target.value})}
-                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm h-20"
+                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm h-20"
                     placeholder="Alamat lengkap"
                   />
                   <button 
@@ -980,7 +980,7 @@ const ProfilePage = () => {
                 <textarea 
                   value={editProfileForm.bio} 
                   onChange={e => setEditProfileForm({...editProfileForm, bio: e.target.value})}
-                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm h-16"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm h-16"
                   placeholder="Tulis sedikit tentang diri Anda..."
                 />
               </div>
