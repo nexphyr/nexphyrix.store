@@ -1201,9 +1201,16 @@ const ProfilePage = () => {
                 <textarea 
                   value={editProfileForm.bio} 
                   onChange={e => setEditProfileForm({...editProfileForm, bio: e.target.value})}
+                  maxLength={150}
                   className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm h-16"
                   placeholder="Tulis sedikit tentang diri Anda..."
                 />
+                <div className="flex justify-between items-center mt-1">
+                  <p className="text-xs text-gray-400 dark:text-gray-500">Maksimal 150 karakter</p>
+                  <p className={`text-xs ${editProfileForm.bio.length >= 150 ? 'text-red-500 font-bold' : 'text-gray-400 dark:text-gray-500'}`}>
+                    {editProfileForm.bio.length}/150
+                  </p>
+                </div>
               </div>
 
               <div className="pt-4 flex justify-end gap-2 border-t border-gray-100 dark:border-gray-800">
