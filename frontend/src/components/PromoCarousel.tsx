@@ -68,8 +68,8 @@ const PromoCarousel = () => {
               Beli 10 Game,<br className="hidden md:block" /> 
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">Gratis 1 Game!</span> 🎉
             </h2>
-            <p className="text-blue-100 text-xs md:text-base font-medium max-w-xl leading-relaxed hidden sm:block">
-              Nikmati potongan otomatis sebesar <strong className="text-yellow-400 text-lg">Rp 10.000</strong> untuk setiap kelipatan 11 item di keranjang belanja Anda. 
+            <p className="text-blue-100 text-[10px] md:text-base font-medium max-w-xl leading-relaxed">
+              Nikmati potongan otomatis sebesar <strong className="text-yellow-400 text-sm md:text-lg">Rp 10.000</strong> untuk setiap kelipatan 11 item di keranjang belanja Anda. 
             </p>
           </div>
           
@@ -101,7 +101,7 @@ const PromoCarousel = () => {
               Diskon Otomatis <br className="hidden md:block" /> 
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300">Tersedia!</span> 🛍️
             </h2>
-            <p className="text-purple-100 text-xs md:text-base font-medium max-w-xl leading-relaxed hidden sm:block">
+            <p className="text-purple-100 text-[10px] md:text-base font-medium max-w-xl leading-relaxed">
               Sebagai member, Anda mendapatkan potongan Rp 10.000 setiap pembelian kelipatan 11 item. Selamat berbelanja!
             </p>
           </div>
@@ -123,7 +123,7 @@ const PromoCarousel = () => {
           <h2 className="text-2xl md:text-4xl font-black mb-2 md:mb-3 leading-tight">
             Ratusan Game PS4 <br className="hidden md:block" /> Sub Indo Pilihan!
           </h2>
-          <p className="text-emerald-50 text-xs md:text-base font-medium max-w-xl leading-relaxed hidden sm:block">
+          <p className="text-emerald-50 text-[10px] md:text-base font-medium max-w-xl leading-relaxed mt-1 md:mt-0">
             Dari Action RPG hingga petualangan AAA, jelajahi berbagai mahakarya dunia yang kini bisa Anda nikmati sepenuhnya dalam bahasa ibu kita.
           </p>
         </div>
@@ -155,7 +155,7 @@ const PromoCarousel = () => {
             Akses Link Game <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">Secara Instan ⚡</span>
           </h2>
-          <p className="text-blue-100 text-xs md:text-base font-medium max-w-xl leading-relaxed hidden sm:block">
+          <p className="text-blue-100 text-[10px] md:text-base font-medium max-w-xl leading-relaxed">
             Tidak perlu lagi menunggu balasan chat Admin! Cukup login, dan link download game Anda akan otomatis muncul di halaman <b>Profil</b> saat pesanan selesai. Lebih cepat, lebih praktis!
           </p>
         </div>
