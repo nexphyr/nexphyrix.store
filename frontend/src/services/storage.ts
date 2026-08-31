@@ -21,6 +21,15 @@ export interface Link {
   image_url?: string;
 }
 
+export interface Notification {
+  id: string;
+  user_id: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+}
+
 export const storage = {
   // Categories
   getCategories: async (): Promise<Category[]> => {
@@ -313,6 +322,37 @@ export const storage = {
       throw new Error(error.message || 'Gagal mengambil link klaim.');
     }
     return data || [];
+  },
+
+  // Notifications
+  getNotifications: async (userId: string): Promise<Notification[]> => {
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching notifications:', error);
+      return [];
+    }
+    return data || [];
+  },
+
+  markNotificationAsRead: async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from('notifications')
+      .update({ is_read: true })
+      .eq('id', id);
+    if (error) console.error('Error marking notification as read:', error);
+  },
+
+  deleteNotification: async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from('notifications')
+      .delete()
+      .eq('id', id);
+    if (error) console.error('Error deleting notification:', error);
   }
 };
 

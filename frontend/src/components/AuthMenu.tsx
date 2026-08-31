@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { LogIn, User, ShoppingBag, LogOut, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import profileImage from '../assets/profile.png';
+import NotificationBell from './NotificationBell';
 
 const AuthMenu = () => {
   const { user, signInWithGoogle, logout } = useAuth();
@@ -33,7 +34,9 @@ const AuthMenu = () => {
   }
 
   return (
-    <div className="relative z-50" ref={menuRef}>
+    <div className="flex items-center gap-2">
+      <NotificationBell />
+      <div className="relative z-50" ref={menuRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-sm text-white p-1 pr-3 rounded-full transition-all shadow-sm hover:shadow-md"
@@ -115,6 +118,7 @@ const AuthMenu = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };
