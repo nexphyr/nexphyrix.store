@@ -992,6 +992,12 @@ const ProfilePage = () => {
                               </label>
                             )}
                             <button 
+                              onClick={() => window.open(qrisImage, '_blank')}
+                              className="flex-1 sm:flex-none px-4 py-2 bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:hover:bg-yellow-800/40 text-yellow-800 dark:text-yellow-300 text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
+                            >
+                              <QrCode className="w-4 h-4" /> Lihat QRIS
+                            </button>
+                            <button 
                               onClick={() => handleContactAdmin(order, 'messenger')}
                               className="flex-1 sm:flex-none px-4 py-2 bg-[#006AFF] hover:bg-[#005AE0] text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
                             >
