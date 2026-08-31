@@ -87,6 +87,7 @@ const HomePage = () => {
         status: link.status,
         price: link.price,
         is_active: link.is_active,
+        image_url: link.image_url,
         created_at: link.created_at,
         category: { name: cat?.name || 'Unknown', slug: cat?.slug || '' }
       };
