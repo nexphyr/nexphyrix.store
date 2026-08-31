@@ -1390,7 +1390,7 @@ const ProfilePage = () => {
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Silakan scan kode QR ini menggunakan aplikasi pembayaran Anda.</p>
               
               <div className="bg-blue-50 dark:bg-blue-900/20 w-full py-3 px-4 rounded-xl mb-4 border border-blue-100 dark:border-blue-800/30">
-                <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mb-1 uppercase tracking-wide">Total Pembayaran</p>
+                <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mb-1 uppercase tracking-wide">Total Tagihan</p>
                 <p className="text-2xl font-black text-blue-700 dark:text-blue-300">
                   {formatRupiah(selectedQrisOrder.total_amount)}
                 </p>
