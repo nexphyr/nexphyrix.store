@@ -9,6 +9,8 @@ const playNotificationSound = () => {
     if (!AudioContext) return;
     
     const ctx = new AudioContext();
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+    
     const osc = ctx.createOscillator();
     const gainNode = ctx.createGain();
     
@@ -36,23 +38,25 @@ const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const prevUnreadCount = useRef(0);
+  const isInitialLoad = useRef(true);
 
   const fetchNotifications = async () => {
     if (!user) return;
     const notifs = await storage.getNotifications(user.id);
     const unread = notifs.filter(n => !n.is_read).length;
     
-    if (unread > prevUnreadCount.current) {
+    if (!isInitialLoad.current && unread > prevUnreadCount.current) {
       playNotificationSound();
     }
     prevUnreadCount.current = unread;
+    isInitialLoad.current = false;
     
     setNotifications(notifs);
   };
 
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000); // 30s polling
+    const interval = setInterval(fetchNotifications, 15000); // 15s polling
     return () => clearInterval(interval);
   }, [user]);
 
@@ -107,11 +111,19 @@ const NotificationBell = () => {
         <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden z-50 animate-fade-in origin-top-right">
           <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
             <h3 className="font-bold text-gray-900 dark:text-white text-sm">Notifikasi</h3>
-            {notifications.length > 0 && (
-              <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">
-                {notifications.length}
-              </span>
-            )}
+            <div className="flex gap-2 items-center">
+              <button 
+                onClick={(e) => { e.stopPropagation(); playNotificationSound(); }}
+                className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors"
+              >
+                Tes Suara
+              </button>
+              {notifications.length > 0 && (
+                <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">
+                  {notifications.length}
+                </span>
+              )}
+            </div>
           </div>
           
           <div className="max-h-[350px] overflow-y-auto">
