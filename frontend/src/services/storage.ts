@@ -18,6 +18,7 @@ export interface Link {
   created_at: string;
   is_free_claim?: boolean;
   is_active?: boolean;
+  image_url?: string;
 }
 
 export const storage = {

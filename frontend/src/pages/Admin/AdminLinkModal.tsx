@@ -19,6 +19,7 @@ interface LinkData {
   category_id: string;
   is_referral_reward?: boolean;
   is_active?: boolean;
+  image_url?: string;
 }
 
 interface Props {
@@ -37,6 +38,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
   const [categoryId, setCategoryId] = useState<string>(link?.category_id || '');
   const [isReferralReward, setIsReferralReward] = useState(link?.is_referral_reward || false);
   const [isActive, setIsActive] = useState(link?.is_active ?? true);
+  const [imageUrl, setImageUrl] = useState(link?.image_url || '');
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -93,6 +95,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
       category_id: categoryId,
       is_referral_reward: isReferralReward,
       is_active: isActive,
+      image_url: imageUrl,
       ...(isGta ? { status } : { urls })
     };
 
@@ -230,6 +233,17 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
               value={price} 
               onChange={handlePriceChange} 
               placeholder="Contoh: 50000 (Otomatis jadi Rp 50.000) atau Gratis"
+            />
+          </div>
+
+          <div>
+            <label className="label">URL Gambar Thumbnail (Opsional)</label>
+            <input 
+              type="text" 
+              className="input" 
+              value={imageUrl} 
+              onChange={e => setImageUrl(e.target.value)} 
+              placeholder="Contoh: https://i.imgur.com/example.jpg"
             />
           </div>
 

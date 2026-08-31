@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { SearchX, ShoppingCart } from 'lucide-react';
+import { SearchX, ShoppingCart, ImageOff } from 'lucide-react';
 import { Link as RouterLink } from 'react-router-dom';
 import { storage } from '../../services/storage';
 import FloatingCart from '../../components/Cart/FloatingCart';
@@ -28,6 +28,7 @@ interface Link {
   status?: string;
   price?: string;
   is_active?: boolean;
+  image_url?: string;
   created_at: string;
 }
 
@@ -202,10 +203,22 @@ const HomePage = () => {
             <div className="col-span-full p-12 text-center text-primary font-bold animate-pulse">Memuat Data...</div>
           ) : links.length > 0 ? (
             links.map((link) => (
-              <div key={link.id} className="glass-card rounded-2xl p-4 md:p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-white dark:border-gray-800 relative overflow-hidden flex flex-col bg-white dark:bg-gray-900">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-secondary to-transparent rounded-bl-full opacity-50 transition-opacity group-hover:opacity-100"></div>
+              <div key={link.id} className="glass-card rounded-2xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-white dark:border-gray-800 relative overflow-hidden flex flex-col bg-white dark:bg-gray-900">
+                
+                {/* Image Container */}
+                <div className="w-full h-48 bg-gray-100 dark:bg-gray-800 relative">
+                  {link.image_url ? (
+                    <img src={link.image_url} alt={link.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
+                      <ImageOff className="w-8 h-8 mb-2 opacity-50" />
+                      <span className="text-xs font-semibold uppercase tracking-wider">No Picture</span>
+                    </div>
+                  )}
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-secondary to-transparent rounded-bl-full opacity-50 transition-opacity group-hover:opacity-100 mix-blend-overlay"></div>
+                </div>
 
-                <div className="relative z-10 flex flex-col flex-grow">
+                <div className="relative z-10 flex flex-col flex-grow p-4 md:p-6">
                   <div className="flex justify-between items-start mb-3 md:mb-4 gap-2">
                     <span className={`inline-block px-2 py-1 md:px-3 md:py-1 text-[10px] md:text-xs font-black tracking-wider uppercase rounded-full shadow-sm ${link.category.slug === 'gta-v-mod-nusantara' ? 'bg-amber-100 text-amber-800' : 'bg-primary/10 text-primary'
                       }`}>
