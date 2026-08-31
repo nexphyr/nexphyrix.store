@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { storage } from '../../services/storage';
-import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy, Upload, Gift } from 'lucide-react';
+import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy, Upload, Gift, QrCode } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { useConfirm } from '../../contexts/ConfirmContext';
 import { formatRupiah } from '../../lib/checkout';
 import profileImage from '../../assets/profile.png';
 import logoImage from '../../assets/nexphyrix.png';
+import qrisImage from '../../assets/qris.png';
 
 interface Order {
   id: string;
