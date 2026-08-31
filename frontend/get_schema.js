@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
-import path from 'path';
 
 const envContent = fs.readFileSync('.env', 'utf-8');
 const env = {};
@@ -13,6 +12,6 @@ const supabase = createClient(env['VITE_SUPABASE_URL'], env['VITE_SUPABASE_PUBLI
 
 async function test() {
   const { data, error } = await supabase.rpc('get_debug_info');
-  console.log(data, error);
+  console.log(JSON.stringify(data, null, 2));
 }
 test();

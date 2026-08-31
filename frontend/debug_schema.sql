@@ -5,7 +5,7 @@ DECLARE
 BEGIN
   SELECT jsonb_agg(jsonb_build_object('name', column_name, 'type', data_type)) INTO v_res
   FROM information_schema.columns 
-  WHERE table_name = 'order_items';
+  WHERE table_name = 'orders';
   
   RETURN v_res;
 END;

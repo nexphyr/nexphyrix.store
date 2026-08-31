@@ -11,14 +11,17 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 -- 2. Enable RLS for notifications
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view their own notifications" ON public.notifications;
 CREATE POLICY "Users can view their own notifications"
 ON public.notifications FOR SELECT
 USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own notifications" ON public.notifications;
 CREATE POLICY "Users can update their own notifications"
 ON public.notifications FOR UPDATE
 USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete their own notifications" ON public.notifications;
 CREATE POLICY "Users can delete their own notifications"
 ON public.notifications FOR DELETE
 USING (auth.uid() = user_id);
@@ -50,9 +53,14 @@ CREATE TRIGGER on_new_user_profile_created
 -- 4. Trigger Function: New Game
 CREATE OR REPLACE FUNCTION notify_new_game()
 RETURNS TRIGGER AS $$
+DECLARE
+    v_category_name TEXT;
 BEGIN
+    -- Mengambil nama kategori
+    SELECT name INTO v_category_name FROM public.categories WHERE id = NEW.category_id;
+
     INSERT INTO public.notifications (user_id, title, message)
-    SELECT id, 'Game Baru: ' || NEW.title, 'Segera miliki dengan harga ' || COALESCE(NEW.price, 'Gratis') || '!'
+    SELECT id, COALESCE(v_category_name, 'Item') || ' Baru: ' || NEW.title, 'Segera miliki dengan harga ' || COALESCE(NEW.price, 'Gratis') || '!'
     FROM public.profiles 
     WHERE role != 'admin';
     
@@ -72,7 +80,7 @@ RETURNS TRIGGER AS $$
 BEGIN
     -- Notification for admins
     INSERT INTO public.notifications (user_id, title, message)
-    SELECT id, 'Pesanan Baru Masuk!', 'Pesanan dari ' || COALESCE(NEW.customer_name, 'Seseorang') || '. Kode: ' || NEW.id || '. Total: Rp ' || NEW.total
+    SELECT id, 'Pesanan Baru Masuk!', 'Pesanan baru dengan Kode: ' || NEW.order_number || ' dari ' || NEW.customer_email || '. Silakan periksa Dashboard Admin.'
     FROM public.profiles 
     WHERE role = 'admin';
     

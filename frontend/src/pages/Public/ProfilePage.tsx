@@ -445,7 +445,7 @@ const ProfilePage = () => {
           </div>
 
           <div className="max-w-5xl mx-auto relative z-10 pt-8">
-            <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
               <img src={profileImage} alt="Super Admin" className="w-24 h-24 rounded-full border-4 border-white/20 shadow-xl bg-white dark:bg-gray-900" />
               <div className="text-center md:text-left flex-1">
                 <h1 className="text-3xl font-extrabold mb-1">Super Admin Dashboard</h1>
@@ -700,7 +700,7 @@ const ProfilePage = () => {
         </div>
         
         <div className="max-w-4xl mx-auto relative z-10 pt-8">
-          <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             {user.avatar_url ? (
               <img src={user.avatar_url} alt={user.full_name} className="w-24 h-24 rounded-full border-4 border-white/20 shadow-xl" />
             ) : (
