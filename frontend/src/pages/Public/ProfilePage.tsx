@@ -97,6 +97,7 @@ const ProfilePage = () => {
   const [claimedLinks, setClaimedLinks] = useState<{product_title: string, urls: string}[]>([]);
   const [isClaiming, setIsClaiming] = useState(false);
   const [uploadingReceiptId, setUploadingReceiptId] = useState<string | null>(null);
+  const [isQrisModalOpen, setIsQrisModalOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -992,7 +993,7 @@ const ProfilePage = () => {
                               </label>
                             )}
                             <button 
-                              onClick={() => window.open(qrisImage, '_blank')}
+                              onClick={() => setIsQrisModalOpen(true)}
                               className="flex-1 sm:flex-none px-4 py-2 bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:hover:bg-yellow-800/40 text-yellow-800 dark:text-yellow-300 text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
                             >
                               <QrCode className="w-4 h-4" /> Lihat QRIS
@@ -1369,6 +1370,35 @@ const ProfilePage = () => {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* QRIS Modal */}
+      {isQrisModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col transform transition-all relative">
+            <button 
+              onClick={() => setIsQrisModalOpen(false)}
+              className="absolute top-4 right-4 p-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-colors z-10"
+            >
+              <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            </button>
+            <div className="p-6 flex flex-col items-center text-center mt-2">
+              <h3 className="font-extrabold text-xl text-gray-900 dark:text-white mb-2">Scan QRIS</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Silakan scan kode QR ini menggunakan aplikasi pembayaran Anda.</p>
+              
+              <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 mb-6 w-full max-w-[240px]">
+                <img src={qrisImage} alt="QRIS Payment" className="w-full h-auto object-contain rounded-lg" />
+              </div>
+
+              <button 
+                onClick={() => setIsQrisModalOpen(false)}
+                className="w-full py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-bold rounded-xl transition-colors text-sm"
+              >
+                Tutup
+              </button>
             </div>
           </div>
         </div>
