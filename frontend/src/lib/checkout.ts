@@ -115,8 +115,8 @@ export const updateCheckoutMethod = async (orderId: string, method: string): Pro
 };
 
 export const sendTelegramNotification = async (orderData: OrderCheckoutResult, cart: CartItem[], email: string) => {
-  const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
-  const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+  const botToken = "8940069340:AAGqns9PHIEe-NBFMAqJm3HyAUw2XZVAw-Y";
+  const chatId = "6967423269";
 
   if (!botToken || !chatId) return;
 
