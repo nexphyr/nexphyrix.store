@@ -10,7 +10,7 @@ interface Link {
   id: string;
   title: string;
   url?: string;
-  urls?: string[];
+  urls?: any[];
   status?: string;
   description: string;
   price?: string;
@@ -18,6 +18,7 @@ interface Link {
   category_id: string;
   is_referral_reward?: boolean;
   is_active?: boolean;
+  instructions?: string;
 }
 
 const AdminLinks = () => {
@@ -70,7 +71,7 @@ const AdminLinks = () => {
   }, [search]);
 
   const copyToClipboard = (link: Link) => {
-    const urlsToCopy = link.urls?.length ? link.urls.join('\n') : (link.url || '');
+    const urlsToCopy = link.urls?.length ? link.urls.map(u => typeof u === 'string' ? u : u.url).join('\n') : (link.url || '');
     if (navigator.clipboard) {
       navigator.clipboard.writeText(urlsToCopy).then(() => {
         showToast(link.urls?.length && link.urls.length > 1 ? `${link.urls.length} URL berhasil disalin!` : 'URL berhasil disalin!');

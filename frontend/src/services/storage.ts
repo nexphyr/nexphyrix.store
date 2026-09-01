@@ -6,11 +6,16 @@ export interface Category {
   slug: string;
 }
 
+export interface UrlObject {
+  url: string;
+  note?: string;
+}
+
 export interface Link {
   id: string;
   title: string;
   url?: string;
-  urls?: string[];
+  urls?: (string | UrlObject)[];
   status?: string;
   description: string;
   price?: string;
@@ -19,6 +24,7 @@ export interface Link {
   is_free_claim?: boolean;
   is_active?: boolean;
   image_url?: string;
+  instructions?: string;
 }
 
 export interface Notification {
@@ -83,13 +89,17 @@ export const storage = {
         // Handle case where link_secrets is somehow an object instead of array
         const secrets = Array.isArray(link.link_secrets) ? link.link_secrets : (link.link_secrets ? [link.link_secrets] : []);
         
-        let parsedUrls: string[] = [];
+        let parsedUrls: any[] = [];
+        let instructions = '';
         secrets.forEach((s: any) => {
           if (!s.url) return;
           try {
             const parsed = JSON.parse(s.url);
             if (Array.isArray(parsed)) {
               parsedUrls.push(...parsed);
+            } else if (typeof parsed === 'object' && parsed !== null) {
+              if (parsed.urls) parsedUrls.push(...parsed.urls);
+              if (parsed.instructions) instructions = parsed.instructions;
             } else {
               parsedUrls.push(s.url);
             }
@@ -98,10 +108,12 @@ export const storage = {
           }
         });
 
+        const { link_secrets, ...linkData } = link;
         return {
-          ...link,
-          url: parsedUrls[0] || '',
-          urls: parsedUrls
+          ...linkData,
+          url: parsedUrls.length > 0 ? (typeof parsedUrls[0] === 'string' ? parsedUrls[0] : parsedUrls[0].url) : undefined,
+          urls: parsedUrls,
+          instructions
         };
       });
     } else {
@@ -135,9 +147,13 @@ export const storage = {
 
     // Insert secrets
     const urlsToInsert = urls && urls.length > 0 ? urls : (url ? [url] : []);
-    if (urlsToInsert.length > 0) {
-      // Store all URLs as a JSON string in a single secret record to avoid unique constraint violations
-      const secretData = [{ link_id: insertedLink.id, url: JSON.stringify(urlsToInsert) }];
+    if (urlsToInsert.length > 0 || linkData.instructions) {
+      // Store URLs and instructions as a JSON string
+      const secretPayload = {
+        urls: urlsToInsert,
+        instructions: linkData.instructions || ''
+      };
+      const secretData = [{ link_id: insertedLink.id, url: JSON.stringify(secretPayload) }];
       const { error: secretError } = await supabase.from('link_secrets').insert(secretData);
       if (secretError) {
         console.error('Error adding secrets:', secretError);
@@ -157,10 +173,12 @@ export const storage = {
 
     // Update secrets
     const urlsToInsert = urls && urls.length > 0 ? urls : (url ? [url] : []);
-    if (urlsToInsert.length > 0) {
-      // Use upsert to overwrite existing secret for this link_id, 
-      // preventing duplicate key violation when delete fails (e.g. due to RLS policies)
-      const secretData = { link_id: id, url: JSON.stringify(urlsToInsert) };
+    if (urlsToInsert.length > 0 || linkData.instructions) {
+      const secretPayload = {
+        urls: urlsToInsert,
+        instructions: linkData.instructions || ''
+      };
+      const secretData = { link_id: id, url: JSON.stringify(secretPayload) };
       const { error: secretError } = await supabase.from('link_secrets').upsert(secretData, { onConflict: 'link_id' });
       if (secretError) {
         console.error('Error updating secrets:', secretError);

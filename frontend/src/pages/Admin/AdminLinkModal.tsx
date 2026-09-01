@@ -20,6 +20,7 @@ interface LinkData {
   is_referral_reward?: boolean;
   is_active?: boolean;
   image_url?: string;
+  instructions?: string;
 }
 
 interface Props {
@@ -31,9 +32,17 @@ interface Props {
 
 const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
   const [title, setTitle] = useState(link?.title || '');
-  const [urls, setUrls] = useState<string[]>(link?.urls?.length ? link.urls : (link?.url ? [link.url] : ['']));
+  type UrlItem = { url: string; note: string };
+  const [urls, setUrls] = useState<UrlItem[]>(() => {
+    if (link?.urls?.length) {
+      return link.urls.map((u: any) => typeof u === 'string' ? { url: u, note: '' } : { url: u.url, note: u.note || '' });
+    }
+    if (link?.url) return [{ url: link.url, note: '' }];
+    return [{ url: '', note: '' }];
+  });
   const [status, setStatus] = useState(link?.status || '');
   const [description, setDescription] = useState(link?.description || '');
+  const [instructions, setInstructions] = useState(link?.instructions || '');
   const [price, setPrice] = useState(link?.price || '');
   const [categoryId, setCategoryId] = useState<string>(link?.category_id || '');
   const [isReferralReward, setIsReferralReward] = useState(link?.is_referral_reward || false);
@@ -96,6 +105,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
       is_referral_reward: isReferralReward,
       is_active: isActive,
       image_url: imageUrl,
+      instructions,
       ...(isGta ? { status } : { urls })
     };
 
@@ -176,7 +186,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
                 <label className="label mb-0">URL Download</label>
                 <button 
                   type="button" 
-                  onClick={() => setUrls([...urls, ''])}
+                  onClick={() => setUrls([...urls, { url: '', note: '' }])}
                   className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2 py-1 rounded font-bold hover:bg-blue-200 dark:hover:bg-blue-900/60 transition-colors"
                 >
                   + Tambah URL
@@ -184,19 +194,32 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
               </div>
               
               {urls.map((u, index) => (
-                <div key={index} className="flex gap-2">
-                  <input 
-                    type="url" 
-                    required 
-                    className="input flex-1" 
-                    value={u} 
-                    onChange={e => {
-                      const newUrls = [...urls];
-                      newUrls[index] = e.target.value;
-                      setUrls(newUrls);
-                    }} 
-                    placeholder={`https://example.com/link/part${index + 1}`}
-                  />
+                <div key={index} className="flex flex-col md:flex-row gap-2 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700">
+                  <div className="flex-1 space-y-2">
+                    <input 
+                      type="url" 
+                      required 
+                      className="input w-full" 
+                      value={u.url} 
+                      onChange={e => {
+                        const newUrls = [...urls];
+                        newUrls[index].url = e.target.value;
+                        setUrls(newUrls);
+                      }} 
+                      placeholder={`https://example.com/link/part${index + 1}`}
+                    />
+                    <input 
+                      type="text" 
+                      className="input w-full text-sm" 
+                      value={u.note} 
+                      onChange={e => {
+                        const newUrls = [...urls];
+                        newUrls[index].note = e.target.value;
+                        setUrls(newUrls);
+                      }} 
+                      placeholder="Catatan (opsional), cth: Part 1, Update v1.2..."
+                    />
+                  </div>
                   {urls.length > 1 && (
                     <button 
                       type="button"
@@ -204,7 +227,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
                         const newUrls = urls.filter((_, i) => i !== index);
                         setUrls(newUrls);
                       }}
-                      className="btn btn-secondary px-3"
+                      className="btn btn-secondary px-3 self-start"
                     >
                       X
                     </button>
@@ -222,6 +245,19 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
               value={description} 
               onChange={e => setDescription(e.target.value)} 
               placeholder="Sub Indo PS4"
+            />
+          </div>
+
+          <div>
+            <label className="label flex items-center gap-1">
+              Catatan Instruksi Game
+              <span className="text-xs text-gray-400 font-normal">(Opsional)</span>
+            </label>
+            <textarea 
+              className="input min-h-[80px]" 
+              value={instructions} 
+              onChange={e => setInstructions(e.target.value)} 
+              placeholder="Contoh: Instal Update v1.2 terlebih dahulu sebelum base game..."
             />
           </div>
 

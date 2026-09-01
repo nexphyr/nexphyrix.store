@@ -1060,12 +1060,16 @@ const ProfilePage = () => {
               ) : selectedOrderLinks && selectedOrderLinks.length > 0 ? (
                 <div className="space-y-6">
                   {selectedOrderLinks.map((item, idx) => {
-                    let parsedUrls: string[] = [];
+                    let parsedUrls: any[] = [];
+                    let instructions = '';
                     if (item.urls) {
                       try {
                         const parsed = JSON.parse(item.urls);
                         if (Array.isArray(parsed)) {
                           parsedUrls = parsed;
+                        } else if (typeof parsed === 'object' && parsed !== null) {
+                          if (parsed.urls) parsedUrls = parsed.urls;
+                          if (parsed.instructions) instructions = parsed.instructions;
                         } else {
                           parsedUrls = [item.urls];
                         }
@@ -1077,27 +1081,41 @@ const ProfilePage = () => {
                     return (
                       <div key={idx} className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4">
                         <h3 className="font-bold text-gray-900 dark:text-white mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">{item.product_title}</h3>
+                        
+                        {instructions && (
+                          <div className="mb-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 rounded-lg p-3">
+                            <h4 className="text-xs font-bold text-yellow-800 dark:text-yellow-500 uppercase mb-1">Catatan Instruksi:</h4>
+                            <p className="text-sm text-yellow-900 dark:text-yellow-200 whitespace-pre-line">{instructions}</p>
+                          </div>
+                        )}
+
                         {parsedUrls.length > 0 ? (
                           <div className="space-y-2">
-                            {parsedUrls.map((url, i) => (
-                              <div key={i} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between bg-white dark:bg-gray-900 p-3 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm">
-                                <span className="text-sm font-medium text-gray-600 dark:text-gray-400 break-all line-clamp-1">{url}</span>
-                                <div className="flex gap-2 w-full sm:w-auto">
-                                  <button 
-                                    onClick={() => {
-                                      navigator.clipboard.writeText(url);
-                                      alert('Link disalin ke clipboard!');
-                                    }}
-                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors whitespace-nowrap"
-                                  >
-                                    <Copy className="w-3 h-3" /> Salin
-                                  </button>
-                                  <a href={url} target="_blank" rel="noreferrer" className="flex-1 sm:flex-none text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap">
-                                    Buka Link
-                                  </a>
+                            {parsedUrls.map((uObj, i) => {
+                              const isObj = typeof uObj === 'object' && uObj !== null;
+                              const url = isObj ? uObj.url : uObj;
+                              const note = isObj ? uObj.note : '';
+                              return (
+                                <div key={i} className="flex flex-col gap-2 items-start bg-white dark:bg-gray-900 p-3 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm">
+                                  {note && <span className="text-xs font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 px-2 py-0.5 rounded">{note}</span>}
+                                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400 break-all line-clamp-1 w-full" title={url}>{url}</span>
+                                  <div className="flex gap-2 w-full">
+                                    <button 
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(url);
+                                        alert('Link disalin ke clipboard!');
+                                      }}
+                                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors border border-gray-200 dark:border-gray-700"
+                                    >
+                                      <Copy className="w-3 h-3" /> Salin
+                                    </button>
+                                    <a href={url} target="_blank" rel="noreferrer" className="flex-1 text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors">
+                                      Buka Link
+                                    </a>
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         ) : (
                           <p className="text-sm text-gray-500 dark:text-gray-400 italic">Link belum tersedia untuk produk ini.</p>
@@ -1259,12 +1277,16 @@ const ProfilePage = () => {
               {claimedLinks.length > 0 ? (
                 <div className="grid gap-4 sm:grid-cols-2">
                   {claimedLinks.map((link, idx) => {
-                    let parsedUrls: string[] = [];
+                    let parsedUrls: any[] = [];
+                    let instructions = '';
                     if (link.urls) {
                       try {
                         const parsed = JSON.parse(link.urls);
                         if (Array.isArray(parsed)) {
                           parsedUrls = parsed;
+                        } else if (typeof parsed === 'object' && parsed !== null) {
+                          if (parsed.urls) parsedUrls = parsed.urls;
+                          if (parsed.instructions) instructions = parsed.instructions;
                         } else {
                           parsedUrls = [link.urls];
                         }
@@ -1277,27 +1299,40 @@ const ProfilePage = () => {
                       <div key={idx} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
                         <div className="font-bold text-gray-900 dark:text-white mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">{link.product_title}</div>
                         
+                        {instructions && (
+                          <div className="mb-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 rounded-lg p-3">
+                            <h4 className="text-xs font-bold text-yellow-800 dark:text-yellow-500 uppercase mb-1">Catatan Instruksi:</h4>
+                            <p className="text-sm text-yellow-900 dark:text-yellow-200 whitespace-pre-line">{instructions}</p>
+                          </div>
+                        )}
+
                         {parsedUrls.length > 0 ? (
                           <div className="space-y-2">
-                            {parsedUrls.map((url, i) => (
-                              <div key={i} className="flex flex-col gap-2 items-start bg-white dark:bg-gray-900 p-3 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm">
-                                <span className="text-sm font-medium text-gray-600 dark:text-gray-400 break-all line-clamp-1 w-full" title={url}>{url}</span>
-                                <div className="flex gap-2 w-full">
-                                  <button 
-                                    onClick={() => {
-                                      navigator.clipboard.writeText(url);
-                                      alert('Link disalin ke clipboard!');
-                                    }}
-                                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors border border-gray-200 dark:border-gray-700"
-                                  >
-                                    <Copy className="w-3 h-3" /> Salin
-                                  </button>
-                                  <a href={url} target="_blank" rel="noreferrer" className="flex-1 text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors">
-                                    Buka Link
-                                  </a>
+                            {parsedUrls.map((uObj, i) => {
+                              const isObj = typeof uObj === 'object' && uObj !== null;
+                              const url = isObj ? uObj.url : uObj;
+                              const note = isObj ? uObj.note : '';
+                              return (
+                                <div key={i} className="flex flex-col gap-2 items-start bg-white dark:bg-gray-900 p-3 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm">
+                                  {note && <span className="text-xs font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 px-2 py-0.5 rounded">{note}</span>}
+                                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400 break-all line-clamp-1 w-full" title={url}>{url}</span>
+                                  <div className="flex gap-2 w-full">
+                                    <button 
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(url);
+                                        alert('Link disalin ke clipboard!');
+                                      }}
+                                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors border border-gray-200 dark:border-gray-700"
+                                    >
+                                      <Copy className="w-3 h-3" /> Salin
+                                    </button>
+                                    <a href={url} target="_blank" rel="noreferrer" className="flex-1 text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors">
+                                      Buka Link
+                                    </a>
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         ) : (
                           <p className="text-sm text-gray-500 dark:text-gray-400 italic">Link belum tersedia untuk produk ini.</p>
