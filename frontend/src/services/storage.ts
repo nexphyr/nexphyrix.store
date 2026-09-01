@@ -131,7 +131,7 @@ export const storage = {
     }
   },
   addLink: async (data: Omit<Link, 'id' | 'created_at'>): Promise<void> => {
-    const { url, urls, ...linkData } = data;
+    const { url, urls, instructions, ...linkData } = data;
     
     // Insert link
     const { data: insertedLink, error: linkError } = await supabase
@@ -147,11 +147,11 @@ export const storage = {
 
     // Insert secrets
     const urlsToInsert = urls && urls.length > 0 ? urls : (url ? [url] : []);
-    if (urlsToInsert.length > 0 || linkData.instructions) {
+    if (urlsToInsert.length > 0 || instructions) {
       // Store URLs and instructions as a JSON string
       const secretPayload = {
         urls: urlsToInsert,
-        instructions: linkData.instructions || ''
+        instructions: instructions || ''
       };
       const secretData = [{ link_id: insertedLink.id, url: JSON.stringify(secretPayload) }];
       const { error: secretError } = await supabase.from('link_secrets').insert(secretData);
@@ -162,7 +162,7 @@ export const storage = {
     }
   },
   updateLink: async (id: string, data: Omit<Link, 'id' | 'created_at'>): Promise<void> => {
-    const { url, urls, ...linkData } = data;
+    const { url, urls, instructions, ...linkData } = data;
     
     // Update link
     const { error: linkError } = await supabase.from('links').update(linkData).eq('id', id);
@@ -173,10 +173,10 @@ export const storage = {
 
     // Update secrets
     const urlsToInsert = urls && urls.length > 0 ? urls : (url ? [url] : []);
-    if (urlsToInsert.length > 0 || linkData.instructions) {
+    if (urlsToInsert.length > 0 || instructions) {
       const secretPayload = {
         urls: urlsToInsert,
-        instructions: linkData.instructions || ''
+        instructions: instructions || ''
       };
       const secretData = { link_id: id, url: JSON.stringify(secretPayload) };
       const { error: secretError } = await supabase.from('link_secrets').upsert(secretData, { onConflict: 'link_id' });
