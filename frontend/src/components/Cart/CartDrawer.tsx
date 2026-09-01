@@ -1,7 +1,7 @@
 import { X, Trash2, ShoppingBag } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
-import { formatRupiah, createOrderInDatabase } from '../../lib/checkout';
+import { formatRupiah, createOrderInDatabase, sendTelegramNotification } from '../../lib/checkout';
 import { useState } from 'react';
 
 const CartDrawer = () => {
@@ -21,6 +21,11 @@ const CartDrawer = () => {
       const orderData = await createOrderInDatabase(cart, 'pending');
       setPendingOrderData(orderData);
       setPendingOrderItems([...cart]);
+      // Kirim notifikasi Telegram
+      if (user?.email) {
+        sendTelegramNotification(orderData, cart, user.email);
+      }
+
       clearCart();
       setIsCartOpen(false);
       setIsCheckoutOpen(true);
