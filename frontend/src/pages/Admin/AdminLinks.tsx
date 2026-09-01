@@ -261,8 +261,8 @@ const AdminLinks = () => {
                       <span className="font-semibold text-gray-700 dark:text-gray-300">{link.status}</span>
                     ) : (
                       link.urls && link.urls.length > 1 
-                        ? <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold">{link.urls.length} Links</span>
-                        : (link.urls?.[0] || link.url)
+                        ? <span className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 px-2 py-1 rounded font-bold">{link.urls.length} Links</span>
+                        : (link.urls?.[0] ? (typeof link.urls[0] === 'string' ? link.urls[0] : link.urls[0].url) : link.url)
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
