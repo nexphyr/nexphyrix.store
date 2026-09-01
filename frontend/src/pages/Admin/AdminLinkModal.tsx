@@ -126,7 +126,7 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-md overflow-hidden border border-gray-200 dark:border-gray-800">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-md overflow-hidden border border-gray-200 dark:border-gray-800 flex flex-col max-h-[90vh]">
         <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
           <h2 className="text-lg font-bold text-gray-900 dark:text-white">{link ? 'Edit Link' : 'Tambah Link Baru'}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
@@ -134,12 +134,13 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
           </button>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          {error && (
-            <div className="bg-red-50 text-red-600 p-3 text-sm rounded">
-              {error}
-            </div>
-          )}
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <div className="p-4 space-y-4 overflow-y-auto flex-1">
+            {error && (
+              <div className="bg-red-50 text-red-600 p-3 text-sm rounded">
+                {error}
+              </div>
+            )}
           
           <div>
             <label className="label">Judul</label>
@@ -310,8 +311,9 @@ const AdminLinkModal = ({ isOpen, onClose, onSaved, link }: Props) => {
               </label>
             </div>
           </div>
+          </div>
 
-          <div className="pt-4 flex justify-end gap-2">
+          <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-2 mt-auto">
             <button type="button" onClick={onClose} className="btn btn-secondary">Batal</button>
             <button type="submit" disabled={loading} className="btn btn-primary">
               {loading ? 'Menyimpan...' : 'SIMPAN LINK'}
