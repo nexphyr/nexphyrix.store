@@ -12,6 +12,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { ConfirmProvider } from './contexts/ConfirmContext';
 import ThemeToggle from './components/ThemeToggle';
+import { useEffect } from 'react';
+import { storage } from './services/storage';
 
 const ProtectedRoute = ({ children, requireAdmin = false }: { children: React.ReactNode, requireAdmin?: boolean }) => {
   const { user, loading } = useAuth();
@@ -24,6 +26,14 @@ const ProtectedRoute = ({ children, requireAdmin = false }: { children: React.Re
 };
 
 function App() {
+  useEffect(() => {
+    // Only count hit once per session
+    if (!sessionStorage.getItem('site_hit_counted')) {
+      storage.incrementSiteVisits().catch(console.error);
+      sessionStorage.setItem('site_hit_counted', 'true');
+    }
+  }, []);
+
   return (
     <AuthProvider>
       <ConfirmProvider>

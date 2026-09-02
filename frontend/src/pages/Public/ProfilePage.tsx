@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { storage } from '../../services/storage';
-import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy, Upload, Gift, QrCode } from 'lucide-react';
+import { Package, Clock, CheckCircle2, ShoppingBag, ShieldCheck, Users, Activity, Eye, X, Home, Copy, Upload, Gift, QrCode, BarChart } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { useConfirm } from '../../contexts/ConfirmContext';
 import { formatRupiah } from '../../lib/checkout';
@@ -62,6 +62,7 @@ const ProfilePage = () => {
   const { confirm } = useConfirm();
   const [orders, setOrders] = useState<Order[]>([]);
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
+  const [siteVisits, setSiteVisits] = useState(0);
   const [userProfile, setUserProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -149,6 +150,9 @@ const ProfilePage = () => {
         .select('*')
         .order('created_at', { ascending: false });
       if (!profilesError && profilesData) setAllProfiles(profilesData);
+      
+      const visits = await storage.getSiteVisits();
+      setSiteVisits(visits);
 
     } catch (err) {
       console.error(err);
@@ -467,7 +471,7 @@ const ProfilePage = () => {
 
         <main className="max-w-7xl mx-auto px-4 -mt-12 relative z-20 space-y-6">
           {/* Admin Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <div className="bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden group">
               <div className="absolute right-0 top-0 opacity-5 group-hover:scale-110 transition-transform"><Users className="w-24 h-24" /></div>
               <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mb-1 font-medium">Total Member</div>
@@ -485,6 +489,15 @@ const ProfilePage = () => {
               <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mb-1 font-medium">Member Aktif (Online)</div>
               <div className="text-3xl font-black text-green-600">{onlineMembers.length}</div>
             </div>
+            
+            <div className="bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden group">
+              <div className="absolute right-0 top-0 opacity-5 group-hover:scale-110 transition-transform"><BarChart className="w-24 h-24" /></div>
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mb-1 font-medium">Total Kunjungan</div>
+              <div className="text-3xl font-black text-purple-600 flex items-baseline gap-2">
+                {siteVisits} <span className="text-xs font-normal text-gray-400">kali dibuka</span>
+              </div>
+            </div>
+            
             <div className="bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden group">
               <div className="absolute right-0 top-0 opacity-5 group-hover:scale-110 transition-transform"><ShoppingBag className="w-24 h-24" /></div>
               <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mb-1 font-medium">Pesanan Masuk</div>

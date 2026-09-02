@@ -371,6 +371,32 @@ export const storage = {
       .delete()
       .eq('id', id);
     if (error) console.error('Error deleting notification:', error);
+  },
+
+  // Site Stats (Hit Counter)
+  getSiteVisits: async (): Promise<number> => {
+    try {
+      const { data, error } = await supabase
+        .from('site_stats')
+        .select('visits')
+        .eq('id', 1)
+        .single();
+        
+      if (error) return 0;
+      return data?.visits || 0;
+    } catch (e) {
+      return 0;
+    }
+  },
+  
+  incrementSiteVisits: async (): Promise<number> => {
+    try {
+      const { data, error } = await supabase.rpc('increment_site_visits');
+      if (error) return 0;
+      return data || 0;
+    } catch (e) {
+      return 0;
+    }
   }
 };
 
