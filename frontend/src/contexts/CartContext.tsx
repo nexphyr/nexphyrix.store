@@ -33,6 +33,8 @@ interface CartContextType {
   setPendingOrderData: (data: any) => void;
   pendingOrderItems: CartItem[];
   setPendingOrderItems: (items: CartItem[]) => void;
+  orderExpiryMinutes: number;
+  setOrderExpiryMinutes: (minutes: number) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -45,6 +47,7 @@ const parsePrice = (priceStr?: string): number => {
 };
 
 import { useAuth } from './AuthContext';
+import { storage } from '../services/storage';
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
@@ -62,6 +65,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [pendingOrderData, setPendingOrderData] = useState<any>(null);
   const [pendingOrderItems, setPendingOrderItems] = useState<CartItem[]>([]);
+  const [orderExpiryMinutes, setOrderExpiryMinutes] = useState<number>(15);
+
+  useEffect(() => {
+    // Fetch order expiry minutes on mount
+    storage.getOrderExpiryMinutes().then(setOrderExpiryMinutes);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('nexphyrix_cart', JSON.stringify(cart));
@@ -141,7 +150,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         pendingOrderData,
         setPendingOrderData,
         pendingOrderItems,
-        setPendingOrderItems
+        setPendingOrderItems,
+        orderExpiryMinutes,
+        setOrderExpiryMinutes,
       }}
     >
       {children}

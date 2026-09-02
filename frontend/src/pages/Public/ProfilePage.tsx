@@ -9,6 +9,8 @@ import { formatRupiah } from '../../lib/checkout';
 import profileImage from '../../assets/profile.png';
 import logoImage from '../../assets/nexphyrix.png';
 import qrisImage from '../../assets/qris.png';
+import OrderTimer from '../../components/OrderTimer';
+import { useCart } from '../../contexts/CartContext';
 
 interface Order {
   id: string;
@@ -59,6 +61,7 @@ interface Profile {
 
 const ProfilePage = () => {
   const { user, loading: authLoading, onlineUsers } = useAuth();
+  const { orderExpiryMinutes } = useCart();
   const { confirm } = useConfirm();
   const [orders, setOrders] = useState<Order[]>([]);
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
@@ -178,15 +181,17 @@ const ProfilePage = () => {
     }
   };
 
-  const handleCancelOrder = async (orderId: string) => {
-    const isConfirmed = await confirm("Apakah Anda yakin ingin membatalkan pesanan ini?", {
-      title: "Batalkan Pesanan",
-      type: "danger",
-      confirmText: "Ya, Batalkan",
-      cancelText: "Kembali"
-    });
-    
-    if (!isConfirmed) return;
+  const handleCancelOrder = async (orderId: string, silent?: boolean) => {
+    if (!silent) {
+      const isConfirmed = await confirm("Apakah Anda yakin ingin membatalkan pesanan ini?", {
+        title: "Batalkan Pesanan",
+        type: "danger",
+        confirmText: "Ya, Batalkan",
+        cancelText: "Kembali"
+      });
+      
+      if (!isConfirmed) return;
+    }
     
     try {
       const { error } = await supabase.rpc('cancel_member_order', {
@@ -607,7 +612,19 @@ const ProfilePage = () => {
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
+                          <td className="px-6 py-4">
+                            {getStatusBadge(order.status)}
+                            {order.status === 'pending' && (
+                              <div className="mt-2 text-xs">
+                                <OrderTimer 
+                                  createdAt={order.created_at} 
+                                  expiryMinutes={orderExpiryMinutes}
+                                  onExpire={() => updateOrderStatus(order.id, 'cancelled')}
+                                  compact
+                                />
+                              </div>
+                            )}
+                          </td>
                           <td className="px-6 py-4 text-right">
                             <select 
                               className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary shadow-sm cursor-pointer"
@@ -908,6 +925,15 @@ const ProfilePage = () => {
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-extrabold text-lg text-gray-900 dark:text-white">{order.order_number}</span>
                           {getStatusBadge(order.status)}
+                          {order.status === 'pending' && (
+                            <OrderTimer 
+                              createdAt={order.created_at} 
+                              expiryMinutes={orderExpiryMinutes}
+                              onExpire={() => handleCancelOrder(order.id, true)}
+                              compact
+                              className="ml-2"
+                            />
+                          )}
                         </div>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
                           {new Date(order.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}

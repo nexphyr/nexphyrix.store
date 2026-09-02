@@ -397,6 +397,33 @@ export const storage = {
     } catch (e) {
       return 0;
     }
+  },
+
+  // App Settings
+  getOrderExpiryMinutes: async (): Promise<number> => {
+    try {
+      const { data, error } = await supabase
+        .from('app_settings')
+        .select('setting_value')
+        .eq('setting_key', 'order_expiry_minutes')
+        .single();
+      if (error || !data) return 15; // default 15 minutes
+      return parseInt(data.setting_value) || 15;
+    } catch {
+      return 15;
+    }
+  },
+
+  updateOrderExpiryMinutes: async (minutes: number): Promise<void> => {
+    const { error } = await supabase
+      .from('app_settings')
+      .update({ setting_value: minutes.toString() })
+      .eq('setting_key', 'order_expiry_minutes');
+    
+    if (error) {
+      console.error('Error updating order expiry:', error);
+      throw new Error('Gagal memperbarui waktu kedaluwarsa.');
+    }
   }
 };
 

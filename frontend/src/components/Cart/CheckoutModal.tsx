@@ -2,9 +2,10 @@ import { X, QrCode, Download } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { formatRupiah } from '../../lib/checkout';
 import qrisImage from '../../assets/qris.png';
+import OrderTimer from '../OrderTimer';
 
 const CheckoutModal = () => {
-  const { isCheckoutOpen, setIsCheckoutOpen, pendingOrderData } = useCart();
+  const { isCheckoutOpen, setIsCheckoutOpen, pendingOrderData, orderExpiryMinutes } = useCart();
 
   if (!isCheckoutOpen) return null;
 
@@ -22,6 +23,16 @@ const CheckoutModal = () => {
           </button>
         </div>
         
+        {pendingOrderData?.created_at && (
+          <div className="bg-amber-50 dark:bg-amber-900/20 px-5 py-2.5 flex justify-center border-b border-amber-100 dark:border-amber-800">
+            <OrderTimer 
+              createdAt={pendingOrderData.created_at} 
+              expiryMinutes={orderExpiryMinutes}
+              className="text-lg"
+            />
+          </div>
+        )}
+
         <div className="p-4 md:p-6 text-center">
           <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-4">
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Tagihan:</p>
