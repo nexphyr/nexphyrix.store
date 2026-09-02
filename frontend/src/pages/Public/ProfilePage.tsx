@@ -446,7 +446,7 @@ const ProfilePage = () => {
             </Link>
           </div>
 
-          <div className="max-w-5xl mx-auto relative z-10 pt-8">
+          <div className="max-w-7xl mx-auto relative z-10 pt-8">
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
               <img src={profileImage} alt="Super Admin" className="w-24 h-24 rounded-full border-4 border-white/20 shadow-xl bg-white dark:bg-gray-900" />
               <div className="text-center md:text-left flex-1">
@@ -465,7 +465,7 @@ const ProfilePage = () => {
           </div>
         </header>
 
-        <main className="max-w-5xl mx-auto px-4 -mt-12 relative z-20 space-y-6">
+        <main className="max-w-7xl mx-auto px-4 -mt-12 relative z-20 space-y-6">
           {/* Admin Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden group">
@@ -555,7 +555,7 @@ const ProfilePage = () => {
                             {order.customer_name ? (
                               <div>
                                 <p className="font-bold text-gray-900 dark:text-white">{order.customer_name}</p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">{order.customer_email}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 break-all">{order.customer_email}</p>
                                 {order.is_member_order ? (
                                   <span className="inline-block mt-1 bg-yellow-100 text-yellow-800 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">Member</span>
                                 ) : (
@@ -635,7 +635,7 @@ const ProfilePage = () => {
                     ) : (
                       allProfiles.map(profile => (
                         <tr key={profile.id} className="hover:bg-gray-50 dark:bg-gray-800/50 transition-colors">
-                          <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">{profile.email}</td>
+                          <td className="px-6 py-4 font-bold text-gray-900 dark:text-white break-all max-w-[200px]">{profile.email}</td>
                           <td className="px-6 py-4 text-gray-700 dark:text-gray-300 whitespace-nowrap">
                             <p className="font-bold">{profile.full_name || '-'}</p>
                             {profile.gender && <p className="text-xs text-gray-500 dark:text-gray-400">Gender: {profile.gender}</p>}
