@@ -8,6 +8,7 @@ import CheckoutModal from '../../components/Cart/CheckoutModal';
 import ToastContainer from '../../components/Cart/ToastContainer';
 import AuthMenu from '../../components/AuthMenu';
 import PromoCarousel from '../../components/PromoCarousel';
+import FomoNotification from '../../components/FomoNotification';
 import { useCart } from '../../contexts/CartContext';
 import logoImage from '../../assets/nexphyrix.png';
 
@@ -332,6 +333,7 @@ const HomePage = () => {
       </footer>
 
       {/* Cart Components */}
+      <FomoNotification />
       <FloatingCart />
       <CartDrawer />
       <CheckoutModal />
