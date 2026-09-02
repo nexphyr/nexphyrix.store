@@ -2,9 +2,11 @@ import { Settings as SettingsIcon, ShieldCheck, Clock, Save } from 'lucide-react
 import { useAuth } from '../../contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import { storage } from '../../services/storage';
+import { useCart } from '../../contexts/CartContext';
 
 const Settings = () => {
   const { user } = useAuth();
+  const { setOrderExpiryMinutes } = useCart();
   const [expiryMinutes, setExpiryMinutes] = useState<number>(15);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
@@ -18,6 +20,7 @@ const Settings = () => {
     setMessage(null);
     try {
       await storage.updateOrderExpiryMinutes(expiryMinutes);
+      setOrderExpiryMinutes(expiryMinutes);
       setMessage({ type: 'success', text: 'Berhasil menyimpan pengaturan waktu pemesanan.' });
       
       // Clear message after 3 seconds
