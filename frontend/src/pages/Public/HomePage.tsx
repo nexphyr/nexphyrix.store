@@ -156,18 +156,18 @@ const HomePage = () => {
             </p>
 
             {/* Search Bar & App Download */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 max-w-2xl mx-auto md:mx-0 group">
-              <div className="relative w-full sm:flex-1">
-                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none transition-transform group-focus-within:scale-110">
-                  <SearchX className="h-6 w-6 text-primary hidden" />
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="flex flex-row items-center gap-2 md:gap-4 max-w-2xl mx-auto md:mx-0 group w-full">
+              <div className="relative flex-1">
+                <div className="absolute inset-y-0 left-0 pl-4 md:pl-5 flex items-center pointer-events-none transition-transform group-focus-within:scale-110">
+                  <SearchX className="h-5 w-5 md:h-6 md:w-6 text-primary hidden" />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
                 <input
                   type="text"
-                  className="block w-full pl-12 md:pl-14 pr-6 py-3 md:py-4 rounded-full text-base md:text-lg text-gray-900 dark:text-white border-2 border-transparent shadow-[0_0_20px_rgba(255,255,255,0.2)] focus:border-white focus:ring-4 focus:ring-white/30 transition-all outline-none bg-white/95 backdrop-blur-md hover:bg-white dark:bg-gray-900"
-                  placeholder="Ketik judul game atau mod..."
+                  className="block w-full pl-10 md:pl-14 pr-4 md:pr-6 py-3 md:py-4 rounded-full text-sm md:text-lg text-gray-900 dark:text-white border-2 border-transparent shadow-[0_0_20px_rgba(255,255,255,0.2)] focus:border-white focus:ring-4 focus:ring-white/30 transition-all outline-none bg-white/95 backdrop-blur-md hover:bg-white dark:bg-gray-900"
+                  placeholder="Ketik judul game..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -176,10 +176,11 @@ const HomePage = () => {
               <a 
                 href="/Nexphyrix-Store-v1.0.0.apk" 
                 download="Nexphyrix-Store-v1.0.0.apk"
-                className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 md:py-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold rounded-full shadow-lg hover:shadow-green-500/50 transition-all transform hover:-translate-y-1 border border-green-400/50 whitespace-nowrap"
+                title="Unduh Aplikasi Android"
+                className="flex-shrink-0 flex items-center justify-center gap-2 p-3 md:px-6 md:py-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold rounded-full shadow-lg hover:shadow-green-500/50 transition-all transform hover:-translate-y-1 border border-green-400/50 whitespace-nowrap"
               >
-                <Smartphone className="w-5 h-5 animate-bounce" />
-                <span>Unduh Aplikasi</span>
+                <Smartphone className="w-5 h-5 md:w-6 md:h-6 animate-bounce" />
+                <span className="hidden md:block">Unduh Aplikasi</span>
               </a>
             </div>
           </div>
