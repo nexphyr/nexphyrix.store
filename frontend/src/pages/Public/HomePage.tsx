@@ -193,10 +193,10 @@ const HomePage = () => {
         <PromoCarousel />
 
         {/* Filter and Sort Container */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-6 bg-white/50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800">
+        <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center mb-10 gap-4 bg-white/50 dark:bg-gray-900/50 p-3 md:p-4 rounded-2xl border border-gray-100 dark:border-gray-800">
           
           {/* Categories */}
-          <div className="flex flex-wrap gap-2 justify-center sm:justify-start w-full sm:w-auto">
+          <div className="flex flex-wrap gap-2 justify-center md:justify-start flex-1">
             <button
               onClick={() => setActiveCategory('')}
               className={`px-4 py-2 text-sm md:text-base rounded-xl font-bold transition-all ${activeCategory === ''
@@ -221,12 +221,10 @@ const HomePage = () => {
           </div>
 
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-2 w-full sm:w-auto min-w-[200px]">
-            <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-              <Filter className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-            </div>
+          <div className="flex items-center gap-3 w-full md:w-auto md:min-w-[220px] pt-3 md:pt-0 border-t md:border-t-0 border-gray-200 dark:border-gray-700">
+            <Filter className="w-5 h-5 text-gray-500 dark:text-gray-400 hidden md:block" />
             <select 
-              className="w-full sm:w-auto flex-1 input py-2.5 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-primary focus:border-primary outline-none cursor-pointer transition-all hover:border-gray-300 dark:hover:border-gray-600 appearance-none"
+              className="w-full input py-2.5 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-primary focus:border-primary outline-none cursor-pointer transition-all hover:border-gray-300 dark:hover:border-gray-600 appearance-none"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1em' }}
