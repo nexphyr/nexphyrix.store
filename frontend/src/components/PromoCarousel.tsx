@@ -110,7 +110,38 @@ const PromoCarousel = () => {
     );
   }
 
-  // Banner 2: Koleksi Terlengkap
+  // Banner 2: Promo Aplikasi Android
+  banners.push(
+    <div className="w-full h-full relative overflow-hidden bg-gradient-to-r from-green-900 to-emerald-900 group">
+      <div className="absolute top-0 left-0 w-64 h-64 bg-green-500 opacity-20 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2 group-hover:scale-125 transition-transform duration-700"></div>
+      <div className="relative z-10 px-6 py-8 md:px-12 md:py-10 flex flex-col md:flex-row items-center justify-between gap-6 h-full">
+        <div className="flex-1 text-center md:text-left text-white flex flex-col justify-center h-full">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-green-200 text-xs font-black uppercase tracking-wider rounded-full backdrop-blur-sm border border-green-400/30 mb-3 md:mb-5 w-fit mx-auto md:mx-0">
+            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+            Baru Rilis!
+          </div>
+          <h2 className="text-2xl md:text-4xl font-black leading-tight text-white mb-2 md:mb-3">
+            Kini Hadir di <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-emerald-200">Android 📱</span>
+          </h2>
+          <p className="text-green-50 text-[10px] md:text-base font-medium max-w-xl leading-relaxed">
+            Unduh aplikasi resmi Nexphyrix Store sekarang juga. Nikmati pengalaman berbelanja game yang jauh lebih cepat, mulus, dan ringan langsung dari HP Anda!
+          </p>
+        </div>
+        <div className="flex-shrink-0 w-full md:w-auto flex flex-col items-center">
+          <a 
+            href="/Nexphyrix-Store-v1.0.0.apk"
+            download="Nexphyrix-Store-v1.0.0.apk"
+            className="w-full md:w-auto flex items-center justify-center gap-3 px-6 py-3 md:px-8 md:py-4 bg-white text-green-900 font-black text-sm md:text-lg rounded-xl md:rounded-2xl hover:bg-green-50 hover:-translate-y-1 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] active:scale-95"
+          >
+            Unduh APK Sekarang
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Banner 3: Koleksi Terlengkap
   banners.push(
     <div className="w-full h-full relative overflow-hidden bg-gradient-to-r from-teal-900 to-emerald-950 group">
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-500 opacity-20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700"></div>

@@ -177,10 +177,10 @@ const HomePage = () => {
                 href="/Nexphyrix-Store-v1.0.0.apk" 
                 download="Nexphyrix-Store-v1.0.0.apk"
                 title="Unduh Aplikasi Android"
-                className="flex-shrink-0 flex items-center justify-center gap-2 p-3 md:px-6 md:py-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold rounded-full shadow-lg hover:shadow-green-500/50 transition-all transform hover:-translate-y-1 border border-green-400/50 whitespace-nowrap"
+                className="flex-shrink-0 flex items-center justify-center gap-1.5 md:gap-2 px-4 py-3 md:px-6 md:py-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold rounded-full shadow-lg hover:shadow-green-500/50 transition-all transform hover:-translate-y-1 border border-green-400/50 whitespace-nowrap"
               >
-                <Smartphone className="w-5 h-5 md:w-6 md:h-6 animate-bounce" />
-                <span className="hidden md:block">Unduh Aplikasi</span>
+                <Smartphone className="w-4 h-4 md:w-6 md:h-6 animate-bounce" />
+                <span className="text-xs md:text-base">Unduh APK</span>
               </a>
             </div>
           </div>
