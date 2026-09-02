@@ -69,17 +69,17 @@ const FomoNotification = () => {
       }, 5000);
     };
 
-    // Initial delay before first popup (10 seconds)
+    // Initial delay before first popup (3 seconds for faster visibility)
     const initialTimer = setTimeout(() => {
       triggerNotification();
 
-      // Set recurring timer every 25 to 45 seconds
+      // Set recurring timer every 10 to 20 seconds
       const interval = setInterval(() => {
         triggerNotification();
-      }, Math.floor(Math.random() * 20000) + 25000);
+      }, Math.floor(Math.random() * 10000) + 10000);
 
       return () => clearInterval(interval);
-    }, 10000);
+    }, 3000);
 
     return () => clearTimeout(initialTimer);
   }, [games]);
