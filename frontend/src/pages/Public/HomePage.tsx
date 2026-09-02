@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { SearchX, ShoppingCart, ImageOff } from 'lucide-react';
+import { SearchX, ShoppingCart, ImageOff, Filter } from 'lucide-react';
 import { Link as RouterLink } from 'react-router-dom';
 import { storage } from '../../services/storage';
 import FloatingCart from '../../components/Cart/FloatingCart';
@@ -37,6 +37,7 @@ const HomePage = () => {
   const [links, setLinks] = useState<Link[]>([]);
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('default');
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
 
@@ -50,7 +51,7 @@ const HomePage = () => {
       fetchLinks();
     }, 300);
     return () => clearTimeout(timer);
-  }, [search, activeCategory]);
+  }, [search, activeCategory, sortBy]);
 
   const fetchCategories = async () => {
     const cats = await storage.getCategories();
@@ -75,6 +76,24 @@ const HomePage = () => {
       if (cat) {
         filtered = filtered.filter(l => l.category_id === cat.id);
       }
+    }
+
+    const parsePriceStr = (priceStr?: string) => {
+      if (!priceStr || priceStr.toLowerCase() === 'gratis' || priceStr.toLowerCase() === 'free') return 0;
+      return parseInt(priceStr.replace(/[^0-9]/g, '')) || 0;
+    };
+
+    if (sortBy === 'price_asc') {
+      filtered.sort((a, b) => parsePriceStr(a.price) - parsePriceStr(b.price));
+    } else if (sortBy === 'price_desc') {
+      filtered.sort((a, b) => parsePriceStr(b.price) - parsePriceStr(a.price));
+    } else if (sortBy === 'alpha_asc') {
+      filtered.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortBy === 'alpha_desc') {
+      filtered.sort((a, b) => b.title.localeCompare(a.title));
+    } else {
+      // Default: newest first
+      filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     }
 
     // Map category name onto links for the public view (and omit URL explicitly here even though we fetch it)
@@ -173,29 +192,52 @@ const HomePage = () => {
 
         <PromoCarousel />
 
-        {/* Categories */}
-        <div className="flex flex-wrap gap-3 mb-12 justify-center">
-          <button
-            onClick={() => setActiveCategory('')}
-            className={`px-4 py-2 md:px-6 md:py-3 text-sm md:text-base rounded-full font-bold transition-all shadow-md transform hover:-translate-y-1 ${activeCategory === ''
-              ? 'bg-primary text-white scale-105 shadow-primary/40'
-              : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:text-primary hover:shadow-lg border border-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700'
-              }`}
-          >
-            Semua
-          </button>
-          {categories.map((cat) => (
+        {/* Filter and Sort Container */}
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-6 bg-white/50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800">
+          
+          {/* Categories */}
+          <div className="flex flex-wrap gap-2 justify-center sm:justify-start w-full sm:w-auto">
             <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.slug)}
-              className={`px-4 py-2 md:px-6 md:py-3 text-sm md:text-base rounded-full font-bold transition-all shadow-md transform hover:-translate-y-1 ${activeCategory === cat.slug
-                ? 'bg-primary text-white scale-105 shadow-primary/40'
-                : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:text-primary hover:shadow-lg border border-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700'
+              onClick={() => setActiveCategory('')}
+              className={`px-4 py-2 text-sm md:text-base rounded-xl font-bold transition-all ${activeCategory === ''
+                ? 'bg-primary text-white shadow-md shadow-primary/40'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-primary border border-gray-200 dark:border-gray-700'
                 }`}
             >
-              {cat.name}
+              Semua
             </button>
-          ))}
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.slug)}
+                className={`px-4 py-2 text-sm md:text-base rounded-xl font-bold transition-all ${activeCategory === cat.slug
+                  ? 'bg-primary text-white shadow-md shadow-primary/40'
+                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-primary border border-gray-200 dark:border-gray-700'
+                  }`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+
+          {/* Sort Dropdown */}
+          <div className="flex items-center gap-2 w-full sm:w-auto min-w-[200px]">
+            <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
+              <Filter className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            </div>
+            <select 
+              className="w-full sm:w-auto flex-1 input py-2.5 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-primary focus:border-primary outline-none cursor-pointer transition-all hover:border-gray-300 dark:hover:border-gray-600 appearance-none"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1em' }}
+            >
+              <option value="default">Urutan Terbaru</option>
+              <option value="price_asc">Harga: Rendah ke Tinggi</option>
+              <option value="price_desc">Harga: Tinggi ke Rendah</option>
+              <option value="alpha_asc">Nama: A - Z</option>
+              <option value="alpha_desc">Nama: Z - A</option>
+            </select>
+          </div>
         </div>
 
         {/* Results */}
