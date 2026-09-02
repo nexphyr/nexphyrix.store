@@ -174,6 +174,51 @@ const PromoCarousel = () => {
     </div>
   );
 
+  // Banner 4: Jaminan Keamanan
+  banners.push(
+    <div className="w-full h-full relative overflow-hidden bg-gradient-to-r from-orange-900 to-red-950 group">
+      <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-orange-500 opacity-20 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
+      <div className="relative z-10 px-6 py-8 md:px-12 md:py-10 flex flex-col md:flex-row items-center justify-between gap-6 h-full">
+        <div className="flex-1 text-center md:text-left text-white flex flex-col justify-center h-full">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-orange-200 text-xs font-black uppercase tracking-wider rounded-full backdrop-blur-sm border border-orange-400/30 mb-3 md:mb-5 w-fit mx-auto md:mx-0">
+            <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
+            100% Aman & Terpercaya
+          </div>
+          <h2 className="text-2xl md:text-4xl font-black leading-tight text-white mb-2 md:mb-3">
+            Bebas Virus & <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 to-yellow-300">File Corrupt 🛡️</span>
+          </h2>
+          <p className="text-orange-50 text-[10px] md:text-base font-medium max-w-xl leading-relaxed">
+            Semua file mod dan game kami telah melewati proses pemindaian ketat dan diuji coba secara langsung. Sangat aman dimainkan di konsol PS4 kesayangan Anda tanpa resiko rusak!
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Banner 5: Layanan Support
+  banners.push(
+    <div className="w-full h-full relative overflow-hidden bg-gradient-to-br from-fuchsia-900 to-violet-950 group">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle,_rgba(168,85,247,0.1)_0%,_transparent_70%)] opacity-50 group-hover:rotate-12 transition-transform duration-[2000ms]"></div>
+      
+      <div className="relative z-10 px-6 py-8 md:px-12 md:py-10 flex flex-col md:flex-row items-center justify-between gap-6 h-full">
+        <div className="flex-1 text-center md:text-left text-white flex flex-col justify-center h-full">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-fuchsia-200 text-xs font-black uppercase tracking-wider rounded-full backdrop-blur-sm border border-fuchsia-400/30 mb-3 md:mb-5 w-fit mx-auto md:mx-0">
+            <span className="w-2 h-2 rounded-full bg-fuchsia-400 animate-pulse"></span>
+            Dukungan Penuh
+          </div>
+          <h2 className="text-2xl md:text-4xl font-black leading-tight text-white mb-2 md:mb-3">
+            Bingung Cara <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-300 to-pink-300">Install Game? 🎮</span>
+          </h2>
+          <p className="text-fuchsia-100 text-[10px] md:text-base font-medium max-w-xl leading-relaxed">
+            Jangan khawatir! Tim Admin kami yang ramah siap memandu Anda dari proses pengunduhan hingga game sukses berjalan lancar di konsol PS4 Anda. Kepuasan Anda adalah jaminan kami.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
   // Auto slide logic
   useEffect(() => {
     if (isHovered || isDragging) return;
